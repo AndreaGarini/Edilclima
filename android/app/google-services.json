@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "940558121101",
+    "firebase_url": "https://flutteredilclima-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "flutteredilclima",
+    "storage_bucket": "flutteredilclima.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940558121101:android:b7af40d0eafbca8d088ac4",
+        "android_client_info": {
+          "package_name": "com.example.edilclima_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "940558121101-jn4djbfbfmspfne3bpf7ha3jrvqe0vub.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8Ohgil9IoqzPx_dhdcpdRsD9Czem02n0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "940558121101-jn4djbfbfmspfne3bpf7ha3jrvqe0vub.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
