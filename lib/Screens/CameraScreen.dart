@@ -12,31 +12,29 @@ class CameraScreen extends StatefulWidget {
 
 class CameraScreenState extends State<CameraScreen> {
 
-  late GameModel gm;
   @override
   void initState(){
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      gm.listenToLevelChange();
-    });
   }
 
   @override
   Widget build(BuildContext context) {
 
-    return Consumer<GameModel>(builder: (context, gameModel, child)
+    return Material(child:
+    Consumer<GameModel>(builder: (context, gameModel, child)
     {
-      gm = gameModel;
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        updateData(gameModel);
+      });
 
       if(gameModel.playerLevelCounter > 0){
-        context.go("/cardSelectionScreen");
+        Future.delayed(const Duration(milliseconds: 500),() {context.go("/cardSelectionScreen");});
       }
 
       return Column(crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
 
           children: [
-            Text(gameModel.playerLevelCounter.toString(), style: const TextStyle(color: Colors.white),),
             Expanded(child: Row(crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: [
@@ -54,6 +52,10 @@ class CameraScreenState extends State<CameraScreen> {
           ]
 
       );
-    });
+    }));
+  }
+
+  Future<void> updateData(GameModel gm) async{
+    return Future<void>.delayed(const Duration(milliseconds: 500), () {gm.listenToLevelChange();});
   }
 }

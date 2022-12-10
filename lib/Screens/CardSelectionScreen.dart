@@ -31,8 +31,11 @@ int counter = 0;
 
 enum rotVersus {
   Right,
-  Left
+  Left,
+  None
 }
+
+rotVersus rotationSense = rotVersus.None;
 
 
 class CardSelectionState extends State<CardSelectionScreen>
@@ -141,7 +144,7 @@ class CardSelectionState extends State<CardSelectionScreen>
                             origin: Offset(pivotPointX, pivotPointY),
                             child: UndetailedCardLayout(
                                 currentWidth * 0.4, currentHeight * 0.4,
-                                indexingList[0])),
+                                indexingList[0], "carta 0 : ")),
                       animation: cardsMatrixMap["sixthCard"]!,)),
                     Indexed(index: indexingList[1], child:
                     AnimatedBuilder(builder: (context, child) =>
@@ -149,7 +152,7 @@ class CardSelectionState extends State<CardSelectionScreen>
                             origin: Offset(pivotPointX, pivotPointY),
                             child: UndetailedCardLayout(
                                 currentWidth * 0.4, currentHeight * 0.4,
-                                indexingList[1])),
+                                indexingList[1], "carta 1 : ")),
                       animation: cardsMatrixMap["firstCard"]!,)),
                     Indexed(index: indexingList[2], child:
                     AnimatedBuilder(builder: (context, child) =>
@@ -158,7 +161,7 @@ class CardSelectionState extends State<CardSelectionScreen>
                             origin: Offset(pivotPointX, pivotPointY),
                             child: UndetailedCardLayout(
                                 currentWidth * 0.4, currentHeight * 0.4,
-                                indexingList[2])),
+                                indexingList[2], "carta 2 : ")),
                       animation: cardsMatrixMap["secondCard"]!,)),
                     Indexed(index: indexingList[3], child:
                     AnimatedBuilder(builder: (context, child) =>
@@ -166,7 +169,7 @@ class CardSelectionState extends State<CardSelectionScreen>
                             origin: Offset(pivotPointX, pivotPointY),
                             child: UndetailedCardLayout(
                                 currentWidth * 0.4, currentHeight * 0.4,
-                                indexingList[3])),
+                                indexingList[3], "carta 3 : ")),
                       animation: cardsMatrixMap["thirdCard"]!,)),
                     Indexed(index: indexingList[4], child:
                     AnimatedBuilder(builder: (context, child) =>
@@ -175,7 +178,7 @@ class CardSelectionState extends State<CardSelectionScreen>
                             origin: Offset(pivotPointX, pivotPointY),
                             child: UndetailedCardLayout(
                                 currentWidth * 0.4, currentHeight * 0.4,
-                                indexingList[4])),
+                                indexingList[4], "carta 4 : ")),
                       animation: cardsMatrixMap["fourthCard"]!,)),
                     Indexed(index: indexingList[5], child:
                     AnimatedBuilder(builder: (context, child) =>
@@ -183,7 +186,7 @@ class CardSelectionState extends State<CardSelectionScreen>
                             origin: Offset(pivotPointX, pivotPointY),
                             child: UndetailedCardLayout(
                                 currentWidth * 0.4, currentHeight * 0.4,
-                                indexingList[5])),
+                                indexingList[5], "carta 5 : ")),
                       animation: cardsMatrixMap["fifthCard"]!,)),
 
                   ],
@@ -196,14 +199,14 @@ class CardSelectionState extends State<CardSelectionScreen>
                     Spacer(),
                     SizedButton(currentWidth * 0.2, "rotate card right", () {
                       setState(() {
-                        counter++;
-                        updateAnimation(rotVersus.Right);
+                        rotationSense = rotVersus.Right;
+                        updateAnimation(rotationSense);
                       });
                     }),
                     SizedButton(currentWidth * 0.2, "rotate card left", () {
                       setState(() {
-                        counter--;
-                        updateAnimation(rotVersus.Left);
+                        rotationSense = rotVersus.Left;
+                        updateAnimation(rotationSense);
                       });
                     }),
                     Spacer()
@@ -217,14 +220,28 @@ class CardSelectionState extends State<CardSelectionScreen>
   void changeIndexing(AnimationStatus status){
        if (status == AnimationStatus.completed){
          setState(() {
-           for (int i = 0; i < indexingList.length; i++){
-                if ((i + counter)%6 == 0){
-                  indexingList[i] = 1;
-                }
-                else{
-                  indexingList[i] = 3 - ((i + counter)%3);
-                }
-       }
+           switch(rotationSense){
+             case rotVersus.Right : {
+               for (int i = 0; i < 3; i++){
+                 indexingList[((6 - counter)%6 + i)%6] += 1;
+               }
+               for (int i = 0; i < 3; i++){
+                 indexingList[(5 - (6 + counter)%6 -i)%6 ] -= 1;
+               }
+               counter++;
+             } break;
+             case rotVersus.Left : {
+               for (int i = 0; i < 3; i++){
+                 indexingList[(6 - (6 + counter)%6 -i)%6 ] += 1;
+               }
+               for (int i = 0; i < 3; i++){
+                 indexingList[((6 - counter)%6 + i + 1)%6] -= 1;
+               }
+               counter--;
+             } break;
+             default:
+               break;
+           }
   });}}
 
   void updateAnimation(rotVersus versus){

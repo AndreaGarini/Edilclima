@@ -14,7 +14,7 @@ class infoRowState extends State<infoRow>{
   Widget build(BuildContext context) {
    return Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
              crossAxisAlignment: CrossAxisAlignment.center, children: [
-               Text("madonna puttana")
+               Text("info Row")
      ],);
   }
 

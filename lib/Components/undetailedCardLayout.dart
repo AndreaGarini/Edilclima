@@ -11,19 +11,15 @@ class UndetailedCardLayout extends StatefulWidget {
   double width;
   double height;
   int indexZ;
-  UndetailedCardLayout(this.width, this.height, this.indexZ);
+  String cardNum;
+  UndetailedCardLayout(this.width, this.height, this.indexZ, this.cardNum);
 
   @override
-  State<StatefulWidget> createState() => UndetailedCardLayoutState(width, height, indexZ);
+  State<StatefulWidget> createState() => UndetailedCardLayoutState();
 
 }
 
 class UndetailedCardLayoutState extends State<UndetailedCardLayout> {
-
-  double width;
-  double height;
-  int indexZ;
-  UndetailedCardLayoutState(this.width, this.height, this.indexZ);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +33,7 @@ class UndetailedCardLayoutState extends State<UndetailedCardLayout> {
               Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(indexZ.toString())
+                  Text(widget.cardNum + widget.indexZ.toString())
                 ],)));
   }
 

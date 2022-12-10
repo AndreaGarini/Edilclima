@@ -42,15 +42,21 @@ final router = GoRouter(
        builder: (context, state, child) {
          return MainScreenContent(child);
        },
-      routes: [
+      routes: <RouteBase>[
         GoRoute(path: "/cardSelectionScreen",
-          builder: (context, state) => CardSelectionScreen(),
+          pageBuilder: (context, state) {
+          return NoTransitionPage(child: CardSelectionScreen());
+          }
         ),
         GoRoute(path: "/retriveCardScreen",
-          builder: (context, state) => RetriveCardScreen(),
+            pageBuilder: (context, state) {
+              return NoTransitionPage(child: RetriveCardScreen());
+            }
         ),
         GoRoute(path: "/otherTeamsScreen",
-          builder: (context, state) => OtherTeamsScreen(),
+            pageBuilder: (context, state) {
+              return NoTransitionPage(child: OtherTeamsScreen());
+            }
         )
       ]
     ),

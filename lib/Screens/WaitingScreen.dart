@@ -17,9 +17,8 @@ class WaitingScreenState extends State<WaitingScreen> {
   @override
   Widget build(BuildContext context) {
 
-    print("into intial screen build");
-
-      return Column(
+    return Material(child:
+      Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
 
@@ -49,6 +48,6 @@ class WaitingScreenState extends State<WaitingScreen> {
               ]),),
           Spacer(),
         ],
-      );
+      ));
   }
 }

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/garonofsky/Documents/Polito/edilclima_app/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-zu/values-zu.xml",
+            "outputFile": "/Users/garonofsky/Documents/Polito/Edilclima/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-zu/values-zu.xml",
             "map": [
                 {
                     "source": "/Users/garonofsky/.gradle/caches/transforms-3/1a2cb69c9228e95e429c828957f3a3b6/transformed/jetified-play-services-base-18.0.1/res/values-zu/values.xml",

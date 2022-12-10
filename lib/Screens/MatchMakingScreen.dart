@@ -21,7 +21,8 @@ class MatchMakingState extends State<MatchMakingScreen> {
     final currentHeight = MediaQuery.of(context).size.height;
 
 
-    return Consumer<GameModel>(builder: (context, gameModel, child)
+    return Material(child:
+    Consumer<GameModel>(builder: (context, gameModel, child)
     {
       dynamicWidget(bool state) {
         if(state) {
@@ -105,7 +106,7 @@ class MatchMakingState extends State<MatchMakingScreen> {
             ),),
           ]
       );
-    });
+    }));
   }
 
 }

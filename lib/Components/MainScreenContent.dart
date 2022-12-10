@@ -9,19 +9,14 @@ import 'infoRow.dart';
 class MainScreenContent extends StatefulWidget{
 
   Widget child;
-
   MainScreenContent(this.child);
 
   @override
-  State<MainScreenContent> createState() => MainScreenContentState(child);
+  State<MainScreenContent> createState() => MainScreenContentState();
 
 }
 
 class MainScreenContentState extends State<MainScreenContent>{
-
-  Widget child;
-
-  MainScreenContentState(this.child);
 
 
   //todo: qui aggiungere la showDialog
@@ -31,9 +26,9 @@ class MainScreenContentState extends State<MainScreenContent>{
        body: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max,
          crossAxisAlignment: CrossAxisAlignment.center, children: [
            Expanded(flex: 1, child: infoRow()),
-           Expanded(flex : 5, child : child)
+           Expanded(flex : 5, child : widget.child)
          ],),
-       bottomNavigationBar: BottomNavBar(),
+       bottomNavigationBar: BottomNavBar(context),
      );
   }
 
