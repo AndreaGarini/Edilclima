@@ -137,7 +137,7 @@ class GameLogic {
     var grouped = groupBy(avatarMap, (Pair obj) => obj.second());
     Map<String, List<String>> newMap = {};
     for (final key in grouped.keys){
-      newMap.putIfAbsent(key, () =>  grouped[key]!.map((e) => e.first()).toList());
+      newMap.putIfAbsent(key as String, () =>  grouped[key]!.map((e) => e.first() as String).toList());
     }
 
     playersPerTeam = newMap;

@@ -4,11 +4,11 @@ class Pair {
   final dynamic  left;
   final dynamic right;
 
-  String second(){
+  Object second(){
     return right;
   }
 
-  String first(){
+  Object first(){
     return left;
   }
 

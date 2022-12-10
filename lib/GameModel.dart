@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:ffi';
 
 import 'package:edilclima_app/GameLogic.dart';
+import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,7 +38,7 @@ class GameModel extends ChangeNotifier{
   String? playerLevelStatus;
   int? playerTimerCountdown;
   Timer? playerTimer;
-  //var pushResult = Pair(pushResult.CardDown, null);
+  var push = Pair(pushResult.CardDown, null);
   //var showDialog : MutableLiveData<dialogData?> = MutableLiveData(null)
 
   //variabili sia master che player per schermate di splash e error
@@ -256,7 +257,10 @@ class GameModel extends ChangeNotifier{
     //todo: togli 1 e metti il player uid
     await db.child("matches").child("test").child("players")
         .child("1").child("team").get().
-    then((value) => {notifyCallback1(value)});
+    then((value) {
+      team = value as String;
+      notifyCallback1(value);
+    });
 
   }
 
