@@ -1,7 +1,7 @@
 
 import 'dart:core';
 
-class Card {
+class CardData {
 
   String code;
   int money;
@@ -14,7 +14,7 @@ class Card {
 
 
 
-  Card(this.code, this.money, this.energy, this.smog, this.comfort, this.research, this.resCard, this.level);
+  CardData(this.code, this.money, this.energy, this.smog, this.comfort, this.research, this.resCard, this.level);
 
 }
 

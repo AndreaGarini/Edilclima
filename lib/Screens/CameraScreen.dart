@@ -28,7 +28,7 @@ class CameraScreenState extends State<CameraScreen> {
       });
 
       if(gameModel.playerLevelCounter > 0){
-        Future.delayed(const Duration(milliseconds: 500),() {context.go("/cardSelectionScreen");});
+        Future.delayed(const Duration(milliseconds: 500),() {context.go("/splashScreen");});
       }
 
       return Column(crossAxisAlignment: CrossAxisAlignment.center,

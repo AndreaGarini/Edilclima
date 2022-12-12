@@ -1,5 +1,6 @@
 
 import 'package:edilclima_app/Components/MainScreenContent.dart';
+import 'package:edilclima_app/Screens/SplashScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:go_router/go_router.dart';
 
@@ -33,6 +34,7 @@ Future<void> main() async {
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final shellNavigatorKey = GlobalKey<NavigatorState>();
 
+//todo: risistema le routes in modo che si possa tornare indietro con il tasto del evice, ma togli lo splash dallo stack
 final router = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: "/initialScreen",
@@ -63,6 +65,10 @@ final router = GoRouter(
     GoRoute(
       path: '/initialScreen',
       builder: (context, state) => WaitingScreen(),
+    ),
+    GoRoute(
+      path: '/splashScreen',
+      builder: (context, state) => SplashScreen(),
     ),
     GoRoute(
       path: '/matchMakingScreen',

@@ -2,6 +2,7 @@
 import 'dart:math';
 
 import 'package:edilclima_app/Components/SizedButton.dart';
+import 'package:edilclima_app/DataClasses/CardData.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:indexed/indexed.dart';
@@ -22,6 +23,7 @@ Map<String, AnimationController> cardsControllerMap = Map();
 Map<String, Animation<Matrix4>> cardsMatrixMap = Map();
 Map<String, double> cardsAngleMap = Map();
 var indexingList = List.generate(6, (index) => 0);
+Map<String, CardData?> cardsDataMap = {};
 
 
 double parentWidth = 0;
@@ -59,9 +61,16 @@ class CardSelectionState extends State<CardSelectionScreen>
     cardsAngleMap["fifthCard"] = 60;
     cardsAngleMap["sixthCard"] = 180;
 
+    cardsDataMap["firstCard"] = null;
+    cardsDataMap["secondCard"] = null;
+    cardsDataMap["thirdCard"] = null;
+    cardsDataMap["fourthCard"] = null;
+    cardsDataMap["fifthCard"] = null;
+    cardsDataMap["sixthCard"] = null;
+
     cardsTransformMap["firstCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["firstCard"]!));
     cardsTransformMap["secondCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["secondCard"]!));
-    cardsTransformMap["thirdCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["thirdCard"]!));
+    cardsTransformMap["thirdCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["thirdCard"]!))..scale(1.2, 1.2);
     cardsTransformMap["fourthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["fourthCard"]!));
     cardsTransformMap["fifthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["fifthCard"]!));
     cardsTransformMap["sixthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["sixthCard"]!));
@@ -127,11 +136,34 @@ class CardSelectionState extends State<CardSelectionScreen>
 
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
+      firstCardsDataBinding(gameModel.playerCards);
 
       return Column(mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Expanded(flex: 1,
+                child: Row(mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Spacer(),
+                    SizedButton(currentWidth * 0.2, "rotate card right", () {
+                      setState(() {
+                        rotationSense = rotVersus.Right;
+                        updateAnimation(rotationSense, currentHeight);
+                        updateCardsData(gameModel.playerCards);
+                      });
+                    }),
+                    SizedButton(currentWidth * 0.2, "rotate card left", () {
+                      setState(() {
+                        rotationSense = rotVersus.Left;
+                        updateAnimation(rotationSense, currentHeight);
+                        updateCardsData(gameModel.playerCards);
+                      });
+                    }),
+                    Spacer()
+                  ],)),
             Expanded(flex: 1, child:
             Container(width: currentWidth * 0.6, height: currentHeight * 0.6,
                 child:
@@ -144,7 +176,7 @@ class CardSelectionState extends State<CardSelectionScreen>
                             origin: Offset(pivotPointX, pivotPointY),
                             child: UndetailedCardLayout(
                                 currentWidth * 0.4, currentHeight * 0.4,
-                                indexingList[0], "carta 0 : ")),
+                                cardsDataMap["sixthCard"])),
                       animation: cardsMatrixMap["sixthCard"]!,)),
                     Indexed(index: indexingList[1], child:
                     AnimatedBuilder(builder: (context, child) =>
@@ -152,7 +184,7 @@ class CardSelectionState extends State<CardSelectionScreen>
                             origin: Offset(pivotPointX, pivotPointY),
                             child: UndetailedCardLayout(
                                 currentWidth * 0.4, currentHeight * 0.4,
-                                indexingList[1], "carta 1 : ")),
+                                cardsDataMap["firstCard"])),
                       animation: cardsMatrixMap["firstCard"]!,)),
                     Indexed(index: indexingList[2], child:
                     AnimatedBuilder(builder: (context, child) =>
@@ -161,7 +193,7 @@ class CardSelectionState extends State<CardSelectionScreen>
                             origin: Offset(pivotPointX, pivotPointY),
                             child: UndetailedCardLayout(
                                 currentWidth * 0.4, currentHeight * 0.4,
-                                indexingList[2], "carta 2 : ")),
+                                cardsDataMap["secondCard"])),
                       animation: cardsMatrixMap["secondCard"]!,)),
                     Indexed(index: indexingList[3], child:
                     AnimatedBuilder(builder: (context, child) =>
@@ -169,7 +201,7 @@ class CardSelectionState extends State<CardSelectionScreen>
                             origin: Offset(pivotPointX, pivotPointY),
                             child: UndetailedCardLayout(
                                 currentWidth * 0.4, currentHeight * 0.4,
-                                indexingList[3], "carta 3 : ")),
+                                cardsDataMap["thirdCard"])),
                       animation: cardsMatrixMap["thirdCard"]!,)),
                     Indexed(index: indexingList[4], child:
                     AnimatedBuilder(builder: (context, child) =>
@@ -178,7 +210,7 @@ class CardSelectionState extends State<CardSelectionScreen>
                             origin: Offset(pivotPointX, pivotPointY),
                             child: UndetailedCardLayout(
                                 currentWidth * 0.4, currentHeight * 0.4,
-                                indexingList[4], "carta 4 : ")),
+                                cardsDataMap["fourthCard"])),
                       animation: cardsMatrixMap["fourthCard"]!,)),
                     Indexed(index: indexingList[5], child:
                     AnimatedBuilder(builder: (context, child) =>
@@ -186,37 +218,57 @@ class CardSelectionState extends State<CardSelectionScreen>
                             origin: Offset(pivotPointX, pivotPointY),
                             child: UndetailedCardLayout(
                                 currentWidth * 0.4, currentHeight * 0.4,
-                                indexingList[5], "carta 5 : ")),
+                                cardsDataMap["fifthCard"])),
                       animation: cardsMatrixMap["fifthCard"]!,)),
 
                   ],
                 ))),
-            Expanded(flex: 1,
-                child: Row(mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Spacer(),
-                    SizedButton(currentWidth * 0.2, "rotate card right", () {
-                      setState(() {
-                        rotationSense = rotVersus.Right;
-                        updateAnimation(rotationSense);
-                      });
-                    }),
-                    SizedButton(currentWidth * 0.2, "rotate card left", () {
-                      setState(() {
-                        rotationSense = rotVersus.Left;
-                        updateAnimation(rotationSense);
-                      });
-                    }),
-                    Spacer()
-                  ],))
           ]
       );
     });
   }
 
-  //todo: sistemare l'indexing delle carte
+  void firstCardsDataBinding(List<CardData> playerCards){
+    int counter = 0;
+    for(final entry in cardsAngleMap.entries){
+      if(entry.value.toInt() != 180 && counter < playerCards.length){
+        cardsDataMap[entry.key] = playerCards[counter];
+        counter++;
+      }
+      else{
+        cardsDataMap[entry.key] = null;
+      }
+    }
+  }
+
+  void updateCardsData(List<CardData> playerCards){
+    String cardsDownKey = cardsAngleMap.entries.where((element) => element.value.toInt() == 180).single.key;
+    switch(rotationSense){
+      case rotVersus.Right: {
+        if(counter>0){
+          cardsDataMap[cardsDownKey] = playerCards[(counter -1)%playerCards.length];
+        }
+        else {
+          cardsDataMap[cardsDownKey] = playerCards[playerCards.length - (counter.abs() - 1)%playerCards.length];
+        }
+      }
+      break;
+      case rotVersus.Left: {
+        if(counter>0){
+          cardsDataMap[cardsDownKey] = playerCards[(counter + 1)%playerCards.length];
+        }
+        else {
+          cardsDataMap[cardsDownKey] = playerCards[playerCards.length - (counter.abs() + 1)%playerCards.length];
+        }
+      }
+      break;
+      default: {
+
+      }
+      break;
+    }
+  }
+
   void changeIndexing(AnimationStatus status){
        if (status == AnimationStatus.completed){
          setState(() {
@@ -244,7 +296,7 @@ class CardSelectionState extends State<CardSelectionScreen>
            }
   });}}
 
-  void updateAnimation(rotVersus versus){
+  void updateAnimation(rotVersus versus, double currentHeight){
        switch (versus){
          case rotVersus.Right :{
                for (String key in cardsTransformMap.keys){
@@ -267,12 +319,23 @@ class CardSelectionState extends State<CardSelectionScreen>
                  }
 
                  cardsAngleMap[key] = newAngle;
-                 if (newAngle == 180){
-                   cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))..setTranslationRaw(0, -100, 0);
+
+                 switch(newAngle.toInt()){
+                   case 180: {
+                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))..setTranslationRaw(0, 100, 0);
+                   }
+                   break;
+                   case 0: {
+                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))..scale(1.2, 1.2)
+                       ..setTranslationRaw(0, -currentHeight * 0.02, 0);
+                   }
+                   break;
+                   default: {
+                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!));
+                   }
+                   break;
                  }
-                 else {
-                   cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!));
-                 }
+
                  cardsMatrixMap[key] = Tween<Matrix4>(begin: oldMatrix, end : cardsTransformMap[key]).animate(cardsControllerMap[key]!);
                }
 
@@ -301,11 +364,21 @@ class CardSelectionState extends State<CardSelectionScreen>
                    break;
                  }
                  cardsAngleMap[key] = newAngle;
-                 if (newAngle == 180){
-                   cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))..setTranslationRaw(0, -100, 0);
-                 }
-                 else {
-                   cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!));
+
+                 switch(newAngle.toInt()){
+                   case 180: {
+                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))..setTranslationRaw(0, 100, 0);
+                   }
+                   break;
+                   case 0: {
+                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))..scale(1.2, 1.2)
+                       ..setTranslationRaw(0, -currentHeight * 0.02, 0);
+                   }
+                   break;
+                   default: {
+                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!));
+                   }
+                   break;
                  }
                  cardsMatrixMap[key] = Tween<Matrix4>(begin: oldMatrix, end : cardsTransformMap[key]).animate(cardsControllerMap[key]!);
                }

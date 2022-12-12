@@ -9,7 +9,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
-import 'DataClasses/Card.dart';
+import 'DataClasses/CardData.dart';
 import 'DataClasses/Pair.dart';
 import 'DataClasses/TeamInfo.dart';
 
@@ -32,7 +32,7 @@ class GameModel extends ChangeNotifier{
 
 
   //variabili lato player
-  List<Card> playerCards = [];
+  List<CardData> playerCards = [];
   String team = "null";
   int playerLevelCounter = 0;
   String? playerLevelStatus;
@@ -77,7 +77,7 @@ class GameModel extends ChangeNotifier{
   }
 
   void giveCardsToPlayers(int level) async{
-    Map<String, Map<String, bool>> cardsPerPlayerMap = gameLogic.cardsToPLayers(level);
+    Map<String, Map<String, bool>> cardsPerPlayerMap = gameLogic.CardsToPLayers(level);
 
     await db.child("matches").child("test").child("players").get().then((value) =>{
       for (final player in value.children){
@@ -239,9 +239,9 @@ class GameModel extends ChangeNotifier{
 
   void bindCardsForPlayer() {
     db.child("matches").child("test").child("players").child("1").child("ownedCards").onValue.listen((event) {
-      List<Card> list = [];
+      List<CardData> list = [];
       for (final card in event.snapshot.children) {
-        Card? crd = gameLogic.findCard(card.key!);
+        CardData? crd = gameLogic.findCard(card.key!);
         if (crd != null) {
           list.add(crd);
         }
@@ -258,7 +258,7 @@ class GameModel extends ChangeNotifier{
     await db.child("matches").child("test").child("players")
         .child("1").child("team").get().
     then((value) {
-      team = value as String;
+      team = value.value as String;
       notifyCallback1(value);
     });
 
@@ -321,7 +321,7 @@ class GameModel extends ChangeNotifier{
 
     int totalCost = 0;
     if(playedCards!=null){
-      playedCards.map((e) => gameLogic.cardsMap[e]!.money).forEach((element) {
+      playedCards.map((e) => gameLogic.CardsMap[e]!.money).forEach((element) {
         totalCost += element;
       });
     }
