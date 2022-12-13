@@ -17,7 +17,7 @@ class GameModel extends ChangeNotifier{
 
   int playerCounter = 0;
   GameLogic gameLogic = GameLogic();
-  int count = 0; //todo: variabile per dare un nome in test ai players, da sostituire con i vari uid
+  int count = 1; //todo: variabile per dare un nome in test ai players, da sostituire con i vari uid
 
   DatabaseReference db = FirebaseDatabase.instance.ref();
 
@@ -123,6 +123,7 @@ class GameModel extends ChangeNotifier{
         playedCardsPerTeam = avatarMap;
       });
     }
+    notifyListeners();
   }
 
   void newStatsPerTeam(String team, Map<String, String> map){

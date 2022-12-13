@@ -18,12 +18,25 @@ class MainScreenContent extends StatefulWidget{
 
 }
 
+double screenWidth = 0;
+double screenHeight = 0;
+
 class MainScreenContentState extends State<MainScreenContent>{
 
 
   //todo: qui aggiungere la showDialog
   @override
   Widget build(BuildContext context) {
+
+    screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
+    screenHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
+
     return Consumer<GameModel>(builder: (context, gameModel, child) {
       return Scaffold(
         body: Column(mainAxisAlignment: MainAxisAlignment.center,
@@ -31,9 +44,9 @@ class MainScreenContentState extends State<MainScreenContent>{
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(flex: 1, child: infoRow(gameModel.push)),
-            Expanded(flex: 5, child: widget.child)
+            Expanded(flex: 10, child: widget.child)
           ],),
-        bottomNavigationBar: BottomNavBar(context),
+        bottomNavigationBar:  SizedBox(width: screenWidth, height: screenHeight * 0.1, child: BottomNavBar(context))
       );
     });
   }

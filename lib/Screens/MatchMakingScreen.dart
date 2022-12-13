@@ -1,4 +1,4 @@
-import 'package:edilclima_app/Components/SizedButton.dart';
+import 'package:edilclima_app/Components/generalFeatures/SizedButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

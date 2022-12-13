@@ -2,6 +2,7 @@
 import 'package:edilclima_app/Components/MainScreenContent.dart';
 import 'package:edilclima_app/Screens/SplashScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
 
 import 'Screens/OtherTeamsScreen.dart';
