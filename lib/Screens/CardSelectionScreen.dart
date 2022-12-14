@@ -2,16 +2,15 @@
 import 'dart:math';
 
 import 'package:edilclima_app/Components/PlayCardPagerLayout/PlayCardPager.dart';
-import 'package:edilclima_app/Components/generalFeatures/SizedButton.dart';
 import 'package:edilclima_app/DataClasses/CardData.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:indexed/indexed.dart';
 import 'package:provider/provider.dart';
 
-import '../Components/MainScreenContent.dart';
 import '../Components/selectCardLayout/undetailedCardLayout.dart';
 import '../GameModel.dart';
+import 'WaitingScreen.dart';
 
 class CardSelectionScreen extends StatefulWidget{
 
@@ -121,7 +120,6 @@ class CardSelectionState extends State<CardSelectionScreen>
   @override
   Widget build(BuildContext context) {
 
-
     double pivotPointX = screenWidth * 0.2;
     double pivotPointY = screenHeight * 0.4;
 
@@ -130,6 +128,10 @@ class CardSelectionState extends State<CardSelectionScreen>
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
       firstCardsDataBinding(gameModel.playerCards);
+
+      if(gameModel.playerTimerCountdown == null && rotationSense== rotVersus.Up){
+        animateToStart();
+      }
 
       return Column(mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -152,19 +154,22 @@ class CardSelectionState extends State<CardSelectionScreen>
             },
 
             onVerticalDragUpdate: (dragEndDetails) {
-            if(rotationSense != rotVersus.Up && dragEndDetails.delta.dy < -20){
+            if(rotationSense != rotVersus.Up && dragEndDetails.delta.dy < -20 && gameModel.playerTimerCountdown!=null){
             //swipe down
             rotationSense = rotVersus.Up;
             }
-            else if(rotationSense == rotVersus.Up && dragEndDetails.delta.dy > 20){
+            else if(rotationSense == rotVersus.Up && dragEndDetails.delta.dy > 20 && gameModel.playerTimerCountdown!=null){
             //swipe up
             rotationSense = rotVersus.Down;
             }
             },
-                onHorizontalDragEnd: (_){updateAnimation(rotationSense, screenHeight);
-                                          updateCardsData(gameModel.playerCards);},
+                onHorizontalDragEnd: gameModel.playerTimerCountdown!=null ? (_){
+                updateAnimation(rotationSense, screenHeight);
+                updateCardsData(gameModel.playerCards);} : (_){},
 
-                onVerticalDragEnd: (_){ updateAnimation(rotationSense, screenHeight);},
+                onVerticalDragEnd:  gameModel.playerTimerCountdown!=null ? (_){
+                updateAnimation(rotationSense, screenHeight);} : (_){},
+
             child:
                 SizedBox(width: screenWidth, height: screenHeight * 0.5, child:
             Indexer(
@@ -229,6 +234,7 @@ class CardSelectionState extends State<CardSelectionScreen>
     }
   }
 
+  //todo: popolare di carte vuote se finiscono le carte giocabili
   void updateCardsData(List<CardData> playerCards){
     String cardsDownKey = cardsAngleMap.entries.where((element) => element.value.toInt() == 180).single.key;
     switch(rotationSense){
@@ -383,6 +389,8 @@ class CardSelectionState extends State<CardSelectionScreen>
              switch(cardsAngleMap[key]!.toInt()){
                case 0: {
                  cardsTransformMap[key] = Matrix4.identity()..scale(1.3, 1.3);
+                 //modifico playable card in base alla carta che viene messa in up
+                 playableCard = cardsDataMap[key]!.code;
                }
                break;
                default: {
@@ -406,6 +414,8 @@ class CardSelectionState extends State<CardSelectionScreen>
              switch(cardsAngleMap[key]!.toInt()){
                case 0: {
                  cardsTransformMap[key] = Matrix4.identity()..scale(1.2, 1.2);
+                 //faccio tornare null la playable card perchè nessuna carta ha il focus
+                 playableCard = "null";
                }
                break;
                default: {
@@ -421,6 +431,30 @@ class CardSelectionState extends State<CardSelectionScreen>
            }
          }
        }
+  }
+
+  void animateToStart(){
+    //se il timer del player finisce con la card up la faccio tornare in down, ma anche se il player gioca
+    for (String key in cardsAngleMap.keys){
+      Matrix4 oldMatrix = cardsTransformMap[key]!;
+
+      switch(cardsAngleMap[key]!.toInt()){
+        case 0: {
+          cardsTransformMap[key] = Matrix4.identity()..scale(1.2, 1.2);
+          playableCard = "null";
+        }
+        break;
+        default: {
+          cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))..scale(1.0, 1.0);
+        }
+        break;
+      }
+      cardsMatrixMap[key] = Tween<Matrix4>(begin: oldMatrix, end : cardsTransformMap[key]).animate(cardsControllerMap[key]!);
+    }
+
+    for (AnimationController controller in cardsControllerMap.values){
+      controller.forward(from: 0);
+    }
   }
 }
 

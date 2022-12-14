@@ -1,10 +1,10 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../GameModel.dart';
+import '../Screens/WaitingScreen.dart';
 import 'BottomNavBar.dart';
 import 'infoRow.dart';
 
@@ -18,9 +18,6 @@ class MainScreenContent extends StatefulWidget{
 
 }
 
-double screenWidth = 0;
-double screenHeight = 0;
-
 class MainScreenContentState extends State<MainScreenContent>{
 
 
@@ -28,22 +25,13 @@ class MainScreenContentState extends State<MainScreenContent>{
   @override
   Widget build(BuildContext context) {
 
-    screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
-
     return Consumer<GameModel>(builder: (context, gameModel, child) {
       return Scaffold(
         body: Column(mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(flex: 1, child: infoRow(gameModel.push)),
+            Expanded(flex: 1, child: infoRow()),
             Expanded(flex: 10, child: widget.child)
           ],),
         bottomNavigationBar:  SizedBox(width: screenWidth, height: screenHeight * 0.1, child: BottomNavBar(context))

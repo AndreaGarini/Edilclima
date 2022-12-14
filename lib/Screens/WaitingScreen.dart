@@ -12,10 +12,22 @@ class WaitingScreen extends StatefulWidget {
   State<WaitingScreen> createState() => WaitingScreenState();
 }
 
+double screenWidth = 0;
+double screenHeight = 0;
+
 class WaitingScreenState extends State<WaitingScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
+    screenHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
 
     return Material(child:
       Column(

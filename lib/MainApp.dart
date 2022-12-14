@@ -1,5 +1,6 @@
 
 import 'package:edilclima_app/Components/MainScreenContent.dart';
+import 'package:edilclima_app/Screens/GameBoardScreen.dart';
 import 'package:edilclima_app/Screens/SplashScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/rendering.dart';
@@ -77,7 +78,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/gameBoardScreen',
-      builder: (context, state) => WaitingScreen(),
+      builder: (context, state) => GameBoardScreen(),
     ),
     GoRoute(
       path: '/cameraScreen',

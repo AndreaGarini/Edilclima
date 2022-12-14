@@ -1,8 +1,8 @@
 
-
-import 'package:edilclima_app/Components/MainScreenContent.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../../Screens/WaitingScreen.dart';
 
 class TabLayout extends StatelessWidget{
 

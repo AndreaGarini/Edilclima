@@ -19,7 +19,7 @@ class SplashScreen extends StatelessWidget{
       });
 
       if (gameModel.playerLevelCounter >0 && gameModel.playerLevelStatus != null) {
-        Future.delayed(const Duration(milliseconds: 1500), () {
+        Future.delayed(const Duration(milliseconds: 1000), () {
           context.go("/cardSelectionScreen");
         });
       }

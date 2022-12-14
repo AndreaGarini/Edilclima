@@ -58,7 +58,6 @@ class PlayCardPagerState extends State<PlayCardPager>
     }
 
     List<Widget> generateBarChildren(GameModel gm){
-
      Map<String, String> playedCards = gm.playedCardsPerTeam[gm.team]!;
 
      return gm.gameLogic.months.map((e) => PageLayout(gm.gameLogic.findCard(playedCards[e] ?? "null"), gm.gameLogic.months.indexOf(e))).toList();

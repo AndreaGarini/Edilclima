@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../../DataClasses/CardData.dart';
 import '../../DataClasses/Pair.dart';
-import '../MainScreenContent.dart';
+import '../../Screens/WaitingScreen.dart';
 
 class PageLayout extends StatefulWidget{
 
@@ -35,8 +35,6 @@ class PageLayoutState extends State<PageLayout>{
   }
 
   void onTap(GameModel gameModel){
-    print("inside on tap");
-    var push = Pair(null, null);
     var resPair = resNeededCheck(gameModel);
 
     def() {
@@ -44,30 +42,27 @@ class PageLayoutState extends State<PageLayout>{
           gameModel.playedCardsPerTeam[gameModel.team]!.values.toList());
       if (gameModel.gameLogic.findCard(playableCard)!.money < budget) {
         gameModel.playCardInPos(widget.index, playableCard);
-        //animateToStart();
-        push = Pair(pushResult.CardDown, null);
+        gameModel.changePushValue(Pair(pushResult.CardDown, null));
         gameModel.playerTimerCountdown = null;
         gameModel.playerTimer!.cancel();
         gameModel.playerTimer = null;
         gameModel.setTimeOutTrue();
       }
       else {
-        push = Pair(pushResult.LowBudget, null);
+        gameModel.changePushValue(Pair(pushResult.LowBudget, null));
       }
     }
 
     KotlinWhen(
-        [KotlinPair(playableCard=="null", (){push = Pair(pushResult.CardDown, null);}),
-          KotlinPair(playableCard=="void", (){push = Pair(pushResult.InvalidCard, null);}),
-          KotlinPair(resPair.first() as bool, (){push = Pair(pushResult.ResearchNeeded, resPair.second());})],
+        [KotlinPair(playableCard=="null", (){gameModel.changePushValue(Pair(pushResult.CardDown, null));}),
+          KotlinPair(playableCard=="void", (){gameModel.changePushValue(Pair(pushResult.InvalidCard, null));}),
+          KotlinPair(resPair.first() as bool, (){gameModel.changePushValue(Pair(pushResult.ResearchNeeded, resPair.second()));})],
         def).whenExeute();
-
-    gameModel.push = push;
   }
 
   Widget clickableCard (GameModel gameModel){
     return GestureDetector(
-        onTap: () {onTap(gameModel);},
+        onTap: gameModel.playerTimer!=null ? () {onTap(gameModel);} : (){},
         child:  Card(shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0)),
             elevation: 10,

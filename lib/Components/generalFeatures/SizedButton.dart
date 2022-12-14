@@ -13,7 +13,6 @@ class SizedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double textSize = width * 0.1;
-
    return ElevatedButton(onPressed: onClick,
      style: ButtonStyle(fixedSize: MaterialStatePropertyAll(Size.fromWidth(width))),
       child: Text(buttonText, style: TextStyle(fontSize: textSize)));

@@ -30,11 +30,9 @@ class KotlinPair {
     return left;
   }
 
-  Function()? checkCondition(){
+  void checkCondition(){
     if(left) {
-      return right;
-    } else {
-      return null;
+      right.call();
     }
   }
 }

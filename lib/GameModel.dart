@@ -55,7 +55,7 @@ class GameModel extends ChangeNotifier{
       }
     }}).then((_) {print("create new match finished with success");
     setPlayerCounter();})
-    .catchError((error){/*do smothing*/});
+    .catchError((error){/*do something*/});
   }
 
   void setPlayerCounter(){
@@ -72,7 +72,7 @@ class GameModel extends ChangeNotifier{
         db.child("matches").child("test").child("players").set(
             gameLogic.selectTeamForPlayers(value)
         )).
-    then((_) {print("create teams on db"); db.child("matches").child("test").child("teams").set(gameLogic.createTeamsOnDb());}).
+    then((_) { db.child("matches").child("test").child("teams").set(gameLogic.createTeamsOnDb());}).
     then((_) => { giveCardsToPlayers(gameLogic.nextLevel())});
   }
 
@@ -95,11 +95,16 @@ class GameModel extends ChangeNotifier{
     notifyListeners();
   }
 
+  void changePushValue(Pair newPush){
+    push = newPush;
+    notifyListeners();
+  }
+
 
   void setStartingCardsPerLevel(int level) async{
     String noCard = "void";
     Map<String, String> startingCardMap = Map.fromIterable(gameLogic.zoneMap[level]!.startingList,
-                                          key: (element) => (element=="no card") ? noCard :  gameLogic.months[gameLogic.zoneMap[level]!.startingList.indexOf(element)],
+                                          key: (element) => (element=="no Card") ? noCard :  gameLogic.months[gameLogic.zoneMap[level]!.startingList.indexOf(element)],
                                           value: (element) => element);
     for (final team in gameLogic.playersPerTeam.keys){
       await db.child("matches").child("test").child("teams").child(team)
@@ -114,7 +119,7 @@ class GameModel extends ChangeNotifier{
       db.child("matches").child("test").child("teams").child(team).child("playedCards").onValue.listen((event) {
         Map<String, String> map = {};
         for (final playedCard in event.snapshot.children){
-          if (!(playedCard.value.toString() == "no card")) map.putIfAbsent(playedCard.key.toString(), () => playedCard.value.toString());
+          if (!(playedCard.value.toString() == "no Card")) map.putIfAbsent(playedCard.key.toString(), () => playedCard.value.toString());
         }
         newStatsPerTeam(team, map);
         avatarMap = playedCardsPerTeam;
@@ -164,11 +169,13 @@ class GameModel extends ChangeNotifier{
       giveCardsToPlayers(level);
       setStartingCardsPerLevel(level);
     }
+    notifyListeners();
   }
 
   void startLevel() async {
     onTick(){
       levelTimerCountdown = levelTimerCountdown! - 1;
+      notifyListeners();
     }
 
     onFinish() async {
@@ -178,6 +185,7 @@ class GameModel extends ChangeNotifier{
       gameLogic.masterLevelCounter = gameLogic.nextLevel();
       Map<String , Object> levelValue = {"status" : masterLevelStatus, "count" : gameLogic.masterLevelCounter};
       await db.child("matches").child("test").child("level").set(levelValue);
+      notifyListeners();
     }
 
     await  db.child("matches").child("test").child("level").child("status").set("play").
@@ -207,7 +215,7 @@ class GameModel extends ChangeNotifier{
   void listenToLevelChange() {
     db.child("matches").child("test").child("level").onValue.listen((event) {
       if(!(event.snapshot.value == "")){
-        //questo if controlla che il value del level sia cambiato effettivamente (e non che l'ondata change sia stato chiamato e basta)
+        //questo if controlla che il value del level sia cambiato effettivamente (e non che l'ondatachange sia stato chiamato e basta)
         //e che lo stato sia preparing
 
         if(playerLevelCounter != event.snapshot.child("count").value as int &&
@@ -266,27 +274,38 @@ class GameModel extends ChangeNotifier{
   }
 
   void notifyCallback1(DataSnapshot value) async{
-    String team = value.toString();
+    String team = value.value.toString();
     db.child("matches").child("test").child("teams").child(team).child("ableToPlay").onValue.listen((event) {
-      if (event.snapshot.value.toString()=="1" && playerLevelCounter != 0 as Long && playerLevelStatus == "play"){
+
+      if (event.snapshot.value.toString()=="1" && playerLevelCounter != 0
+          && playerLevelStatus == "play" && playerTimer==null){
         playerTimerCountdown = 62;
-        onTick () {
-      if (playerTimerCountdown!=null){
+        //è l'infoRow a creare il timer e passarlo al gameModel
+        notifyListeners();
+    }});
+  }
+
+  void createPlayerTimer(Timer timer){
+    playerTimer = timer;
+  }
+  void playerTimerOnTick(){
+    if (playerTimerCountdown!=null){
       //se non è ancora finito il tempo di livello eseguo
       playerTimerCountdown = playerTimerCountdown! - 1;
-      }
-      }
-      onFinish () {
-      //se il timer finisce mentre c'è ancora tempo nel livello eseguo qui le operazioni di fine turno
-      // (altrimenti in listenToLevelChange)
-      if (playerTimer!=null){
+      notifyListeners();
+    }
+  }
+
+  void playerTimerOnFinish(){
+    //se il timer finisce mentre c'è ancora tempo nel livello eseguo qui le operazioni di fine turno
+    // (altrimenti in listenToLevelChange)
+    if (playerTimer!=null){
       playerTimer!.cancel();
+      playerTimer = null;
       playerTimerCountdown = null;
+      notifyListeners();
       setTimeOutTrue();
-      }
-      }
-        playerTimer = gameLogic.setPlayerTimer( (splash) ? 63000 : 62000, 1000, onTick, onFinish);
-    }});
+    }
   }
 
   void setTimeOutTrue() async {

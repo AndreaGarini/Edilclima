@@ -21,7 +21,7 @@ class GameLogic {
 
   Map<int, Zone> zoneMap = {1 : Zone(1, 50, 190, 280, 350, 200, 80, 50,
   ["H01", "H02", "H04", "H06", "E10", "E11", "E13", "E07", "E12", "A08", "A09","A12" ],
-  ["H01", "E04", "A04", "E07", "no CardData"])};
+  ["H01", "E04", "A04", "E07", "no Card"])};
 
   List<CardData> CardsList = [
     CardData("A01", -80, 20, -30, 30, researchSet.Needed, ["H13"], 2 ),
@@ -86,13 +86,14 @@ class GameLogic {
     CardsMap = { for (var e in CardsList) e.code : e };
   }
 
+  //todo: non più utilizzata, quindi puoi eliminarla
   Timer setPlayerTimer(int timeToFinish, int TickInterval, Function onTick, Function onFinish){
     var counter = timeToFinish;
     var playerTimer = Timer.periodic(Duration(seconds: TickInterval), (timer) {
-      onTick;
+      onTick();
       counter--;
       if (counter == 0) {
-        onFinish;
+        onFinish();
         timer.cancel();
       }
     });
@@ -102,11 +103,11 @@ class GameLogic {
 
   void setLevelTimer(Function onTick, Function onFinish){
     var counter = 420;
-    var playerTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      onTick;
+    var levelTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      onTick();
       counter--;
       if (counter == 0) {
-        onFinish;
+        onFinish();
         timer.cancel();
       }
     });
@@ -143,7 +144,7 @@ class GameLogic {
     Map<String, Map<String, Object>> resultingMap = {};
     var teams = ["team1", "team2", "team3", "team4"];
     for (final team in teams){
-      resultingMap.putIfAbsent(team, () => {"ableToPlay" : "", "playedCardDatas" : "", "points" : 0});
+      resultingMap.putIfAbsent(team, () => {"ableToPlay" : "", "playedCards" : "", "points" : 0});
     }
     return resultingMap;
   }

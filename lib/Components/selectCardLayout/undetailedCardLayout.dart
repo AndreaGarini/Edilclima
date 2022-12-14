@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../DataClasses/CardData.dart';
 import '../../Screens/CardSelectionScreen.dart';
-import '../MainScreenContent.dart';
+import '../../Screens/WaitingScreen.dart';
 
 class UndetailedCardLayout extends StatefulWidget {
 

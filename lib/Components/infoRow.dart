@@ -1,19 +1,18 @@
 
+import 'dart:async';
+
 import 'package:edilclima_app/GameModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../DataClasses/Pair.dart';
 import '../Screens/CardSelectionScreen.dart';
 
 bool infoRowDefaultLayout = true;
+int? infoRowCounter;
 
 class infoRow extends StatefulWidget{
 
-  Pair push;
-
-  infoRow(this.push);
   @override
   State<infoRow> createState() => infoRowState();
 
@@ -24,28 +23,30 @@ class infoRowState extends State<infoRow>{
   @override
   Widget build(BuildContext context) {
 
+    //todo: il timer non aggiorna i dati ad ogni secondo, sostituire con progress bar
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
 
-      if (gameModel.playerTimer!= null && gameModel.levelTimerCountdown!=null && gameModel.levelTimerCountdown! > 60){
-        infoRowDefaultLayout = false;
-      }
+        if (gameModel.playerTimer== null && gameModel.playerTimerCountdown!=null && gameModel.playerTimerCountdown! > 60){
+          updateData(gameModel, false);
+          gameModel.playerTimer = setPlayerTimer(gameModel.splash ? 63 : 62, 1, gameModel);
+        }
+        else{
+          updateData(gameModel, true);
+        }
 
       timerText(){
-
-        Future.delayed(const Duration(milliseconds: 2200),() {infoRowDefaultLayout = true;});
-
-        if(gameModel.levelTimerCountdown==null || (gameModel.levelTimerCountdown != null && gameModel.levelTimerCountdown! > 60)){
+        if(gameModel.playerTimerCountdown==null || (gameModel.playerTimerCountdown != null && gameModel.playerTimerCountdown! > 60)){
           //todo: aggiungere animazione di attesa turno per il counter
           return const Text("");
         }
         else{
-          return Text(gameModel.levelTimerCountdown.toString());
+          return Text(infoRowCounter.toString());
         }
       }
 
       dynamicContent() {
-        switch (widget.push.first() as pushResult) {
+        switch (gameModel.push.first() as pushResult) {
           case pushResult.InvalidCard :
             {
               return const Text(
@@ -58,7 +59,7 @@ class infoRowState extends State<infoRow>{
             }
           case pushResult.ResearchNeeded :
             {
-              return Text("Ricerche richieste: ${widget.push.second()}",
+              return Text("Ricerche richieste: ${gameModel.push.second()}",
                   style: const TextStyle(color: Colors.red));
             }
           default:
@@ -90,5 +91,26 @@ class infoRowState extends State<infoRow>{
           Expanded(child: dynamicContent())
         ],);
   });
+  }
+
+  Future<void> updateData(GameModel gm, bool stateValue) async{
+    return Future<void>.delayed(const Duration(milliseconds: 500), () {setState(() {
+      infoRowDefaultLayout = stateValue;
+    });});
+  }
+
+  Timer setPlayerTimer(int timeToFinish, int TickInterval, GameModel gm){
+    var counter = timeToFinish;
+    var playerTimer = Timer.periodic(Duration(seconds: TickInterval), (timer) {
+      gm.playerTimerOnTick();
+      setState((){infoRowCounter = counter;});
+      counter--;
+      if (counter == 0) {
+        gm.playerTimerOnFinish();
+        setState((){infoRowCounter = null;});
+        timer.cancel();
+      }
+    });
+    return playerTimer;
   }
 }

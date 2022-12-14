@@ -29,7 +29,6 @@ class MatchMakingState extends State<MatchMakingScreen> {
           return  Expanded(flex: 1,
               child: SizedButton(
                   currentWidth * 0.4, "Start match", () {
-                gameModel.prepareLevel(gameModel.gameLogic.masterLevelCounter);
                 context.go("/gameBoardScreen");
               }));
         }
