@@ -43,6 +43,7 @@ class PlayCardPagerState extends State<PlayCardPager>
       List<Widget> tabsChildren = gameModel.gameLogic.months.map((e) => TabLayout(e)).toList();
 
       //todo: decoration per gli indicator e divider per far capire quali sono le zone dei tab
+      //todo: animazioni delle carte in entrata e uscita
        return Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
        mainAxisSize: MainAxisSize.max, children: [
          Expanded(flex: 1, child:

@@ -7,7 +7,7 @@ class SizedButton extends StatelessWidget {
 
   double width;
   String buttonText;
-  void Function () onClick;
+  void Function()? onClick;
   SizedButton(this.width, this.buttonText, this.onClick);
 
   @override

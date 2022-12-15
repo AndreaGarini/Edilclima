@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 import 'DataClasses/CardData.dart';
+import 'DataClasses/DialogData.dart';
 import 'DataClasses/Pair.dart';
 import 'DataClasses/TeamInfo.dart';
 
@@ -39,7 +40,8 @@ class GameModel extends ChangeNotifier{
   int? playerTimerCountdown;
   Timer? playerTimer;
   var push = Pair(pushResult.CardDown, null);
-  //var showDialog : MutableLiveData<dialogData?> = MutableLiveData(null)
+  Future? pushCoroutine;
+  DialogData? showDialog;
 
   //variabili sia master che player per schermate di splash e error
   bool splash = false;
@@ -53,8 +55,7 @@ class GameModel extends ChangeNotifier{
         "players" : "",
         "teams" : ""
       }
-    }}).then((_) {print("create new match finished with success");
-    setPlayerCounter();})
+    }}).then((_) {setPlayerCounter();})
     .catchError((error){/*do something*/});
   }
 
@@ -97,6 +98,20 @@ class GameModel extends ChangeNotifier{
 
   void changePushValue(Pair newPush){
     push = newPush;
+    print("push coroutine value: ${pushCoroutine.toString()}");
+    print("new push value:${newPush.first().toString()}");
+    pushCoroutine!=null ? pushCoroutine!.ignore() : (){};
+    if(newPush.first()!=pushResult.CardDown){
+      print("coroutine started");
+      pushCoroutine = Future<void>.delayed(const Duration(seconds: 2),
+              () {push = Pair(pushResult.CardDown, null); notifyListeners(); print("notify listeners");})
+          .whenComplete(() => pushCoroutine = null);
+    }
+    notifyListeners();
+  }
+
+  void setDialogData(DialogData? data){
+    showDialog = data;
     notifyListeners();
   }
 
@@ -219,12 +234,22 @@ class GameModel extends ChangeNotifier{
         //e che lo stato sia preparing
 
         if(playerLevelCounter != event.snapshot.child("count").value as int &&
-            playerLevelStatus != event.snapshot.child("status").value as String &&
-            event.snapshot.child("status").value.toString() == "preparing"){
-      splash = true;
+            playerLevelStatus != event.snapshot.child("status").value as String){
+
+          playerLevelCounter = event.snapshot.child("count").value as int;
+          playerLevelStatus = event.snapshot.child("status").value as String;
+
+          switch(event.snapshot.child("status").value.toString()){
+            case "preparing" : {
+              splash = true;
+            }
+            break;
+            case"play" : {
+              setDialogData(DialogData("level $playerLevelCounter", null, false, null));
+            }
+            break;
+          }
       }
-        playerLevelCounter = event.snapshot.child("count").value as int;
-        playerLevelStatus = event.snapshot.child("status").value as String;
 
         if (event.snapshot.child("status").value.toString() == "preparing" && playerTimerCountdown != null){
 

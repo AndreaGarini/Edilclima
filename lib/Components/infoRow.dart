@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import '../Screens/CardSelectionScreen.dart';
 
 bool infoRowDefaultLayout = true;
-int? infoRowCounter;
 
 class infoRow extends StatefulWidget{
 
@@ -18,7 +17,42 @@ class infoRow extends StatefulWidget{
 
 }
 
-class infoRowState extends State<infoRow>{
+class infoRowState extends State<infoRow> with
+    TickerProviderStateMixin{
+
+  late AnimationController indicatorController;
+
+  @override
+  void initState() {
+    super.initState();
+    indicatorController = AnimationController(vsync: this, duration: const Duration(seconds: 63));
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    indicatorController.dispose();
+  }
+
+  timerIndicator(GameModel gameModel){
+    if(gameModel.playerTimerCountdown==null || (gameModel.playerTimerCountdown != null && gameModel.playerTimerCountdown! > 60)){
+      //todo: aggiungere animazione di attesa turno per il counter
+      return const Text("");
+    }
+    else{
+      return TweenAnimationBuilder<double>(duration: const Duration(seconds: 63),
+        curve: Curves.easeInOut,
+        tween: Tween<double>(
+          begin: 1,
+          end: 0
+        ),
+        builder: (context, value, _) {
+          var colorAnim = ColorTween(begin: Colors.green, end: Colors.red).animate(indicatorController);
+          indicatorController.value = 1 - value;
+          return LinearProgressIndicator(value: value, valueColor:  colorAnim);
+        });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,40 +61,55 @@ class infoRowState extends State<infoRow>{
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
 
-        if (gameModel.playerTimer== null && gameModel.playerTimerCountdown!=null && gameModel.playerTimerCountdown! > 60){
+        if (gameModel.playerTimer==null && gameModel.playerTimerCountdown!=null){
           updateData(gameModel, false);
-          gameModel.playerTimer = setPlayerTimer(gameModel.splash ? 63 : 62, 1, gameModel);
+          int duration = gameModel.splash ? 63 : 62;
+          gameModel.playerTimer = setPlayerTimer(duration, 1, gameModel);
+          Future<void>.delayed(Duration(seconds: duration - 60), () {setState(() {
+            infoRowDefaultLayout = true;
+          });});
         }
-        else{
-          updateData(gameModel, true);
-        }
-
-      timerText(){
-        if(gameModel.playerTimerCountdown==null || (gameModel.playerTimerCountdown != null && gameModel.playerTimerCountdown! > 60)){
-          //todo: aggiungere animazione di attesa turno per il counter
-          return const Text("");
-        }
-        else{
-          return Text(infoRowCounter.toString());
-        }
-      }
 
       dynamicContent() {
         switch (gameModel.push.first() as pushResult) {
           case pushResult.InvalidCard :
             {
-              return const Text(
-                  "Carta non valida", style: TextStyle(color: Colors.red));
+              return Row(
+                mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  Spacer(),
+                  Expanded(flex: 2, child: Center(child:  Text("Carta non valida",
+                      style: TextStyle(color: Colors.red)))),
+                  Spacer()
+                ],
+              );
             }
           case pushResult.LowBudget :
             {
-              return const Text(
-                  "Budget esaurito", style: TextStyle(color: Colors.red));
+              return Row(
+                mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  Spacer(),
+                  Expanded(flex: 2, child: Center(child:  Text("Budget esaurito",
+                      style: TextStyle(color: Colors.red)))),
+                  Spacer()
+                ],
+              );
             }
           case pushResult.ResearchNeeded :
             {
-              return Text("Ricerche richieste: ${gameModel.push.second()}",
-                  style: const TextStyle(color: Colors.red));
+              return Row(
+                mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Spacer(),
+                  Expanded(flex: 2, child: Center(child:  Text("Ricerche richieste: ${gameModel.push.second()}",
+                      style: const TextStyle(color: Colors.red)))),
+                  const Spacer()
+                ],
+              );
             }
           default:
             {
@@ -73,16 +122,32 @@ class infoRowState extends State<infoRow>{
                     Expanded(flex: 1,
                         child: Center(child: Text(
                             "B : ${gameModel.teamStats[gameModel.team]?.budget ?? ""}"),)),
-                    Expanded(flex: 1, child: Center(child: timerText(),)),
+                    Expanded(flex: 1, child: Row(
+                      mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Spacer(),
+                        Expanded(flex: 2, child: timerIndicator(gameModel)),
+                        const Spacer()
+                      ],
+                    )),
                   ],);
               }
               else {
-               return const Text("Your turn");
+                //todo: your turn da animare
+               return Row(
+                 mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                 crossAxisAlignment: CrossAxisAlignment.center,
+                 children: const [
+                   Spacer(),
+                   Expanded(flex: 2, child: Center(child: Text("your turn"))),
+                   Spacer()
+                 ],
+               );
               }
             }
         }
       }
-
 
       return Row(mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -94,7 +159,7 @@ class infoRowState extends State<infoRow>{
   }
 
   Future<void> updateData(GameModel gm, bool stateValue) async{
-    return Future<void>.delayed(const Duration(milliseconds: 500), () {setState(() {
+    return Future<void>.delayed(const Duration(milliseconds: 100), () {setState(() {
       infoRowDefaultLayout = stateValue;
     });});
   }
@@ -103,11 +168,9 @@ class infoRowState extends State<infoRow>{
     var counter = timeToFinish;
     var playerTimer = Timer.periodic(Duration(seconds: TickInterval), (timer) {
       gm.playerTimerOnTick();
-      setState((){infoRowCounter = counter;});
       counter--;
       if (counter == 0) {
         gm.playerTimerOnFinish();
-        setState((){infoRowCounter = null;});
         timer.cancel();
       }
     });

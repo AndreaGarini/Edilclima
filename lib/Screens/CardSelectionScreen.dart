@@ -46,6 +46,7 @@ String playableCard = "null";
 class CardSelectionState extends State<CardSelectionScreen>
     with TickerProviderStateMixin {
 
+  //todo: sistemare disposizione csarte per rendere il cerchio più tondo (come era su android)
   @override
   void initState() {
     super.initState();
@@ -142,6 +143,8 @@ class CardSelectionState extends State<CardSelectionScreen>
 
             Expanded(flex: 1, child:
             GestureDetector(
+
+              //todo: dare più spazio sullo schermo al gesture detector(soprattutto per lo swipe up)
             onHorizontalDragUpdate: (dragEndDetails){
             if(rotationSense != rotVersus.Up && dragEndDetails.delta.dx > 20){
             //swipe left
@@ -163,9 +166,9 @@ class CardSelectionState extends State<CardSelectionScreen>
             rotationSense = rotVersus.Down;
             }
             },
-                onHorizontalDragEnd: gameModel.playerTimerCountdown!=null ? (_){
+                onHorizontalDragEnd: (_){
                 updateAnimation(rotationSense, screenHeight);
-                updateCardsData(gameModel.playerCards);} : (_){},
+                updateCardsData(gameModel.playerCards);},
 
                 onVerticalDragEnd:  gameModel.playerTimerCountdown!=null ? (_){
                 updateAnimation(rotationSense, screenHeight);} : (_){},

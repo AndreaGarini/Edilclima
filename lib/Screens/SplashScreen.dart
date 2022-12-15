@@ -11,6 +11,7 @@ class SplashScreen extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+
    return Consumer<GameModel>(builder: (context, gameModel, child) {
 
      //todo: fai un test senza connessione, per vedere se almeno non si rompe anche senza dati

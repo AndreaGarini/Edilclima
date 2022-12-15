@@ -66,7 +66,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/initialScreen',
-      builder: (context, state) => WaitingScreen(),
+      builder: (context, state) {print("initial screen in router"); return WaitingScreen();},
     ),
     GoRoute(
       path: '/splashScreen',
@@ -94,7 +94,6 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    print("into build main app");
     return MaterialApp.router(
       title: 'Edilclima',
       theme: ThemeData(
