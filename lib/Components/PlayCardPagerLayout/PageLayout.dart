@@ -43,9 +43,7 @@ class PageLayoutState extends State<PageLayout>{
       if (gameModel.gameLogic.findCard(playableCard)!.money < budget) {
         gameModel.playCardInPos(widget.index, playableCard);
         gameModel.changePushValue(Pair(pushResult.CardDown, null));
-        gameModel.playerTimerCountdown = null;
-        gameModel.playerTimer!.cancel();
-        gameModel.playerTimer = null;
+        gameModel.stopPlayerTimer();
         gameModel.setTimeOutTrue();
       }
       else {

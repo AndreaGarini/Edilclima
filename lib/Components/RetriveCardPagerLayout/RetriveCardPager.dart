@@ -10,6 +10,8 @@ import '../../GameModel.dart';
 
 class RetriveCardPager extends StatefulWidget{
 
+  //todo: le carte vanno rese scrollable perchè il testo non è detto che ci stia
+  //todo : aggiungi un'animazione per il retrive card
   int cardListLength;
 
   RetriveCardPager(this.cardListLength);
@@ -38,31 +40,26 @@ class RetriveCardPagerState extends State<RetriveCardPager>
 
   @override
   Widget build(BuildContext context) {
-
     return Consumer<GameModel>(builder: (context, gameModel, child) {
+      List<Widget> tabsChildren = gameModel.gameLogic.months.map((e) =>
+          TabLayout(e)).toList();
 
-      List<Widget> tabsChildren = gameModel.gameLogic.months.map((e) => TabLayout(e)).toList();
-
-      return Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max, children: [
+      return Column(mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
           Expanded(flex: 1, child:
           TabBar(tabs: tabsChildren,
-            controller: tabController, isScrollable: true,
+            controller: tabController,
+            isScrollable: true,
             padding: EdgeInsets.zero,
             indicatorPadding: EdgeInsets.zero,
             labelPadding: EdgeInsets.zero,),),
           Expanded(flex: 7, child: TabBarView(controller: tabController,
-            children: generateRetriveBarChildren(gameModel),))
+              children: gameModel.gameLogic.months.map((e) =>
+                  RetrivePageLayout(gameModel.gameLogic.months.indexOf(e)))
+                  .toList()))
         ],);
-
     });
-  }
-
-  List<Widget> generateRetriveBarChildren(GameModel gm){
-    Map<String, String> playedCards = gm.playedCardsPerTeam[gm.team]!;
-
-    return gm.gameLogic.months.map((e) =>
-                                 RetrivePageLayout(gm.gameLogic.findCard(playedCards[e] ?? "null"),
-                                 gm.gameLogic.months.indexOf(e))).toList();
   }
 }

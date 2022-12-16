@@ -115,6 +115,13 @@ class GameModel extends ChangeNotifier{
     notifyListeners();
   }
 
+  void stopPlayerTimer(){
+    playerTimerCountdown = null;
+    playerTimer!.cancel();
+    playerTimer = null;
+    notifyListeners();
+  }
+
 
   void setStartingCardsPerLevel(int level) async{
     String noCard = "void";
@@ -141,9 +148,9 @@ class GameModel extends ChangeNotifier{
         avatarMap.remove(team);
         avatarMap.putIfAbsent(team, () => map);
         playedCardsPerTeam = avatarMap;
+        notifyListeners();
       });
     }
-    notifyListeners();
   }
 
   void newStatsPerTeam(String team, Map<String, String> map){
@@ -281,6 +288,7 @@ class GameModel extends ChangeNotifier{
         }
       }
       playerCards = list;
+      notifyListeners();
     });
   }
 

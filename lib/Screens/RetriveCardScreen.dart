@@ -19,7 +19,11 @@ class RetriveCardScreenState extends State<RetriveCardScreen>{
 
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
-    return Expanded(child: Center(child: RetriveCardPager(gameModel.gameLogic.months.length)));
+    return Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+        Expanded(child: Center(child: RetriveCardPager(gameModel.gameLogic.months.length)))
+    ],);
 
   });
   }

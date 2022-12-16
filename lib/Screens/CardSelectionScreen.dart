@@ -46,10 +46,17 @@ String playableCard = "null";
 class CardSelectionState extends State<CardSelectionScreen>
     with TickerProviderStateMixin {
 
+  late bool ongoingAnimation;
+  late bool triggerIndexing;
+
   //todo: sistemare disposizione csarte per rendere il cerchio più tondo (come era su android)
   @override
   void initState() {
     super.initState();
+
+    ongoingAnimation = false;
+    triggerIndexing = false;
+    counter = 0;
 
     indexingList[0] = 0;
     indexingList[1] = 1;
@@ -87,7 +94,7 @@ class CardSelectionState extends State<CardSelectionScreen>
     cardsControllerMap["sixthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 700));
 
     cardsMatrixMap["firstCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["firstCard"]).animate(cardsControllerMap["firstCard"]!)
-    ..addStatusListener((status) {changeIndexing(status);});
+    ..addStatusListener((status) => {changeIndexing(status)});
     cardsMatrixMap["secondCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["secondCard"]).animate(cardsControllerMap["secondCard"]!);
     cardsMatrixMap["thirdCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["thirdCard"]).animate(cardsControllerMap["thirdCard"]!);
     cardsMatrixMap["fourthCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["fourthCard"]).animate(cardsControllerMap["fourthCard"]!);
@@ -128,7 +135,9 @@ class CardSelectionState extends State<CardSelectionScreen>
 
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
-      firstCardsDataBinding(gameModel.playerCards);
+      if(!triggerIndexing){
+        firstCardsDataBinding(gameModel.playerCards);
+      }
 
       if(gameModel.playerTimerCountdown == null && rotationSense== rotVersus.Up){
         animateToStart();
@@ -167,11 +176,18 @@ class CardSelectionState extends State<CardSelectionScreen>
             }
             },
                 onHorizontalDragEnd: (_){
-                updateAnimation(rotationSense, screenHeight);
-                updateCardsData(gameModel.playerCards);},
+                if(!ongoingAnimation){
+                  triggerIndexing = true;
+                  ongoingAnimation = true;
+                  updateAnimation(rotationSense, screenHeight, gameModel.playerCards);
+                }},
 
                 onVerticalDragEnd:  gameModel.playerTimerCountdown!=null ? (_){
-                updateAnimation(rotationSense, screenHeight);} : (_){},
+                if(!ongoingAnimation){
+                  triggerIndexing = true;
+                  ongoingAnimation = true;
+                  updateAnimation(rotationSense, screenHeight, null);
+                }} : (_){},
 
             child:
                 SizedBox(width: screenWidth, height: screenHeight * 0.5, child:
@@ -240,23 +256,31 @@ class CardSelectionState extends State<CardSelectionScreen>
   //todo: popolare di carte vuote se finiscono le carte giocabili
   void updateCardsData(List<CardData> playerCards){
     String cardsDownKey = cardsAngleMap.entries.where((element) => element.value.toInt() == 180).single.key;
+    String lastCardRight = cardsAngleMap.entries.where((element) => element.value.toInt() == -60).single.key;
+    String lastCardLeft = cardsAngleMap.entries.where((element) => element.value.toInt() == 60).single.key;
     switch(rotationSense){
       case rotVersus.Right: {
-        if(counter>0){
-          cardsDataMap[cardsDownKey] = playerCards[(counter -1)%playerCards.length];
+        int index = playerCards.indexOf(cardsDataMap[lastCardRight]!);
+
+        if(index == 0){
+          index = playerCards.length -1;
         }
-        else {
-          cardsDataMap[cardsDownKey] = playerCards[playerCards.length - (counter.abs() - 1)%playerCards.length];
+        else{
+          index = index -1;
         }
+        cardsDataMap[cardsDownKey] = playerCards[index];
       }
       break;
       case rotVersus.Left: {
-        if(counter>0){
-          cardsDataMap[cardsDownKey] = playerCards[(counter + 1)%playerCards.length];
+        int index = playerCards.indexOf(cardsDataMap[lastCardLeft]!);
+
+        if(index == playerCards.length - 1){
+          index = 0;
         }
-        else {
-          cardsDataMap[cardsDownKey] = playerCards[playerCards.length - (counter.abs() + 1)%playerCards.length];
+        else{
+          index = index + 1;
         }
+        cardsDataMap[cardsDownKey] = playerCards[index];
       }
       break;
       default: {
@@ -267,7 +291,7 @@ class CardSelectionState extends State<CardSelectionScreen>
   }
 
   void changeIndexing(AnimationStatus status){
-       if (status == AnimationStatus.completed){
+       if (status == AnimationStatus.completed && triggerIndexing){
          setState(() {
            switch(rotationSense){
              case rotVersus.Right : {
@@ -291,9 +315,15 @@ class CardSelectionState extends State<CardSelectionScreen>
              default:
                break;
            }
+           ongoingAnimation = false;
   });}}
 
-  void updateAnimation(rotVersus versus, double currentHeight){
+  void updateAnimation(rotVersus versus, double currentHeight, List<CardData>? playerCards){
+
+    if(playerCards!=null){
+      updateCardsData(playerCards);
+    }
+
        switch (versus){
          case rotVersus.Right :{
                for (String key in cardsTransformMap.keys){
@@ -458,6 +488,7 @@ class CardSelectionState extends State<CardSelectionScreen>
     for (AnimationController controller in cardsControllerMap.values){
       controller.forward(from: 0);
     }
+    rotationSense = rotVersus.Down;
   }
 }
 

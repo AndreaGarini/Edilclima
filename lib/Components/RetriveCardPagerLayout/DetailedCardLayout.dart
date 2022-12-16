@@ -17,10 +17,11 @@ class DetailedCardLayout extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+
     if(cardData!=null){
       return SizedBox(
-          width: screenWidth * 0.8,
-          height: screenHeight * 0.6,
+        width: screenWidth * 0.8,
+        height: screenHeight * 0.6,
         child: Card(shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0)),
             elevation: 10,
@@ -33,16 +34,18 @@ class DetailedCardLayout extends StatelessWidget{
                 const Expanded(flex: 3, child: Icon(Icons.access_alarm)),
                 Expanded(flex: 1, child: Center(child: Text("cost: ${cardData!.money}", style: const TextStyle(color: Colors.black),))),
                 Expanded(flex: 1, child: Row(mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(flex: 1, child: Center(child: Text("smog: ${cardData!.smog}", style: const TextStyle(color: Colors.black),))),
-                  Expanded(flex: 1, child: Center(child: Text("energy: ${cardData!.energy}", style: const TextStyle(color: Colors.black),))),
-                  Expanded(flex: 1, child: Center(child: Text("comfort: ${cardData!.comfort}", style: const TextStyle(color: Colors.black),))),
-                ],)),
-                Expanded(flex: 3, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center, children: [
+                  mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
                     const Spacer(),
-                    Expanded(flex: 2, child: Text(bodyText, style: const TextStyle(color: Colors.black))),
+                    Expanded(flex: 5, child: Center(child: Text("smog: ${cardData!.smog}", style: const TextStyle(color: Colors.black),))),
+                    Expanded(flex: 5, child: Center(child: Text("energy: ${cardData!.energy}", style: const TextStyle(color: Colors.black),))),
+                    Expanded(flex: 5, child: Center(child: Text("comfort: ${cardData!.comfort}", style: const TextStyle(color: Colors.black),))),
+                    const Spacer()
+                  ],)),
+                Expanded(flex: 3, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center, children: [
+                    const Spacer(),
+                    Expanded(flex: 6, child: Text(bodyText, style: const TextStyle(color: Colors.black))),
                     const Spacer()
                   ],)),
                 const Spacer()
@@ -55,13 +58,9 @@ class DetailedCardLayout extends StatelessWidget{
       return SizedBox( width: screenWidth * 0.8,
           height: screenHeight * 0.6,
           child: Card(shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0)),
-          elevation: 10,
-          child: const Center(child: Text("no card", style: TextStyle(color: Colors.black)))));
+              borderRadius: BorderRadius.circular(15.0)),
+              elevation: 10,
+              child: const Center(child: Text("no card", style: TextStyle(color: Colors.black)))));
     }
   }
-
-
-
-
 }
