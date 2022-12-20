@@ -3,6 +3,8 @@ import 'package:edilclima_app/Components/gameBoardScreen/GameBoardInfoCircle.dar
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../Components/gameBoardScreen/GameBoard.dart';
+
 class GameBoardScreen extends StatefulWidget{
   @override
   State<StatefulWidget> createState() => GameBoardScreenState();
@@ -14,12 +16,11 @@ class GameBoardScreenState extends State<GameBoardScreen> {
   Widget build(BuildContext context) {
 
     return Material(child:
-      Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center, children: [
-        const Spacer(),
-        GameBoardInfoCircle(),
-          const Spacer()
-        ],)
+      Stack(alignment: Alignment.center,
+      children: [
+        GameBoard(),
+        //GameBoardInfoCircle(),
+      ],)
     );
   }
 }

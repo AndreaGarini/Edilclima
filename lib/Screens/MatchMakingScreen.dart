@@ -35,6 +35,7 @@ class MatchMakingState extends State<MatchMakingScreen> {
         else {
           return  Expanded(flex: 1,
               child: SizedButton(
+                //todo: se premi due volte questo button fai next lvel due volte lato gm e non trova la zone
                   currentWidth * 0.4, "Prepare match", () {
                 gameModel.prepareMatch();
               }));

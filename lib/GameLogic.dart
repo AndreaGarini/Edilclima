@@ -119,7 +119,7 @@ class GameLogic {
     var teams = ["team1", "team2", "team3", "team4"];
 
     for (final player in snapshot.children){
-      resultingMap.putIfAbsent(player.key!, () => {"team" : teams[counter%4], "ownedCardDatas" : ""});
+      resultingMap.putIfAbsent(player.key!, () => {"team" : teams[counter%4], "ownedCards" : ""});
       counter++;
     }
 
@@ -212,7 +212,7 @@ class GameLogic {
       int targetReachedPoints = 200;
       int movesNegPoints = 5;
 
-      //todo: qui potresti ottenere dei null check (sulle pllayedCardDatas ma anche sulla zone), per cui se serve rendi le variabili nullable
+      //todo: qui potresti ottenere dei null check (sulle playedCardDatas ma anche sulla zone), per cui se serve rendi le variabili nullable
 
       int budget = zoneMap[level]!.budget;
       for (final value in map.values) {

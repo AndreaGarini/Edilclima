@@ -140,7 +140,7 @@ class CardSelectionState extends State<CardSelectionScreen>
       }
 
       if(gameModel.playerTimerCountdown == null && rotationSense== rotVersus.Up){
-        animateToStart();
+        animateToStart(gameModel.playerCards);
       }
 
       return Column(mainAxisSize: MainAxisSize.max,
@@ -257,6 +257,7 @@ class CardSelectionState extends State<CardSelectionScreen>
   void updateCardsData(List<CardData> playerCards){
     String cardsDownKey = cardsAngleMap.entries.where((element) => element.value.toInt() == 180).single.key;
     String lastCardRight = cardsAngleMap.entries.where((element) => element.value.toInt() == -60).single.key;
+    String lastCardUp = cardsAngleMap.entries.where((element) => element.value.toInt() == 0).single.key;
     String lastCardLeft = cardsAngleMap.entries.where((element) => element.value.toInt() == 60).single.key;
     switch(rotationSense){
       case rotVersus.Right: {
@@ -466,7 +467,7 @@ class CardSelectionState extends State<CardSelectionScreen>
        }
   }
 
-  void animateToStart(){
+  void animateToStart(List<CardData>? playerCards){
     //se il timer del player finisce con la card up la faccio tornare in down, ma anche se il player gioca
     for (String key in cardsAngleMap.keys){
       Matrix4 oldMatrix = cardsTransformMap[key]!;
@@ -489,6 +490,9 @@ class CardSelectionState extends State<CardSelectionScreen>
       controller.forward(from: 0);
     }
     rotationSense = rotVersus.Down;
+    if(playerCards!=null){
+      firstCardsDataBinding(playerCards);
+    }
   }
 }
 

@@ -27,7 +27,7 @@ class GameModel extends ChangeNotifier{
   bool ongoingLevel = false;
   int? levelTimerCountdown;
 
-  Map <String, Map<String, String>?> playedCardsPerTeam = {};
+  Map <String, Map<String, String>?> playedCardsPerTeam = {"team1" : {}, "team2" : {}, "team3" : {}, "team4" : {}};
   Map<String, TeamInfo?> teamStats = {};
   Map<String, String> ableToPlayPerTeam = {"team1" : "", "team2" : "", "team3" : "", "team4" : "" };
 
@@ -137,18 +137,23 @@ class GameModel extends ChangeNotifier{
   addPlayedCardsListener() {
     Map<String, Map<String, String>?> avatarMap = {};
 
+    //todo: controlla che giocando una carta o pendendola il numero di oves salga di uno
     for (final team in ["team1", "team2", "team3", "team4"]){
       db.child("matches").child("test").child("teams").child(team).child("playedCards").onValue.listen((event) {
-        Map<String, String> map = {};
-        for (final playedCard in event.snapshot.children){
-          if (!(playedCard.value.toString() == "no Card")) map.putIfAbsent(playedCard.key.toString(), () => playedCard.value.toString());
+        if(event.snapshot.children.length - 1 != playedCardsPerTeam[team]!.length){
+          //questo if serve per fare in modo che i dati cambino solo se una carta è stata presa o posizionata,
+          //e non solo se il listener è stato triggerato
+          Map<String, String> map = {};
+          for (final playedCard in event.snapshot.children){
+            if (!(playedCard.value.toString() == "no Card")) map.putIfAbsent(playedCard.key.toString(), () => playedCard.value.toString());
+          }
+          newStatsPerTeam(team, map);
+          avatarMap = playedCardsPerTeam;
+          avatarMap.remove(team);
+          avatarMap.putIfAbsent(team, () => map);
+          playedCardsPerTeam = avatarMap;
+          notifyListeners();
         }
-        newStatsPerTeam(team, map);
-        avatarMap = playedCardsPerTeam;
-        avatarMap.remove(team);
-        avatarMap.putIfAbsent(team, () => map);
-        playedCardsPerTeam = avatarMap;
-        notifyListeners();
       });
     }
   }
@@ -156,10 +161,11 @@ class GameModel extends ChangeNotifier{
   void newStatsPerTeam(String team, Map<String, String> map){
     Map<String, TeamInfo?> avatarMap = teamStats;
     int moves = (avatarMap[team]!=null && avatarMap[team]!.nullCheck()) ? avatarMap[team]!.moves! : 0;
-    int lv = (playerLevelCounter as int == 0) ? gameLogic.masterLevelCounter : playerLevelCounter as int;
+    int lv = (playerLevelCounter == 0) ? gameLogic.masterLevelCounter : playerLevelCounter;
     avatarMap.remove(team);
     avatarMap.putIfAbsent(team, () => gameLogic.evaluatePoints(lv, map, moves +1));
     teamStats = avatarMap;
+    notifyListeners();
   }
 
   void addTeamTimeOutListener(){
