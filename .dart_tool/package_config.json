@@ -3,7 +3,7 @@
   "packages": [
     {
       "name": "_flutterfire_internals",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/_flutterfire_internals-1.0.10",
+      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/_flutterfire_internals-1.0.12",
       "packageUri": "lib/",
       "languageVersion": "2.16"
     },
@@ -32,18 +32,6 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "cloud_firestore_platform_interface",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore_platform_interface-5.9.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.16"
-    },
-    {
-      "name": "cloud_firestore_web",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore_web-3.1.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.16"
-    },
-    {
       "name": "collection",
       "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/collection-1.16.0",
       "packageUri": "lib/",
@@ -63,7 +51,7 @@
     },
     {
       "name": "firebase_core",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core-2.4.0",
+      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core-2.4.1",
       "packageUri": "lib/",
       "languageVersion": "2.16"
     },
@@ -75,7 +63,7 @@
     },
     {
       "name": "firebase_core_web",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core_web-2.0.2",
+      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core_web-2.1.0",
       "packageUri": "lib/",
       "languageVersion": "2.16"
     },
@@ -87,13 +75,13 @@
     },
     {
       "name": "firebase_database_platform_interface",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_database_platform_interface-0.2.2+15",
+      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_database_platform_interface-0.2.2+17",
       "packageUri": "lib/",
       "languageVersion": "2.16"
     },
     {
       "name": "firebase_database_web",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_database_web-0.2.1+17",
+      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_database_web-0.2.1+19",
       "packageUri": "lib/",
       "languageVersion": "2.16"
     },
@@ -254,7 +242,7 @@
       "languageVersion": "2.18"
     }
   ],
-  "generated": "2022-12-14T16:18:32.885507Z",
+  "generated": "2022-12-30T01:11:48.439865Z",
   "generator": "pub",
   "generatorVersion": "2.18.5"
 }

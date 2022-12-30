@@ -5,11 +5,17 @@ import 'package:flutter/material.dart';
 
 import 'GameBoardChartBar.dart';
 
-class GameBoardCard extends StatelessWidget{
+class GameBoardCard extends StatefulWidget{
 
   String team;
   double usableHeight;
   GameBoardCard(this.team, this.usableHeight);
+
+  @override
+  State<StatefulWidget> createState() => GameBoardCardState();
+}
+
+class GameBoardCardState extends State<GameBoardCard> {
 
   @override
   Widget build(BuildContext context) {
@@ -19,29 +25,19 @@ class GameBoardCard extends StatelessWidget{
         child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Spacer(),
-            Expanded(flex : 4, child: Row(
-              mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            Expanded(child: Center(child: Text(widget.team),)),
+            Expanded(flex : 4, child: Stack(alignment: Alignment.center,
               children: [
-                Expanded(flex: 2, child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
-                    Expanded(child: Center(child: Text("100%", style: TextStyle(color: Colors.black)))),
-                    Spacer(flex: 5),
-                    Expanded(child: Center(child: Text("0%", style: TextStyle(color: Colors.black)))),
-                    Spacer(flex: 2)
-                  ],),),
-                const Expanded(child: Center(child: VerticalDivider(color: Colors.black, indent: 0, endIndent: 0, thickness: 5))),
-                const Spacer(),
-                Expanded(flex: 2, child: GameBoardChartBar(team, "smog", usableHeight * 0.67)),
-                Expanded(flex: 2, child: GameBoardChartBar(team, "energy", usableHeight * 0.67)),
-                Expanded(flex: 2, child: GameBoardChartBar(team, "comfort", usableHeight * 0.67)),
-                const Spacer()
-              ],
-            )),
+              Container(color: Colors.transparent, height: widget.usableHeight * 0.57, width: widget.usableHeight * 0.57,
+                        child: GameBoardChartBar("smog", widget.team, widget.usableHeight),),
+                Container(color: Colors.transparent, height: widget.usableHeight * 0.45, width: widget.usableHeight * 0.47,
+                  child: GameBoardChartBar("energy", widget.team, widget.usableHeight),),
+                Container(color: Colors.transparent, height: widget.usableHeight * 0.33, width: widget.usableHeight * 0.37,
+                  child: GameBoardChartBar("comfort", widget.team, widget.usableHeight),)
+            ],)),
             //qui la zona per le carte giocate
-            const Expanded(child: Text("ckjh j"))
+            const Expanded(flex: 2, child: Text("ckjhj"))
           ],));
   }
+
 }

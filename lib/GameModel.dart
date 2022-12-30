@@ -21,6 +21,8 @@ class GameModel extends ChangeNotifier{
   int count = 1; //todo: variabile per dare un nome in test ai players, da sostituire con i vari uid
 
   DatabaseReference db = FirebaseDatabase.instance.ref();
+  int teamsNum = 0;
+  List<String> teamsNames = [];
 
   bool startMatch = false;
   String masterLevelStatus = "preparing";
@@ -68,6 +70,31 @@ class GameModel extends ChangeNotifier{
 
   void prepareMatch() async{
     var dbPoint = db.child("matches").child("test").child("players");
+
+    await dbPoint.get().then((value) {
+      switch(value.children.length){
+        case 1 : {
+          teamsNum = 1;
+          teamsNames = ["team1"];
+        }
+        break;
+        case 2 : {
+          teamsNum = 2;
+          teamsNames = ["team1", "team2"];
+        }
+        break;
+        case 3 : {
+          teamsNum = 3;
+          teamsNames = ["team1", "team2", "team3"];
+        }
+        break;
+        default:  {
+          teamsNum = 4;
+          teamsNames = ["team1", "team2", "team3", "team4"];
+        }
+        break;
+      }
+    });
 
     await dbPoint.get().then((value) =>
         db.child("matches").child("test").child("players").set(
@@ -137,7 +164,7 @@ class GameModel extends ChangeNotifier{
   addPlayedCardsListener() {
     Map<String, Map<String, String>?> avatarMap = {};
 
-    //todo: controlla che giocando una carta o pendendola il numero di oves salga di uno
+    //todo: controlla che giocando una carta o pendendola il numero di moves salga di uno
     for (final team in ["team1", "team2", "team3", "team4"]){
       db.child("matches").child("test").child("teams").child(team).child("playedCards").onValue.listen((event) {
         if(event.snapshot.children.length - 1 != playedCardsPerTeam[team]!.length){

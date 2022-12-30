@@ -1,98 +1,100 @@
 
-import 'dart:async';
-
-import 'package:edilclima_app/DataClasses/Zone.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../DataClasses/TeamInfo.dart';
 import '../../GameModel.dart';
-import '../../Screens/WaitingScreen.dart';
 
 class GameBoardChartBar extends StatefulWidget{
 
   String barType;
   String team;
   double usableHeight;
-  GameBoardChartBar(this.team, this.barType, this.usableHeight);
+
+  GameBoardChartBar(this.barType, this.team, this.usableHeight);
 
   @override
   State<StatefulWidget> createState() => GameBoardChartBarState();
 
 }
 
+class GameBoardChartBarState extends State<GameBoardChartBar>
+with TickerProviderStateMixin{
 
-class GameBoardChartBarState extends State<GameBoardChartBar> {
-
+  late AnimationController indicatorController;
+  Color barColorStart = Colors.white;
+  Color barColorEnd = Colors.white;
+  int playedCardsNum = 0;
   double endChartBarRatio = 0;
   double startChartBarRatio = 0;
 
-  Color barColor = Colors.white;
+  void initState() {
+    super.initState();
+    indicatorController = AnimationController(vsync: this, duration: const Duration(seconds: 3));
+  }
 
-  bool buildEnded = false;
-  int playedCardsNum = 0;
+  @override
+  void dispose(){
+    super.dispose();
+    indicatorController.dispose();
+  }
 
+  staticChartBar(){
+    return CircularProgressIndicator(value: endChartBarRatio, color: Color.lerp(barColorStart, barColorEnd, endChartBarRatio)
+        ,strokeWidth: widget.usableHeight * 0.05);
+  }
+
+
+  dynamicChartBar(GameModel gameModel, Function animCallback) {
+      calculateNewBarRatio(gameModel);
+
+      if(endChartBarRatio!=startChartBarRatio){
+        return TweenAnimationBuilder<double>(duration: const Duration(seconds: 3),
+            curve: Curves.easeInOut,
+            tween: Tween<double>(
+                begin: startChartBarRatio,
+                end: endChartBarRatio
+            ),
+            onEnd: () {animCallback(gameModel);},
+            builder: (context, value, _) {
+              var colorAnim = ColorTween(begin: barColorStart, end: barColorEnd).animate(indicatorController);
+              indicatorController.value = value;
+              return CircularProgressIndicator(value: value, valueColor: colorAnim,
+                strokeWidth: widget.usableHeight * 0.05,);
+            });
+      }
+      else{
+        return staticChartBar();
+      }
+  }
+
+  void animCallback(GameModel gameModel){
+    if(startChartBarRatio != endChartBarRatio){
+      setState(() {
+        startChartBarRatio = endChartBarRatio;
+        playedCardsNum = gameModel.playedCardsPerTeam[widget.team]!.length;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
 
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
+      //todo: dai alle barre del grafico dei colori che facciano capire cosa sono (stessi colori dei valori delle carte)
 
-      //todo: finita l'animazione si azzera il value, se giochi una carta non cambia il valore del container,
-      //potresti usare la transform sul container anzichè l'animated builder
-      dynamicChartBar(){
-        print("build ended: ${buildEnded}");
-        print("second condition : ${playedCardsNum != gameModel.playedCardsPerTeam[widget.team]?.length}");
-        if (buildEnded && playedCardsNum != gameModel.playedCardsPerTeam[widget.team]?.length){
-          print("updata data called");
-          print("playedCardsNum : ${playedCardsNum}");
-          print("played card in gm . ${gameModel.playedCardsPerTeam[widget.team]?.length}");
-          calculateNewBarRatio(gameModel);
-          return TweenAnimationBuilder<double>(duration: const Duration(seconds: 20),
-              curve: Curves.easeInOut,
-              tween: Tween<double>(
-                  begin: startChartBarRatio,
-                  end: endChartBarRatio
-              ),
-              onEnd: () {
-            startChartBarRatio = endChartBarRatio;
-            setState(() {
-              playedCardsNum = gameModel.playedCardsPerTeam[widget.team]!.length;
-            });
-            },
-              builder: (context, value, _) {
-                return Container(height: value * widget.usableHeight,
-                    decoration: BoxDecoration(color: barColor, borderRadius: const BorderRadius.all(Radius.circular(20))));
-              });
-        }
-        else {
-          return Container(height: 0);
-        }
-      }
-
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
-        notifyBuildEnded(gameModel);
-      });
-
-      //todo: trasforma il colore delle barre in un gradiente progressivo in base al value
-      return Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center, children: [
-          const Spacer(),
-          Expanded(flex: 2, child: Column(mainAxisSize: MainAxisSize.max,  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.center, children: [
-                                    dynamicChartBar()
-                                    ])),
-          const Spacer()
-        ]);
+      return (playedCardsNum != gameModel.playedCardsPerTeam[widget.team]?.length) ?
+             dynamicChartBar(gameModel, animCallback) : staticChartBar();
     });
   }
 
   void calculateNewBarRatio(GameModel gameModel){
           switch (widget.barType){
             case "smog": {
-              barColor = Colors.red;
+              barColorStart = Colors.red;
+              barColorEnd = Colors.redAccent;
               if(gameModel.teamStats[widget.team]?.smog == null){
                   endChartBarRatio = 0;
               }
@@ -102,7 +104,8 @@ class GameBoardChartBarState extends State<GameBoardChartBar> {
             }
             break;
             case "energy": {
-              barColor = Colors.blue;
+              barColorStart = Colors.cyan;
+              barColorEnd = Colors.cyanAccent;
               if(gameModel.teamStats[widget.team]?.energy == null){
                   endChartBarRatio = 0;
               }
@@ -112,27 +115,25 @@ class GameBoardChartBarState extends State<GameBoardChartBar> {
             }
             break;
             case "comfort": {
-              barColor = Colors.green;
+              barColorStart = Colors.green;
+              barColorEnd = Colors.greenAccent;
               if(gameModel.teamStats[widget.team]?.comfort == null){
                   endChartBarRatio = 0;
               }
               else{
-                  endChartBarRatio = widget.usableHeight * generateTeamInfoMap(gameModel.teamStats[widget.team]!, gameModel);
+                  endChartBarRatio = generateTeamInfoMap(gameModel.teamStats[widget.team]!, gameModel);
               }
             }
             break;
             default: {
-              barColor = Colors.black;
+              barColorEnd = Colors.black;
+              barColorStart = Colors.black;
                 endChartBarRatio = 0;
             }
             break;
           }
-  }
 
-  Future<void> notifyBuildEnded(GameModel gameModel) async{
-    return Future<void>.delayed(const Duration(milliseconds: 100), () {setState(() {
-      buildEnded = true;
-    });});
+          print("calculate new bar ratio value: ${endChartBarRatio}");
   }
 
   double generateTeamInfoMap(TeamInfo teamInfo, GameModel gameModel){
@@ -163,7 +164,10 @@ class GameBoardChartBarState extends State<GameBoardChartBar> {
       break;
 
     }
-    return ratio;
+
+    if(ratio > 1) return 1;
+    else if(ratio <= 0) return 0.02;
+    else return ratio;
   }
 
 
