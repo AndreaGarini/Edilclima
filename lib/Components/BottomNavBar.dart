@@ -1,6 +1,8 @@
 
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttericon/elusive_icons.dart';
 import 'package:go_router/go_router.dart';
 
 class BottomNavBar extends StatefulWidget{
@@ -19,16 +21,21 @@ class BottomNavBarState extends  State<BottomNavBar>{
   BottomNavBarState(this.parentContext);
 
   var navItems = [
-    BottomNavBarItem(icon: Icon(Icons.home), label: "Gioca carta", route: "/cardSelectionScreen"),
-    BottomNavBarItem(icon: Icon(Icons.add_circle_outline), label: "Prendi carta", route: "/retriveCardScreen"),
-    BottomNavBarItem(icon: Icon(Icons.people), label: "Squadre", route: "/otherTeamsScreen"),
+    BottomNavBarItem(icon: const Icon(Elusive.up_hand), label: "Gioca carta", route: "/cardSelectionScreen"),
+    BottomNavBarItem(icon: const Icon(Elusive.down_hand), label: "Prendi carta", route: "/retriveCardScreen"),
+    BottomNavBarItem(icon: const Icon(Icons.people), label: "Squadre", route: "/otherTeamsScreen"),
   ];
 
 
   @override
   Widget build(BuildContext context) {
 
-    return BottomNavigationBar(items: navItems,currentIndex: calculateSelectedIndex(context), onTap: (index) => onTapCallback(index));
+    return BottomNavigationBar(items: navItems,
+        currentIndex: calculateSelectedIndex(context),
+        onTap: (index) => onTapCallback(index),
+        backgroundColor: backgroundGreen,
+        unselectedItemColor: darkGreenPalette,
+        selectedItemColor: oceanBluePalette,);
 
   }
 

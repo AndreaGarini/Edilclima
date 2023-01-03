@@ -1,7 +1,9 @@
 
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../GameModel.dart';
@@ -20,13 +22,12 @@ class SplashScreen extends StatelessWidget{
       });
 
       if (gameModel.playerLevelCounter >0 && gameModel.playerLevelStatus != null) {
-        Future.delayed(const Duration(milliseconds: 1000), () {
+        Future.delayed(const Duration(milliseconds: 3000), () {
           context.go("/cardSelectionScreen");
         });
       }
 
-      return const Text("splash screen");
-      //todo: crea lo splash screen e usalo per chiamare player ready to play
+      return Material(child: Lottie.asset('assets/animations/SplashScreenHand.json'));
     });
   }
 

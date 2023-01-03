@@ -1,4 +1,6 @@
 
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
+import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:edilclima_app/DataClasses/kotlinWhen.dart';
 import 'package:edilclima_app/GameModel.dart';
 import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
@@ -63,9 +65,12 @@ class PageLayoutState extends State<PageLayout>{
         onTap: gameModel.playerTimer!=null ? () {onTap(gameModel);} : (){},
         child:  Card(shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0)),
+            color: backgroundGreen,
+            shadowColor: darkGreyPalette,
             elevation: 10,
             child: Center(child: widget.crd?.code!=null ?
-            const Icon(Icons.access_alarm) : const Text("click to play card")))
+            const Icon(Icons.access_alarm) :
+            StylizedText(darkGreenPalette, "click to play card", null, FontWeight.bold)))
     );
   }
 
@@ -79,7 +84,7 @@ class PageLayoutState extends State<PageLayout>{
           Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(flex: 1, child: Center(child: Text(widget.crd?.code ?? "no card", style: const TextStyle(color: Colors.black)))),
+              Expanded(flex: 1, child: Center(child: StylizedText(darkGreenPalette, widget.crd?.code ?? "no card", null, FontWeight.bold))),
               Expanded(flex: 4, child: SizedBox(width: screenWidth * 0.45 * 1.3, child: clickableCard(gameModel))),
               const Spacer(flex: 2)
             ],)),

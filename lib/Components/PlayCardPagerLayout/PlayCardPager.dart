@@ -2,6 +2,7 @@
 import 'package:edilclima_app/Components/MainScreenContent.dart';
 import 'package:edilclima_app/Components/PlayCardPagerLayout/PageLayout.dart';
 import 'package:edilclima_app/Components/PlayCardPagerLayout/TabLayout.dart';
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -48,6 +49,9 @@ class PlayCardPagerState extends State<PlayCardPager>
        mainAxisSize: MainAxisSize.max, children: [
          Expanded(flex: 1, child:
                             TabBar(tabs: tabsChildren,
+                                   indicatorColor: oceanBluePalette,
+                                   labelColor: oceanBluePalette,
+                                   unselectedLabelColor: darkGreenPalette,
                                    controller: tabController,isScrollable: true,
                                    padding: EdgeInsets.zero,
                                    indicatorPadding: EdgeInsets.zero,

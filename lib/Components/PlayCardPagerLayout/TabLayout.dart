@@ -1,4 +1,6 @@
 
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
+import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +16,7 @@ class TabLayout extends StatelessWidget{
     return SizedBox(
       width: screenWidth/4,
       height: screenHeight,
-      child: Center(child: Text(text, style: const TextStyle(color: Colors.black)))
+      child: Center(child: Text(text))
     );
   }
 

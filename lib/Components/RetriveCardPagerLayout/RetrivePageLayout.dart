@@ -38,7 +38,7 @@ class RetriveCardLayoutState extends State<RetrivePageLayout>{
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         DetailedCardLayout(cardData),
-        SizedButton(screenWidth * 0.3, "Retrive card",ableToRetrive ? (){
+        SizedButton(screenWidth * 0.3, "Retrive card", ableToRetrive ? (){
           gameModel.retriveCardInPos(widget.pos);
           buttonCallback(gameModel);} : null)
       ],);

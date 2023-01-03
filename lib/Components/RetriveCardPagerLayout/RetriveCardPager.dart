@@ -2,6 +2,7 @@
 import 'package:edilclima_app/Components/PlayCardPagerLayout/TabLayout.dart';
 import 'package:edilclima_app/Components/RetriveCardPagerLayout/DetailedCardLayout.dart';
 import 'package:edilclima_app/Components/RetriveCardPagerLayout/RetrivePageLayout.dart';
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -52,6 +53,9 @@ class RetriveCardPagerState extends State<RetriveCardPager>
           TabBar(tabs: tabsChildren,
             controller: tabController,
             isScrollable: true,
+            indicatorColor: oceanBluePalette,
+            labelColor: oceanBluePalette,
+            unselectedLabelColor: darkGreenPalette,
             padding: EdgeInsets.zero,
             indicatorPadding: EdgeInsets.zero,
             labelPadding: EdgeInsets.zero,),),

@@ -98,6 +98,7 @@ class MainApp extends StatelessWidget {
       title: 'Edilclima',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: 'Roboto'
       ),
       routerConfig: router,
     );

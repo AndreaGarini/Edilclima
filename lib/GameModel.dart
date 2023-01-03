@@ -273,10 +273,12 @@ class GameModel extends ChangeNotifier{
         //questo if controlla che il value del level sia cambiato effettivamente (e non che l'ondatachange sia stato chiamato e basta)
         //e che lo stato sia preparing
 
-        if(playerLevelCounter != event.snapshot.child("count").value as int &&
-            playerLevelStatus != event.snapshot.child("status").value as String){
-
+        if(playerLevelCounter != event.snapshot.child("count").value as int){
           playerLevelCounter = event.snapshot.child("count").value as int;
+        }
+
+        if(playerLevelStatus != event.snapshot.child("status").value as String){
+
           playerLevelStatus = event.snapshot.child("status").value as String;
 
           switch(event.snapshot.child("status").value.toString()){
@@ -343,6 +345,11 @@ class GameModel extends ChangeNotifier{
     String team = value.value.toString();
     db.child("matches").child("test").child("teams").child(team).child("ableToPlay").onValue.listen((event) {
 
+      print("value of listener : ${event.snapshot.value}");
+      print("player level counter for listener: ${playerLevelCounter}");
+      print("player level status for listener ${playerLevelStatus}");
+      print("player timer for listener : ${playerTimer}");
+
       if (event.snapshot.value.toString()=="1" && playerLevelCounter != 0
           && playerLevelStatus == "play" && playerTimer==null){
         playerTimerCountdown = 62;
@@ -354,6 +361,7 @@ class GameModel extends ChangeNotifier{
   void createPlayerTimer(Timer timer){
     playerTimer = timer;
   }
+
   void playerTimerOnTick(){
     if (playerTimerCountdown!=null){
       //se non è ancora finito il tempo di livello eseguo

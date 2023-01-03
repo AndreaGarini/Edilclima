@@ -1,7 +1,11 @@
 
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
+import 'package:edilclima_app/Components/generalFeatures/SizedButton.dart';
+import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 
 class WaitingScreen extends StatefulWidget {
 
@@ -30,32 +34,21 @@ class WaitingScreenState extends State<WaitingScreen> {
       Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
-
         children: <Widget>[
-          Expanded(flex : 4, child: Row( crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min,
-              children: const [
-                Spacer(flex: 1),
-                Expanded(flex : 2, child: FittedBox(fit: BoxFit.fill, child: Icon(Icons.access_alarm_rounded, color: Colors.orange))),
-                Spacer(flex: 1)
-              ]),),
-          Expanded(flex : 1, child: Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min,
-              children : [
-                Spacer(),
-                Expanded(flex: 1, child: FittedBox(fit: BoxFit.fill, child: ElevatedButton(onPressed: () {
-                  context.go("/matchMakingScreen");
-                }, child: Text("Create new match")))),
-                Spacer()
-              ]),),
-          Spacer(),
-          Expanded(flex : 1, child: Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min,
-              children : [
-                Spacer(),
-                Expanded(flex: 1, child: FittedBox(fit: BoxFit.fill, child: ElevatedButton(onPressed: () {
-                  context.go("/cameraScreen");
-                }, child: Text("join match")))),
-                Spacer()
-              ]),),
-          Spacer(),
+          const Spacer(),
+          Expanded(flex: 2, child: Center(child: StylizedText(oceanBluePalette, "Edilclima", screenHeight * 0.1, FontWeight.bold))),
+          const Spacer(),
+          Expanded(flex : 6, child: Lottie.asset('assets/animations/WaitingScreenHome.json')),
+          Expanded(flex: 4, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Spacer(),
+            SizedButton(screenWidth * 0.4, "Create new match", () {context.go("/matchMakingScreen");}),
+            const Spacer(),
+            SizedButton(screenWidth * 0.4, "Join match", () {context.go("/cameraScreen");}),
+            const Spacer()
+          ])),
+          const Spacer(),
         ],
       ));
   }

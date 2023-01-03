@@ -40,14 +40,14 @@ class GameBoardInfoCircleState extends State<GameBoardInfoCircle> {
         if(gameModel.masterLevelStatus=="preparing"){
           String text = "prepare level ${gameModel.gameLogic.masterLevelCounter}";
           return SizedButton(
-              screenWidth * 0.3,
+              screenHeight * 0.2,
               text,
                   () {gameModel.prepareLevel(gameModel.gameLogic.masterLevelCounter);});
         }
         else{
           String text = "start level ${gameModel.gameLogic.masterLevelCounter}";
           return SizedButton(
-              screenWidth * 0.3,
+              screenHeight * 0.2,
               text,
                   () {gameModel.startLevel();});
         }
@@ -60,7 +60,7 @@ class GameBoardInfoCircleState extends State<GameBoardInfoCircle> {
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 5,
+                spreadRadius: 3,
                 blurRadius: 7,
                 offset: const Offset(0, 0), // changes position of shadow
               ),
@@ -73,8 +73,15 @@ class GameBoardInfoCircleState extends State<GameBoardInfoCircle> {
               CircularProgressIndicator(value: gameModel.levelTimerCountdown==null ? 0.0 : (gameModel.levelTimerCountdown!/420),
                 color: gameModel.levelTimerCountdown==null ? Colors.white :
                 Color.lerp(Colors.teal, Colors.tealAccent, (gameModel.levelTimerCountdown!/420)),
-              strokeWidth: widget.usableHeight * 0.01,)),
-          gameModel.ongoingLevel ? dynamicButton() : dynamicTimer(),
+              strokeWidth: widget.usableHeight * 0.015,)),
+          Container(height: widget.usableHeight * 0.18, width: widget.usableHeight * 0.18,
+              color: Colors.transparent,
+              child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center, children: [
+                  const Spacer(),
+                  Expanded(flex: 1, child: Center(child: gameModel.ongoingLevel ? dynamicTimer() : dynamicButton())),
+                  const Spacer()
+                ],))
         ]));
     });
   }
@@ -85,9 +92,9 @@ class GameBoardInfoCircleState extends State<GameBoardInfoCircle> {
       var seconds = (levelTimer%60).toInt();
 
       if(seconds <10) {
-        return "${minutes}: 0${seconds}";
+        return "${minutes} : 0${seconds}";
       } else {
-        return "${minutes}: ${seconds}";
+        return "${minutes} : ${seconds}";
       }
     }
     else {

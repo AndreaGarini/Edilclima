@@ -1,12 +1,16 @@
 
 import 'dart:async';
 
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
+import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:edilclima_app/GameModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttericon/modern_pictograms_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../Screens/CardSelectionScreen.dart';
+import '../Screens/WaitingScreen.dart';
 
 bool infoRowDefaultLayout = true;
 
@@ -76,7 +80,7 @@ class infoRowState extends State<infoRow> with
             {
               return Row(
                 mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: const [
                   Spacer(),
                   Expanded(flex: 2, child: Center(child:  Text("Carta non valida",
@@ -89,7 +93,7 @@ class infoRowState extends State<infoRow> with
             {
               return Row(
                 mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: const [
                   Spacer(),
                   Expanded(flex: 2, child: Center(child:  Text("Budget esaurito",
@@ -102,7 +106,7 @@ class infoRowState extends State<infoRow> with
             {
               return Row(
                 mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   const Spacer(),
                   Expanded(flex: 2, child: Center(child:  Text("Ricerche richieste: ${gameModel.push.second()}",
@@ -116,12 +120,15 @@ class infoRowState extends State<infoRow> with
               if (infoRowDefaultLayout) {
                 return Row(mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Expanded(flex: 1, child: Center(child: Text(gameModel.team),)),
-                    Expanded(flex: 1,
-                        child: Center(child: Text(
-                            "B : ${gameModel.teamStats[gameModel.team]?.budget ?? ""}"),)),
+                    Expanded(flex: 1, child: Center(child: StylizedText(darkGreenPalette, gameModel.team, null, FontWeight.bold))),
+                    Expanded(flex: 1, child: Center(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center, children: [
+                        Icon(ModernPictograms.dollar, color: goldPalette),
+                        SizedBox(width: screenWidth * 0.02),
+                        StylizedText(darkGreenPalette, gameModel.teamStats[gameModel.team]?.budget.toString() ?? "", null, FontWeight.bold)
+                      ],))),
                     Expanded(flex: 1, child: Row(
                       mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -137,7 +144,7 @@ class infoRowState extends State<infoRow> with
                 //todo: your turn da animare
                return Row(
                  mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                 crossAxisAlignment: CrossAxisAlignment.center,
+                 crossAxisAlignment: CrossAxisAlignment.end,
                  children: const [
                    Spacer(),
                    Expanded(flex: 2, child: Center(child: Text("your turn"))),
@@ -149,11 +156,11 @@ class infoRowState extends State<infoRow> with
         }
       }
 
-      return Row(mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(child: dynamicContent())
+      return Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Expanded(flex: 7, child: dynamicContent()),
+          Expanded(flex: 1, child: Divider(indent: screenWidth * 0.3, endIndent: screenWidth * 0.3,
+              thickness: 1.5, color: oceanBluePalette))
         ],);
   });
   }
