@@ -1,3 +1,4 @@
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -20,7 +21,9 @@ class CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
 
-    return Material(child:
+    return Material(
+      color: backgroundGreen,
+        child:
     Consumer<GameModel>(builder: (context, gameModel, child)
     {
       WidgetsBinding.instance?.addPostFrameCallback((_) {

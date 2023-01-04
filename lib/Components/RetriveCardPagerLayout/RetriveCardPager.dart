@@ -3,6 +3,7 @@ import 'package:edilclima_app/Components/PlayCardPagerLayout/TabLayout.dart';
 import 'package:edilclima_app/Components/RetriveCardPagerLayout/DetailedCardLayout.dart';
 import 'package:edilclima_app/Components/RetriveCardPagerLayout/RetrivePageLayout.dart';
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
+import 'package:edilclima_app/Screens/WaitingScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -46,24 +47,27 @@ class RetriveCardPagerState extends State<RetriveCardPager>
           TabLayout(e)).toList();
 
       return Column(mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Expanded(flex: 1, child:
-          TabBar(tabs: tabsChildren,
-            controller: tabController,
-            isScrollable: true,
-            indicatorColor: oceanBluePalette,
-            labelColor: oceanBluePalette,
-            unselectedLabelColor: darkGreenPalette,
-            padding: EdgeInsets.zero,
-            indicatorPadding: EdgeInsets.zero,
-            labelPadding: EdgeInsets.zero,),),
-          Expanded(flex: 7, child: TabBarView(controller: tabController,
-              children: gameModel.gameLogic.months.map((e) =>
-                  RetrivePageLayout(gameModel.gameLogic.months.indexOf(e)))
-                  .toList()))
-        ],);
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(flex: 1, child:
+              Material(color: darkBluePalette,
+              child:
+              TabBar(tabs: tabsChildren,
+                controller: tabController,
+                isScrollable: true,
+                indicatorColor: midColorPalette,
+                labelColor: midColorPalette,
+                indicatorWeight: screenHeight * 0.008,
+                unselectedLabelColor: lightBluePalette,
+                padding: EdgeInsets.zero,
+                indicatorPadding: EdgeInsets.zero,
+                labelPadding: EdgeInsets.zero))),
+              Expanded(flex: 7, child: TabBarView(controller: tabController,
+                  children: gameModel.gameLogic.months.map((e) =>
+                      RetrivePageLayout(gameModel.gameLogic.months.indexOf(e)))
+                      .toList()))
+            ]);
     });
   }
 }

@@ -1,5 +1,6 @@
 
 import 'package:edilclima_app/Components/MainScreenContent.dart';
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:edilclima_app/Screens/GameBoardScreen.dart';
 import 'package:edilclima_app/Screens/SplashScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -97,7 +98,6 @@ class MainApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Edilclima',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
         fontFamily: 'Roboto'
       ),
       routerConfig: router,

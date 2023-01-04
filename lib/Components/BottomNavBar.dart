@@ -33,10 +33,9 @@ class BottomNavBarState extends  State<BottomNavBar>{
     return BottomNavigationBar(items: navItems,
         currentIndex: calculateSelectedIndex(context),
         onTap: (index) => onTapCallback(index),
-        backgroundColor: backgroundGreen,
-        unselectedItemColor: darkGreenPalette,
-        selectedItemColor: oceanBluePalette,);
-
+        backgroundColor: darkBluePalette,
+        unselectedItemColor: lightBluePalette,
+        selectedItemColor: midColorPalette);
   }
 
   int calculateSelectedIndex(BuildContext context) {

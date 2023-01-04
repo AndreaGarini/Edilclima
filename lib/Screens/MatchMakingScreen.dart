@@ -1,3 +1,4 @@
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:edilclima_app/Components/generalFeatures/SizedButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,9 @@ class MatchMakingState extends State<MatchMakingScreen> {
     final currentHeight = MediaQuery.of(context).size.height;
 
 
-    return Material(child:
+    return Material(
+      color: backgroundGreen,
+        child:
     Consumer<GameModel>(builder: (context, gameModel, child)
     {
       dynamicWidget(bool state) {

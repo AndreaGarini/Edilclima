@@ -1,5 +1,6 @@
 
 
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -27,7 +28,7 @@ class SplashScreen extends StatelessWidget{
         });
       }
 
-      return Material(child: Lottie.asset('assets/animations/SplashScreenHand.json'));
+      return Material(color: backgroundGreen, child: Lottie.asset('assets/animations/SplashScreenHand.json'));
     });
   }
 

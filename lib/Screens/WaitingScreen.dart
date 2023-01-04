@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
+import '../Components/generalFeatures/AnimatedGradient.dart';
+
 class WaitingScreen extends StatefulWidget {
 
   @override
@@ -30,26 +32,20 @@ class WaitingScreenState extends State<WaitingScreen> {
         .size
         .height;
 
-    return Material(child:
+    return Material(color: backgroundGreen, child:
       Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           const Spacer(),
-          Expanded(flex: 2, child: Center(child: StylizedText(oceanBluePalette, "Edilclima", screenHeight * 0.1, FontWeight.bold))),
+          Expanded(flex: 2, child: Center(child: AnimatedGradient("Edilclima", screenHeight * 0.12, 5200, 'Inspiration', true))),
           const Spacer(),
-          Expanded(flex : 6, child: Lottie.asset('assets/animations/WaitingScreenHome.json')),
-          Expanded(flex: 4, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Spacer(),
-            SizedButton(screenWidth * 0.4, "Create new match", () {context.go("/matchMakingScreen");}),
-            const Spacer(),
-            SizedButton(screenWidth * 0.4, "Join match", () {context.go("/cameraScreen");}),
-            const Spacer()
-          ])),
+          Expanded(flex : 7, child: Lottie.asset('assets/animations/WaitingScreenHome.json')),
+          Expanded(flex: 1, child: SizedButton(screenWidth * 0.7, "Create new match", () {context.go("/matchMakingScreen");})),
+          const Spacer(),
+          Expanded(flex: 1, child: SizedButton(screenWidth * 0.7, "Join match", () {context.go("/cameraScreen");})),
           const Spacer(),
         ],
-      ));
+      ),);
   }
 }

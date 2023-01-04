@@ -63,15 +63,37 @@ class PageLayoutState extends State<PageLayout>{
   Widget clickableCard (GameModel gameModel){
     return GestureDetector(
         onTap: gameModel.playerTimer!=null ? () {onTap(gameModel);} : (){},
-        child:  Card(shape: RoundedRectangleBorder(
+        child:  Container(
+        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
+        boxShadow: [ BoxShadow(
+        color: darkGreyPalette.withOpacity(0.5),
+        spreadRadius: 1,
+        blurRadius: 6,
+        offset: const Offset(0, 0), // changes position of shadow
+        )],
+        gradient:  LinearGradient(
+        begin: Alignment.topRight,
+        end: Alignment.bottomLeft,
+        colors: [
+        darkBluePalette,
+        lightBluePalette,
+        backgroundGreen,
+        backgroundGreen,
+        lightOrangePalette,
+        darkOrangePalette,
+        ],
+        stops: const [0,0.1,0.2,0.8,0.9, 1]
+        )),
+        child:
+        Card(shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0)),
             color: backgroundGreen,
             shadowColor: darkGreyPalette,
             elevation: 10,
             child: Center(child: widget.crd?.code!=null ?
             const Icon(Icons.access_alarm) :
-            StylizedText(darkGreenPalette, "click to play card", null, FontWeight.bold)))
-    );
+            StylizedText(darkBluePalette, "click to play card", null, FontWeight.bold)))
+    ));
   }
 
   @override
@@ -84,7 +106,7 @@ class PageLayoutState extends State<PageLayout>{
           Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(flex: 1, child: Center(child: StylizedText(darkGreenPalette, widget.crd?.code ?? "no card", null, FontWeight.bold))),
+              Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, widget.crd?.code ?? "no card", null, FontWeight.bold))),
               Expanded(flex: 4, child: SizedBox(width: screenWidth * 0.45 * 1.3, child: clickableCard(gameModel))),
               const Spacer(flex: 2)
             ],)),

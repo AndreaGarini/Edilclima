@@ -19,9 +19,9 @@ class SizedButton extends StatelessWidget {
      style: ButtonStyle(fixedSize: MaterialStatePropertyAll(Size.fromWidth(width)),
      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
          RoundedRectangleBorder(
-         borderRadius: BorderRadius.circular(18.0))
+         borderRadius: BorderRadius.circular(5))
     ),
-    backgroundColor: onClick!=null ? MaterialStateProperty.all(oceanBluePalette) : MaterialStateProperty.all(backgroundGreen)),
-      child: StylizedText(onClick!=null ? Colors.white : darkGreenPalette, buttonText, textSize, FontWeight.bold));
+    backgroundColor: onClick!=null ? MaterialStateProperty.all(lightBluePalette) : MaterialStateProperty.all(backgroundGreen)),
+      child: StylizedText(onClick!=null ? Colors.white : darkBluePalette, buttonText, textSize, FontWeight.bold));
   }
 }

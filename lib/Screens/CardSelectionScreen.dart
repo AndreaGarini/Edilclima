@@ -2,6 +2,7 @@
 import 'dart:math';
 
 import 'package:edilclima_app/Components/PlayCardPagerLayout/PlayCardPager.dart';
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:edilclima_app/DataClasses/CardData.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -142,8 +143,8 @@ class CardSelectionState extends State<CardSelectionScreen>
       if(gameModel.playerTimerCountdown == null && rotationSense== rotVersus.Up){
         animateToStart(gameModel.playerCards);
       }
-
-      return Column(mainAxisSize: MainAxisSize.max,
+      return Material(color: backgroundGreen,
+      child: Column(mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -236,7 +237,7 @@ class CardSelectionState extends State<CardSelectionScreen>
                   ],
                 )))),
           ]
-      );
+      ));
     });
   }
 

@@ -1,10 +1,13 @@
 
 import 'package:edilclima_app/Components/OtherTeamsScreen/TeamCardLayout.dart';
+import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:edilclima_app/Screens/WaitingScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../Components/generalFeatures/ColorPalette.dart';
+import '../Components/generalFeatures/GradientText.dart';
 import '../GameModel.dart';
 
 class OtherTeamsScreen extends StatefulWidget{
@@ -21,29 +24,34 @@ class OtherTeamsScreenState extends State<OtherTeamsScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<GameModel>(builder: (context, gameModel, child) {
-      return ListView(
+
+      return
+        Material(color: backgroundGreen,
+        child:
+        ListView(
           padding: const EdgeInsets.all(8),
           shrinkWrap: true,
           children: <Widget>[
             SizedBox(width: screenWidth, height: screenHeight * 0.1,
-            child: const Center(child: Text("your team", style: TextStyle(color: Colors.black)))),
-            Divider(color: Colors.black, indent: screenWidth * 0.2, endIndent: screenWidth * 0.2),
-            SizedBox(width: screenWidth, height: screenHeight * 0.1),
+            child: Center(child: Text("Your team", style:
+            TextStyle(color: darkBluePalette,
+                fontSize: screenHeight * 0.05,
+                fontWeight: FontWeight.bold)))),
             SizedBox(width: screenWidth, height: screenHeight * 0.4,
             child: Center(child:
             TeamCardLayout(gameModel.teamStats.entries.where((element) => element.key==gameModel.team).single))),
-            SizedBox(width: screenWidth, height: screenHeight * 0.1),
-            Divider(color: Colors.black, indent: screenWidth * 0.2, endIndent: screenWidth * 0.2),
             SizedBox(width: screenWidth, height: screenHeight * 0.1,
-            child: const Center(child: Text("Other teams"))),
-            SizedBox(width: screenWidth, height: screenHeight * 0.1),
+            child: Center(child: Text("Other teams", style:
+            TextStyle(color: darkBluePalette,
+                fontSize: screenHeight * 0.05,
+                fontWeight: FontWeight.bold)))),
             SizedBox(width: screenWidth, height: screenHeight * 0.4,
             child: TeamCardLayout(gameModel.teamStats.entries.where((element) => element.key!=gameModel.team).toList()[0])),
             SizedBox(width: screenWidth, height: screenHeight * 0.4,
             child: TeamCardLayout(gameModel.teamStats.entries.where((element) => element.key!=gameModel.team).toList()[1])),
             SizedBox(width: screenWidth, height: screenHeight * 0.4,
             child: TeamCardLayout(gameModel.teamStats.entries.where((element) => element.key!=gameModel.team).toList()[2]))
-      ]);
+      ]));
           });
     }
   }

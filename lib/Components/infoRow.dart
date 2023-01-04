@@ -81,11 +81,11 @@ class infoRowState extends State<infoRow> with
               return Row(
                 mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
-                children: const [
-                  Spacer(),
-                  Expanded(flex: 2, child: Center(child:  Text("Carta non valida",
-                      style: TextStyle(color: Colors.red)))),
-                  Spacer()
+                children: [
+                  const Spacer(),
+                  Expanded(flex: 2, child: Card(color: backgroundGreen, child: Center(child:  StylizedText(darkOrangePalette, "Carta non valida",
+                      screenWidth * 0.07, FontWeight.normal)))),
+                  const Spacer()
                 ],
               );
             }
@@ -94,11 +94,11 @@ class infoRowState extends State<infoRow> with
               return Row(
                 mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
-                children: const [
-                  Spacer(),
-                  Expanded(flex: 2, child: Center(child:  Text("Budget esaurito",
-                      style: TextStyle(color: Colors.red)))),
-                  Spacer()
+                children: [
+                  const Spacer(),
+                  Expanded(flex: 2, child: Card(color: backgroundGreen, child: Center(child:  StylizedText(darkOrangePalette, "Budget terminato",
+                      screenWidth * 0.07, FontWeight.normal)))),
+                  const Spacer()
                 ],
               );
             }
@@ -109,8 +109,8 @@ class infoRowState extends State<infoRow> with
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   const Spacer(),
-                  Expanded(flex: 2, child: Center(child:  Text("Ricerche richieste: ${gameModel.push.second()}",
-                      style: const TextStyle(color: Colors.red)))),
+                  Expanded(flex: 2, child: Card(color: backgroundGreen, child: Center(child:  StylizedText(darkOrangePalette, "Ricerche richieste: ${gameModel.push.second()}",
+                      screenWidth * 0.07, FontWeight.normal)))),
                   const Spacer()
                 ],
               );
@@ -119,36 +119,40 @@ class infoRowState extends State<infoRow> with
             {
               if (infoRowDefaultLayout) {
                 return Row(mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Expanded(flex: 1, child: Center(child: StylizedText(darkGreenPalette, gameModel.team, null, FontWeight.bold))),
-                    Expanded(flex: 1, child: Center(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center, children: [
-                        Icon(ModernPictograms.dollar, color: goldPalette),
-                        SizedBox(width: screenWidth * 0.02),
-                        StylizedText(darkGreenPalette, gameModel.teamStats[gameModel.team]?.budget.toString() ?? "", null, FontWeight.bold)
-                      ],))),
-                    Expanded(flex: 1, child: Row(
-                      mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const Spacer(),
-                        Expanded(flex: 2, child: timerIndicator(gameModel)),
-                        const Spacer()
-                      ],
-                    )),
-                  ],);
+                        Expanded(flex: 1, child: Card(color: backgroundGreen,
+                            child: Center(child: StylizedText(darkBluePalette, gameModel.team, screenWidth * 0.07, FontWeight.bold)))),
+                        Expanded(flex: 1, child: Card(color: backgroundGreen,
+                            child: Center(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center, children: [
+                              Icon(ModernPictograms.dollar, color: darkOrangePalette),
+                              SizedBox(width: screenWidth * 0.02),
+                              StylizedText(darkBluePalette, gameModel.teamStats[gameModel.team]?.budget.toString() ?? "", screenWidth * 0.07, FontWeight.bold)
+                            ])))),
+                        Expanded(flex: 1, child: Card(color: backgroundGreen,
+                            child: Center(child: Row(
+                          mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Spacer(),
+                            Expanded(flex: 2, child: timerIndicator(gameModel)),
+                            const Spacer()
+                          ],
+                        )))),
+                      ]);
               }
               else {
                 //todo: your turn da animare
                return Row(
                  mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                  crossAxisAlignment: CrossAxisAlignment.end,
-                 children: const [
-                   Spacer(),
-                   Expanded(flex: 2, child: Center(child: Text("your turn"))),
-                   Spacer()
+                 children: [
+                   const Spacer(),
+                   Expanded(flex: 2, child: Center(child: StylizedText(darkBluePalette, "Your turn",
+                       screenWidth * 0.07, FontWeight.normal))),
+                   const Spacer()
                  ],
                );
               }
@@ -156,12 +160,15 @@ class infoRowState extends State<infoRow> with
         }
       }
 
-      return Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center, children: [
-          Expanded(flex: 7, child: dynamicContent()),
-          Expanded(flex: 1, child: Divider(indent: screenWidth * 0.3, endIndent: screenWidth * 0.3,
-              thickness: 1.5, color: oceanBluePalette))
-        ],);
+      return
+        Material(
+          color: darkBluePalette,
+          child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center, children: [
+              Expanded(flex: 7, child: dynamicContent()),
+              Expanded(flex: 1, child: Divider(indent: 0, endIndent: 0,
+                  thickness: 1.5, color: midColorPalette))
+            ]));
   });
   }
 

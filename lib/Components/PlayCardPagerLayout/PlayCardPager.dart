@@ -3,6 +3,7 @@ import 'package:edilclima_app/Components/MainScreenContent.dart';
 import 'package:edilclima_app/Components/PlayCardPagerLayout/PageLayout.dart';
 import 'package:edilclima_app/Components/PlayCardPagerLayout/TabLayout.dart';
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
+import 'package:edilclima_app/Screens/WaitingScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -48,14 +49,16 @@ class PlayCardPagerState extends State<PlayCardPager>
        return Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
        mainAxisSize: MainAxisSize.max, children: [
          Expanded(flex: 1, child:
-                            TabBar(tabs: tabsChildren,
-                                   indicatorColor: oceanBluePalette,
-                                   labelColor: oceanBluePalette,
-                                   unselectedLabelColor: darkGreenPalette,
-                                   controller: tabController,isScrollable: true,
-                                   padding: EdgeInsets.zero,
-                                   indicatorPadding: EdgeInsets.zero,
-                                   labelPadding: EdgeInsets.zero,),),
+             Material(color: darkBluePalette,
+               child: TabBar(tabs: tabsChildren,
+                 indicatorColor: midColorPalette,
+                 labelColor: midColorPalette,
+                 indicatorWeight: screenHeight * 0.008,
+                 unselectedLabelColor: lightBluePalette,
+                 controller: tabController,isScrollable: true,
+                 padding: EdgeInsets.zero,
+                 indicatorPadding: EdgeInsets.zero,
+                 labelPadding: EdgeInsets.zero,))),
            Expanded(flex: 3, child: TabBarView(controller: tabController,
                                     children: generateBarChildren(gameModel),))
          ],);
