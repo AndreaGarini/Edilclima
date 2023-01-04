@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
 
+import 'Screens/CardInfoScreen.dart';
 import 'Screens/OtherTeamsScreen.dart';
 import 'Screens/RetriveCardScreen.dart';
 import 'firebase_options.dart';
@@ -61,6 +62,11 @@ final router = GoRouter(
         GoRoute(path: "/otherTeamsScreen",
             pageBuilder: (context, state) {
               return NoTransitionPage(child: OtherTeamsScreen());
+            }
+        ),
+        GoRoute(path: "/cardInfoScreen",
+            pageBuilder: (context, state) {
+              return NoTransitionPage(child: CardInfoScreen());
             }
         )
       ]

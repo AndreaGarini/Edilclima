@@ -1,10 +1,10 @@
 
+import 'package:edilclima_app/Components/generalFeatures/GradientText.dart';
 import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/elusive_icons.dart';
 import 'package:fluttericon/modern_pictograms_icons.dart';
-import 'package:lottie/lottie.dart';
 
 import '../../DataClasses/CardData.dart';
 import '../../Screens/WaitingScreen.dart';
@@ -117,12 +117,37 @@ class DetailedCardLayout extends StatelessWidget{
       );
     }
     else{
-      return SizedBox( width: screenWidth * 0.8,
+      return Container(
+          width: screenWidth * 0.8,
           height: screenHeight * 0.6,
-          child: Card(shape: RoundedRectangleBorder(
+          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
+              boxShadow: [ BoxShadow(
+                color: darkGreyPalette.withOpacity(0.5),
+                spreadRadius: 1,
+                blurRadius: 6,
+                offset: const Offset(0, 0), // changes position of shadow
+              )],
+              gradient:  LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    darkBluePalette,
+                    lightBluePalette,
+                    backgroundGreen,
+                    backgroundGreen,
+                    lightOrangePalette,
+                    darkOrangePalette,
+                  ],
+                  stops: const [0,0.1,0.2,0.8,0.9, 1]
+              )),
+          child: Card(
+              color: backgroundGreen,
+              shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0)),
               elevation: 10,
-              child: const Center(child: Text("no card", style: TextStyle(color: Colors.black)))));
+              child: Center(child: GradientText("No card",
+                  [darkBluePalette, lightBluePalette, lightOrangePalette],
+                  screenWidth * 0.2))));
     }
   }
 }

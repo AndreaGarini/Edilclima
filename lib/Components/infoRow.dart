@@ -118,30 +118,28 @@ class infoRowState extends State<infoRow> with
           default:
             {
               if (infoRowDefaultLayout) {
-                return Row(mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Expanded(flex: 1, child: Card(color: backgroundGreen,
-                            child: Center(child: StylizedText(darkBluePalette, gameModel.team, screenWidth * 0.07, FontWeight.bold)))),
-                        Expanded(flex: 1, child: Card(color: backgroundGreen,
-                            child: Center(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center, children: [
-                              Icon(ModernPictograms.dollar, color: darkOrangePalette),
-                              SizedBox(width: screenWidth * 0.02),
-                              StylizedText(darkBluePalette, gameModel.teamStats[gameModel.team]?.budget.toString() ?? "", screenWidth * 0.07, FontWeight.bold)
-                            ])))),
-                        Expanded(flex: 1, child: Card(color: backgroundGreen,
-                            child: Center(child: Row(
-                          mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Spacer(),
-                            Expanded(flex: 2, child: timerIndicator(gameModel)),
-                            const Spacer()
-                          ],
-                        )))),
-                      ]);
+                return Card(color: backgroundGreen,
+                child: Row(mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, gameModel.team, screenWidth * 0.07, FontWeight.bold))),
+                      Expanded(flex: 1, child: Center(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center, children: [
+                            Icon(ModernPictograms.dollar, color: darkOrangePalette),
+                            SizedBox(width: screenWidth * 0.02),
+                            StylizedText(darkBluePalette, gameModel.teamStats[gameModel.team]?.budget.toString() ?? "", screenWidth * 0.07, FontWeight.bold)
+                          ]))),
+                      Expanded(flex: 1, child: Center(child: Row(
+                        mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Spacer(),
+                          Expanded(flex: 2, child: timerIndicator(gameModel)),
+                          const Spacer()
+                        ],
+                      ))),
+                    ]));
               }
               else {
                 //todo: your turn da animare
@@ -163,11 +161,14 @@ class infoRowState extends State<infoRow> with
       return
         Material(
           color: darkBluePalette,
-          child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+          child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center, children: [
-              Expanded(flex: 7, child: dynamicContent()),
-              Expanded(flex: 1, child: Divider(indent: 0, endIndent: 0,
-                  thickness: 1.5, color: midColorPalette))
+              Expanded(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center, children: [
+                  const Spacer(),
+                  Expanded(flex: 12, child: dynamicContent()),
+                  const Spacer()
+                ],)),
             ]));
   });
   }

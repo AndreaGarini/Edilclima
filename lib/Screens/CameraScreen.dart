@@ -22,7 +22,7 @@ class CameraScreenState extends State<CameraScreen> {
   Widget build(BuildContext context) {
 
     return Material(
-      color: backgroundGreen,
+      color: Colors.white,
         child:
     Consumer<GameModel>(builder: (context, gameModel, child)
     {

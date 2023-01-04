@@ -17,7 +17,7 @@ class GameBoardScreenState extends State<GameBoardScreen> {
   Widget build(BuildContext context) {
 
     return Material(
-      color: backgroundGreen,
+      color: Colors.white,
         child:
       Stack(alignment: Alignment.center,
       children: [

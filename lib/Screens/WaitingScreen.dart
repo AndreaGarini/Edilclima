@@ -32,7 +32,7 @@ class WaitingScreenState extends State<WaitingScreen> {
         .size
         .height;
 
-    return Material(color: backgroundGreen, child:
+    return Material(color: Colors.white, child:
       Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,

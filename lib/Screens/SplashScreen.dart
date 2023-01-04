@@ -28,7 +28,7 @@ class SplashScreen extends StatelessWidget{
         });
       }
 
-      return Material(color: backgroundGreen, child: Lottie.asset('assets/animations/SplashScreenHand.json'));
+      return Material(color: Colors.white, child: Lottie.asset('assets/animations/SplashScreenHand.json'));
     });
   }
 

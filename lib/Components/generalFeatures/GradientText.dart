@@ -1,12 +1,13 @@
 
 
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class GradientText extends StatelessWidget{
 
   String text;
-  List<Color> colorList;
+  List<Color> colorList = List.generate(3, (index) => darkBluePalette);
   double fontSize;
   GradientText(this.text, this.colorList, this.fontSize);
 
@@ -16,11 +17,12 @@ class GradientText extends StatelessWidget{
       return LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          stops: const [0.3,0.6],
+          stops: const [0.3,0.6, 0.9],
           colors: colorList).createShader(rect);
     },
       child: Text(text, style: TextStyle(
           fontSize: fontSize,
+          fontFamily: 'Inspiration',
           fontWeight: FontWeight.bold, color: Colors.white)));
   }
 

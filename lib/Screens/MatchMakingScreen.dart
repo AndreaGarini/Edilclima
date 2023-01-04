@@ -23,7 +23,7 @@ class MatchMakingState extends State<MatchMakingScreen> {
 
 
     return Material(
-      color: backgroundGreen,
+      color: Colors.white,
         child:
     Consumer<GameModel>(builder: (context, gameModel, child)
     {

@@ -21,7 +21,7 @@ class RetriveCardScreenState extends State<RetriveCardScreen>{
 
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
-    return Material(color: backgroundGreen,
+    return Material(color: Colors.white,
     child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [

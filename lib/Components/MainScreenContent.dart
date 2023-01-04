@@ -1,4 +1,5 @@
 
+import 'package:edilclima_app/Components/generalFeatures/AnimatedGradient.dart';
 import 'package:edilclima_app/Components/generalFeatures/SizedButton.dart';
 import 'package:edilclima_app/DataClasses/DialogData.dart';
 import 'package:flutter/cupertino.dart';
@@ -58,9 +59,11 @@ class MainScreenContentState extends State<MainScreenContent>{
             gameModel.setDialogData(null);
             Navigator.of(context).pop();
           });
+          return Dialog(child: Center(child:
+            AnimatedGradient(data.title, screenWidth * 0.4, 1500, 'Inspiration', false)));
         }
 
-
+      else {
         return Dialog(child: Column(mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -84,12 +87,13 @@ class MainScreenContentState extends State<MainScreenContent>{
             )),
             const Spacer(),
             data.addButton ? Expanded(flex: 1,
-                                      child: SizedButton(screenWidth * 0.3, data.buttonText!,
-                                      (){ Navigator.of(context).pop();}))
-                            : const Spacer()
+                child: SizedButton(screenWidth * 0.3, data.buttonText!,
+                        (){ Navigator.of(context).pop();}))
+                : const Spacer()
           ],
         ));
-    });
+      }
+  });
   }
 
   Future<void> setDialogAvailable(BuildContext parentContext, DialogData data, GameModel gameModel) async{

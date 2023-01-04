@@ -1,5 +1,6 @@
 
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
+import 'package:edilclima_app/Components/generalFeatures/ShinyContent.dart';
 import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:edilclima_app/DataClasses/kotlinWhen.dart';
 import 'package:edilclima_app/GameModel.dart';
@@ -92,7 +93,9 @@ class PageLayoutState extends State<PageLayout>{
             elevation: 10,
             child: Center(child: widget.crd?.code!=null ?
             const Icon(Icons.access_alarm) :
-            StylizedText(darkBluePalette, "click to play card", null, FontWeight.bold)))
+            ShinyContent(Text("Click to play card",
+                style: TextStyle(fontSize: screenWidth * 0.05, fontWeight: FontWeight.bold, color: Colors.white)),
+                darkBluePalette)))
     ));
   }
 

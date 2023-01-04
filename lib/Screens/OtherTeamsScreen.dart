@@ -26,7 +26,7 @@ class OtherTeamsScreenState extends State<OtherTeamsScreen> {
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
       return
-        Material(color: backgroundGreen,
+        Material(color: Colors.white,
         child:
         ListView(
           padding: const EdgeInsets.all(8),
@@ -38,8 +38,7 @@ class OtherTeamsScreenState extends State<OtherTeamsScreen> {
                 fontSize: screenHeight * 0.05,
                 fontWeight: FontWeight.bold)))),
             SizedBox(width: screenWidth, height: screenHeight * 0.4,
-            child: Center(child:
-            TeamCardLayout(gameModel.teamStats.entries.where((element) => element.key==gameModel.team).single))),
+            child: TeamCardLayout(gameModel.teamStats.entries.where((element) => element.key==gameModel.team).single)),
             SizedBox(width: screenWidth, height: screenHeight * 0.1,
             child: Center(child: Text("Other teams", style:
             TextStyle(color: darkBluePalette,
@@ -47,8 +46,10 @@ class OtherTeamsScreenState extends State<OtherTeamsScreen> {
                 fontWeight: FontWeight.bold)))),
             SizedBox(width: screenWidth, height: screenHeight * 0.4,
             child: TeamCardLayout(gameModel.teamStats.entries.where((element) => element.key!=gameModel.team).toList()[0])),
+            SizedBox(width: screenWidth, height: screenHeight * 0.05),
             SizedBox(width: screenWidth, height: screenHeight * 0.4,
             child: TeamCardLayout(gameModel.teamStats.entries.where((element) => element.key!=gameModel.team).toList()[1])),
+            SizedBox(width: screenWidth, height: screenHeight * 0.05),
             SizedBox(width: screenWidth, height: screenHeight * 0.4,
             child: TeamCardLayout(gameModel.teamStats.entries.where((element) => element.key!=gameModel.team).toList()[2]))
       ]));
