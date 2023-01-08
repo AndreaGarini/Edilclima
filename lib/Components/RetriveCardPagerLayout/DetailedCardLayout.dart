@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/elusive_icons.dart';
 import 'package:fluttericon/modern_pictograms_icons.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../DataClasses/CardData.dart';
 import '../../Screens/WaitingScreen.dart';
@@ -13,7 +14,9 @@ import '../generalFeatures/ColorPalette.dart';
 class DetailedCardLayout extends StatelessWidget{
 
   CardData? cardData;
+  double? height;
   DetailedCardLayout(this.cardData);
+  DetailedCardLayout.fromHeight(this.cardData, this.height);
 
   String bodyText = "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed do eiusmod tempor incidunt ut labore et dolore magna aliqua. "
       "Ut enim ad minim veniam, quis nostrum exercitationem ullamco laboriosam, nisi ut aliquid ex ea "
@@ -23,10 +26,27 @@ class DetailedCardLayout extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
+    late Widget lottieWidget;
+
+    switch (cardData!.type){
+      case cardType.Energy: {
+        lottieWidget = Lottie.asset('assets/animations/solarpanel.json');
+      }
+      break;
+      case cardType.Pollution: {
+        lottieWidget = Lottie.asset('assets/animations/55131-grow-your-forest.json');
+      }
+      break;
+      case cardType.Research: {
+        lottieWidget = Lottie.asset('assets/animations/100337-research-lottie-animation.json');
+      }
+      break;
+    }
+
     if(cardData!=null){
       return Container(
           width: screenWidth * 0.8,
-          height: screenHeight * 0.6,
+          height: height ?? screenHeight * 0.6,
           decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
               boxShadow: [ BoxShadow(
                 color: darkGreyPalette.withOpacity(0.5),
@@ -57,14 +77,15 @@ class DetailedCardLayout extends StatelessWidget{
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, cardData!.code, null, FontWeight.bold))),
+                Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, cardData!.code, screenWidth * 0.07, FontWeight.bold))),
+                const Spacer(),
                 Expanded(flex: 1, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center, children: [
                     Icon(ModernPictograms.dollar, color: darkOrangePalette),
                     SizedBox(width: screenWidth * 0.02),
-                    StylizedText(darkBluePalette, ":  ${cardData!.money}", null, FontWeight.bold)
+                    StylizedText(darkBluePalette, ":  ${cardData!.money}", screenWidth * 0.05, FontWeight.bold)
                   ],)),
-                const Expanded(flex: 3, child: Icon(Icons.alarm)/*Lottie.asset('assets/animations/solarpanel.json')*/),
+                Expanded(flex: 5, child: lottieWidget),
                 Expanded(flex: 1, child: Row(mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -83,24 +104,24 @@ class DetailedCardLayout extends StatelessWidget{
                       ],)),
                     const Spacer()
                   ],)),
-                Expanded(flex: 1, child: Row(mainAxisSize: MainAxisSize.max,
+                Expanded(flex: 2, child: Row(mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Spacer(),
                     Expanded(flex: 5, child: Row(mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center, children: [
-                          StylizedText(darkBluePalette, "Comfort: ", null, FontWeight.normal),
-                          StylizedText(darkBluePalette, "${cardData!.comfort}", null, FontWeight.bold)
+                          StylizedText(darkBluePalette, "Comfort: ", screenWidth * 0.04, FontWeight.normal),
+                          StylizedText(darkBluePalette, "${cardData!.comfort}", screenWidth * 0.04, FontWeight.bold)
                       ],)),
                     Expanded(flex: 5, child: Row(mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center, children: [
-                      StylizedText(darkBluePalette, "Smog: ", null, FontWeight.normal),
-                      StylizedText(darkBluePalette, "${cardData!.smog}", null, FontWeight.bold)
+                      StylizedText(darkBluePalette, "Smog: ", screenWidth * 0.04, FontWeight.normal),
+                      StylizedText(darkBluePalette, "${cardData!.smog}", screenWidth * 0.04, FontWeight.bold)
                       ],)),
                     Expanded(flex: 5, child: Row(mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center, children: [
-                      StylizedText(darkBluePalette, "Energy: ", null, FontWeight.normal),
-                      StylizedText(darkBluePalette, "${cardData!.energy}", null, FontWeight.bold)
+                      StylizedText(darkBluePalette, "Energy: ", screenWidth * 0.04, FontWeight.normal),
+                      StylizedText(darkBluePalette, "${cardData!.energy}", screenWidth * 0.04, FontWeight.bold)
                       ],)),
                     const Spacer()
                   ],)),

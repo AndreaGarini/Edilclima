@@ -7,6 +7,7 @@ import 'package:edilclima_app/GameModel.dart';
 import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../DataClasses/CardData.dart';
@@ -62,6 +63,26 @@ class PageLayoutState extends State<PageLayout>{
   }
 
   Widget clickableCard (GameModel gameModel){
+
+    late Widget lottieWidget;
+
+    if(widget.crd?.type != null){
+      switch (widget.crd!.type){
+        case cardType.Energy: {
+          lottieWidget = Lottie.asset('assets/animations/solarpanel.json');
+        }
+        break;
+        case cardType.Pollution: {
+          lottieWidget = Lottie.asset('assets/animations/55131-grow-your-forest.json');
+        }
+        break;
+        case cardType.Research: {
+          lottieWidget = Lottie.asset('assets/animations/100337-research-lottie-animation.json');
+        }
+        break;
+      }
+    }
+
     return GestureDetector(
         onTap: gameModel.playerTimer!=null ? () {onTap(gameModel);} : (){},
         child:  Container(
@@ -76,12 +97,12 @@ class PageLayoutState extends State<PageLayout>{
         begin: Alignment.topRight,
         end: Alignment.bottomLeft,
         colors: [
-        darkBluePalette,
-        lightBluePalette,
-        backgroundGreen,
-        backgroundGreen,
-        lightOrangePalette,
-        darkOrangePalette,
+          lightOrangePalette,
+          darkOrangePalette,
+          backgroundGreen,
+          backgroundGreen,
+          darkBluePalette,
+          lightBluePalette,
         ],
         stops: const [0,0.1,0.2,0.8,0.9, 1]
         )),
@@ -92,7 +113,7 @@ class PageLayoutState extends State<PageLayout>{
             shadowColor: darkGreyPalette,
             elevation: 10,
             child: Center(child: widget.crd?.code!=null ?
-            const Icon(Icons.access_alarm) :
+             lottieWidget :
             ShinyContent(Text("Click to play card",
                 style: TextStyle(fontSize: screenWidth * 0.05, fontWeight: FontWeight.bold, color: Colors.white)),
                 darkBluePalette)))

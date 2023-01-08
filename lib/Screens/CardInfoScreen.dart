@@ -1,7 +1,6 @@
 
 import 'package:edilclima_app/Components/RetriveCardPagerLayout/DetailedCardLayout.dart';
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
-import 'package:edilclima_app/Components/generalFeatures/SizedButton.dart';
 import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
 import 'package:edilclima_app/Screens/WaitingScreen.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,31 +12,37 @@ class CardInfoScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    return Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-    crossAxisAlignment: CrossAxisAlignment.center, children: [
-        Expanded(flex: 2, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,children: [
-            Padding(padding: EdgeInsets.only(
-              top: screenHeight * 0.03,
-              left: screenWidth * 0.04
-            ),
-              child: ElevatedButton(onPressed: () {context.go("/cardSelectionScreen");},
-                  style: ButtonStyle(fixedSize: MaterialStatePropertyAll(Size.fromWidth(screenWidth * 0.1)),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5))
-                      ),
-                      backgroundColor: MaterialStateProperty.all(lightBluePalette)),
-                  child: const Center(child: Icon(Icons.arrow_back_ios, size: 40,))))
-          ],)),
-        Expanded(flex: 12, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(alignment: Alignment.topRight,
+    children: [
+        Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center, children: [
-              const Spacer(),
-              Expanded(flex: 8, child: DetailedCardLayout(onFocusCard)),
-              const Spacer()
-          ])),
-        const Spacer()
-      ],);
+          Expanded(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center, children: [
+                const Spacer(),
+                Expanded(flex: 8, child: DetailedCardLayout.fromHeight(onFocusCard, screenHeight * 0.7)),
+                const Spacer()
+              ])),
+        ]),
+     Padding(padding: EdgeInsets.only(
+       top: screenWidth * 0.03,
+       right: screenWidth * 0.03),
+       child: Container(width: screenWidth * 0.2, height: screenWidth * 0.2,
+         decoration: BoxDecoration(
+             borderRadius: BorderRadius.all(Radius.circular(screenWidth * 0.2)),
+             color: darkBluePalette),
+       )),
+      Padding(padding: EdgeInsets.only(
+          top: screenWidth * 0.03,
+          right: screenWidth * 0.03),
+          child: InkWell(
+          onTap: (){
+          context.go("/cardSelectionScreen");
+          },
+          child:
+          SizedBox(width: screenWidth * 0.2, height: screenWidth * 0.2,
+                        child: Icon(Icons.cancel_outlined, size: screenWidth * 0.15, color: Colors.white),
+                ))
+      )]);
   }
 
 

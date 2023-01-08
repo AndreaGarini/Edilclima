@@ -46,6 +46,7 @@ dependencies:
   google_fonts: ^2.1.0
   fluttericon: 2.0.0
   lottie: ^1.2.1
+  page_transition: "^2.0.9"
 
 dev_dependencies:
   flutter_test:

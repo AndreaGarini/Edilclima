@@ -13,7 +13,11 @@ class StylizedText extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-      return Text(text, style: TextStyle(color: textColor, fontSize: fontSize, fontWeight: fontWeight, fontFamily: 'Roboto'));
+      return Text(text, style: TextStyle(color: textColor,
+          fontSize: fontSize,
+          fontWeight: fontWeight,
+          fontFamily: 'Roboto',),
+      textAlign: TextAlign.justify,);
   }
 
 }

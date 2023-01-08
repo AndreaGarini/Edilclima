@@ -9,10 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttericon/modern_pictograms_icons.dart';
 import 'package:provider/provider.dart';
 
-import '../Screens/CardSelectionScreen.dart';
-import '../Screens/WaitingScreen.dart';
+import '../../Screens/CardSelectionScreen.dart';
+import '../../Screens/WaitingScreen.dart';
 
 bool infoRowDefaultLayout = true;
+pushResult lastPushResult = pushResult.CardDown;
 
 class infoRow extends StatefulWidget{
 
@@ -26,6 +27,32 @@ class infoRowState extends State<infoRow> with
 
   late AnimationController indicatorController;
 
+  late final AnimationController slideOutController = AnimationController(
+    duration: const Duration(milliseconds: 700),
+    vsync: this,
+  )..forward();
+
+  late final Animation<Offset> offsetAnimationOut = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(1.5, 0.0),
+  ).animate(CurvedAnimation(
+    parent: slideOutController,
+    curve: Curves.easeIn,
+  ));
+
+  late final AnimationController slideInController = AnimationController(
+    duration: const Duration(milliseconds: 700),
+    vsync: this,
+  );
+
+  late final Animation<Offset> offsetAnimationIn = Tween<Offset>(
+    begin: const Offset(-1.5, 0.0),
+    end: Offset.zero,
+  ).animate(CurvedAnimation(
+    parent: slideInController,
+    curve: Curves.easeIn,
+  ));
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +63,8 @@ class infoRowState extends State<infoRow> with
   void dispose(){
     super.dispose();
     indicatorController.dispose();
+    slideInController.dispose();
+    slideOutController.dispose();
   }
 
   timerIndicator(GameModel gameModel){
@@ -65,6 +94,18 @@ class infoRowState extends State<infoRow> with
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
 
+      if(!gameModel.tutorialOngoing){
+        slideInController.forward();
+      }
+
+      offsetAnimationOut.addStatusListener((status){
+        if(status == AnimationStatus.completed){
+          setState(() {
+            lastPushResult = gameModel.push.first() as pushResult;
+          });
+        }
+      });
+
         if (gameModel.playerTimer==null && gameModel.playerTimerCountdown!=null){
           updateData(gameModel, false);
           int duration = gameModel.splash ? 63 : 62;
@@ -74,8 +115,8 @@ class infoRowState extends State<infoRow> with
           });});
         }
 
-      dynamicContent() {
-        switch (gameModel.push.first() as pushResult) {
+      dynamicContent(pushResult lastPush) {
+        switch (lastPush) {
           case pushResult.InvalidCard :
             {
               return Row(
@@ -142,7 +183,6 @@ class infoRowState extends State<infoRow> with
                     ]));
               }
               else {
-                //todo: your turn da animare
                return Row(
                  mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                  crossAxisAlignment: CrossAxisAlignment.end,
@@ -158,18 +198,23 @@ class infoRowState extends State<infoRow> with
         }
       }
 
-      return
-        Material(
-          color: darkBluePalette,
-          child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center, children: [
-              Expanded(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center, children: [
-                  const Spacer(),
-                  Expanded(flex: 12, child: dynamicContent()),
-                  const Spacer()
-                ],)),
-            ]));
+          return
+            Material(
+                color: darkBluePalette,
+                child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center, children: [
+                      Expanded(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center, children: [
+                            const Spacer(),
+                            Expanded(flex: 12, child: lastPushResult == gameModel.push.first() ? SlideTransition(
+                                position: offsetAnimationIn,
+                                child: dynamicContent(lastPushResult)) :
+                            SlideTransition(
+                                position: offsetAnimationOut,
+                                child: dynamicContent(lastPushResult))),
+                            const Spacer()
+                          ])),
+                    ]));
   });
   }
 

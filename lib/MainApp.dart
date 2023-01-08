@@ -6,6 +6,7 @@ import 'package:edilclima_app/Screens/SplashScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
+import 'package:page_transition/page_transition.dart';
 
 import 'Screens/CardInfoScreen.dart';
 import 'Screens/OtherTeamsScreen.dart';
@@ -52,7 +53,12 @@ final router = GoRouter(
         GoRoute(path: "/cardSelectionScreen",
           pageBuilder: (context, state) {
           return NoTransitionPage(child: CardSelectionScreen());
-          }
+          },
+          routes: [ GoRoute(path: "cardInfoScreen",
+              pageBuilder: (context, state) {
+                return NoTransitionPage(child: CardInfoScreen());
+              }
+          )]
         ),
         GoRoute(path: "/retriveCardScreen",
             pageBuilder: (context, state) {
@@ -64,11 +70,6 @@ final router = GoRouter(
               return NoTransitionPage(child: OtherTeamsScreen());
             }
         ),
-        GoRoute(path: "/cardInfoScreen",
-            pageBuilder: (context, state) {
-              return NoTransitionPage(child: CardInfoScreen());
-            }
-        )
       ]
     ),
     GoRoute(

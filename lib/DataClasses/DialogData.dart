@@ -1,8 +1,11 @@
 
+import 'package:flutter/cupertino.dart';
+
 class DialogData{
   String title;
-  String? bodyText;
+  Widget? body;
   bool addButton;
   String? buttonText;
-  DialogData(this.title, this.bodyText, this.addButton, this.buttonText);
+  Function? buttonCallback;
+  DialogData(this.title, this.body, this.addButton, this.buttonText, this.buttonCallback);
 }

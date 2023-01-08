@@ -1,6 +1,9 @@
 
 import 'package:edilclima_app/Components/generalFeatures/AnimatedGradient.dart';
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:edilclima_app/Components/generalFeatures/SizedButton.dart';
+import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
+import 'package:edilclima_app/Components/generalFeatures/TutorialComponents.dart';
 import 'package:edilclima_app/DataClasses/DialogData.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +12,7 @@ import 'package:provider/provider.dart';
 import '../GameModel.dart';
 import '../Screens/WaitingScreen.dart';
 import 'BottomNavBar.dart';
-import 'infoRow.dart';
+import 'InfoRowComponents/infoRow.dart';
 
 class MainScreenContent extends StatefulWidget {
 
@@ -22,13 +25,28 @@ class MainScreenContent extends StatefulWidget {
 }
 
 DialogData? lastDialogData;
+bool tutorialOpened = false;
 
 class MainScreenContentState extends State<MainScreenContent>{
 
 
   @override
   Widget build(BuildContext parentContext) {
+
     return Consumer<GameModel>(builder: (context, gameModel, child) {
+
+      var tutorialComponents = TutorialComponents(gameModel);
+
+      //todo: far partire il tutorial solo una volta
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        if(gameModel.playerLevelCounter == 1
+            && gameModel.playerLevelStatus == "preparing"
+            && gameModel.showDialog==null
+            && gameModel.tutorialOngoing
+            && !tutorialOpened){
+          startTutorial(parentContext, gameModel, tutorialComponents);
+        }
+      });
 
       if(gameModel.showDialog!=null && gameModel.showDialog!=lastDialogData){
         setDialogAvailable(parentContext, gameModel.showDialog!, gameModel);
@@ -67,34 +85,43 @@ class MainScreenContentState extends State<MainScreenContent>{
         return Dialog(child: Column(mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(flex: 1, child: Row(mainAxisSize: MainAxisSize.max,
+            Expanded(flex: 2, child: Row(mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded( child: Center(child: StylizedText(darkBluePalette, data.title, screenWidth * 0.08, FontWeight.bold))),
+              ],
+            )),
+            Expanded(flex: 6, child: Row(mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Spacer(),
-                Expanded(child: Center(child: Text(data.title, style: const TextStyle(color: Colors.black)))),
+                Expanded(flex: 10, child: data.body!),
                 const Spacer()
               ],
             )),
             const Spacer(),
-            Expanded(flex: 3, child: Row(mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Spacer(),
-                Expanded(flex: 2, child: Text(data.bodyText!=null ? data.bodyText! : "",
-                    style: const TextStyle(color: Colors.black))),
-                const Spacer()
-              ],
-            )),
-            const Spacer(),
-            data.addButton ? Expanded(flex: 1,
-                child: SizedButton(screenWidth * 0.3, data.buttonText!,
-                        (){ Navigator.of(context).pop();}))
-                : const Spacer()
+            data.addButton ? SizedButton(screenWidth * 0.5, data.buttonText!,
+                        (){ Navigator.of(context).pop();
+                data.buttonCallback!.call(); })
+                : const Spacer(),
+            const Spacer()
           ],
         ));
       }
   });
   }
+
+  Future<void> startTutorial(BuildContext parentContext,
+      GameModel gameModel,
+      TutorialComponents tutorialComponents) async{
+    return Future<void>.delayed(const Duration(milliseconds: 100),
+            () {
+              setState((){
+                tutorialOpened = true;
+              });
+              DialogData data = DialogData("Le carte", tutorialComponents.tutorialWidget1(), true, "Ok!", tutorialComponents.buttonCallback1);
+              gameModel.setDialogData(data);
+  });}
 
   Future<void> setDialogAvailable(BuildContext parentContext, DialogData data, GameModel gameModel) async{
     return Future<void>.delayed(const Duration(milliseconds: 200),

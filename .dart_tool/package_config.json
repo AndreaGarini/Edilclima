@@ -230,6 +230,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "page_transition",
+      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/page_transition-2.0.9",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "path",
       "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/path-1.8.2",
       "packageUri": "lib/",
@@ -380,7 +386,7 @@
       "languageVersion": "2.18"
     }
   ],
-  "generated": "2023-01-03T15:58:04.530476Z",
+  "generated": "2023-01-05T00:57:31.025357Z",
   "generator": "pub",
   "generatorVersion": "2.18.5"
 }

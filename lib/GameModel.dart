@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:ffi';
 
+import 'package:edilclima_app/Components/generalFeatures/TutorialComponents.dart';
 import 'package:edilclima_app/GameLogic.dart';
 import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -44,6 +45,7 @@ class GameModel extends ChangeNotifier{
   var push = Pair(pushResult.CardDown, null);
   Future? pushCoroutine;
   DialogData? showDialog;
+  bool tutorialOngoing = false;
 
   //variabili sia master che player per schermate di splash e error
   bool splash = false;
@@ -125,13 +127,10 @@ class GameModel extends ChangeNotifier{
 
   void changePushValue(Pair newPush){
     push = newPush;
-    print("push coroutine value: ${pushCoroutine.toString()}");
-    print("new push value:${newPush.first().toString()}");
     pushCoroutine!=null ? pushCoroutine!.ignore() : (){};
     if(newPush.first()!=pushResult.CardDown){
-      print("coroutine started");
       pushCoroutine = Future<void>.delayed(const Duration(seconds: 2),
-              () {push = Pair(pushResult.CardDown, null); notifyListeners(); print("notify listeners");})
+              () {push = Pair(pushResult.CardDown, null); notifyListeners();})
           .whenComplete(() => pushCoroutine = null);
     }
     notifyListeners();
@@ -139,6 +138,11 @@ class GameModel extends ChangeNotifier{
 
   void setDialogData(DialogData? data){
     showDialog = data;
+    notifyListeners();
+  }
+
+  void endTutorialAndNotify(){
+    tutorialOngoing = false;
     notifyListeners();
   }
 
@@ -283,11 +287,12 @@ class GameModel extends ChangeNotifier{
 
           switch(event.snapshot.child("status").value.toString()){
             case "preparing" : {
+              // la finestra di splash fa partire il tutorial
               splash = true;
             }
             break;
             case"play" : {
-              setDialogData(DialogData("level $playerLevelCounter", null, false, null));
+              setDialogData(DialogData("level $playerLevelCounter", null, false, null, null));
             }
             break;
           }
@@ -344,11 +349,6 @@ class GameModel extends ChangeNotifier{
   void notifyCallback1(DataSnapshot value) async{
     String team = value.value.toString();
     db.child("matches").child("test").child("teams").child(team).child("ableToPlay").onValue.listen((event) {
-
-      print("value of listener : ${event.snapshot.value}");
-      print("player level counter for listener: ${playerLevelCounter}");
-      print("player level status for listener ${playerLevelStatus}");
-      print("player timer for listener : ${playerTimer}");
 
       if (event.snapshot.value.toString()=="1" && playerLevelCounter != 0
           && playerLevelStatus == "play" && playerTimer==null){

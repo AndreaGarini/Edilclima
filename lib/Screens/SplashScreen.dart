@@ -1,8 +1,11 @@
 
 
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
+import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttericon/elusive_icons.dart';
+import 'package:fluttericon/modern_pictograms_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +13,9 @@ import 'package:provider/provider.dart';
 import '../GameModel.dart';
 
 class SplashScreen extends StatelessWidget{
+
+  // carte ed icone carte
+
 
 
   @override
@@ -24,6 +30,7 @@ class SplashScreen extends StatelessWidget{
 
       if (gameModel.playerLevelCounter >0 && gameModel.playerLevelStatus != null) {
         Future.delayed(const Duration(milliseconds: 3000), () {
+          gameModel.tutorialOngoing = true;
           context.go("/cardSelectionScreen");
         });
       }

@@ -2,7 +2,6 @@
 import 'dart:math';
 
 import 'package:edilclima_app/Components/PlayCardPagerLayout/PlayCardPager.dart';
-import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:edilclima_app/DataClasses/CardData.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,20 +45,27 @@ enum rotVersus {
 rotVersus rotationSense = rotVersus.None;
 String playableCard = "null";
 CardData? onFocusCard;
+bool openingAnimDone = false;
+late bool ongoingAnimation;
+late bool buildEnded;
+List<CardData?> playerCards = List.generate(6, (index) => CardData("void", 0, 0, 0, 0,
+    cardType.Pollution,
+    researchSet.None, null,
+    1));
 
 class CardSelectionState extends State<CardSelectionScreen>
     with TickerProviderStateMixin {
 
-  late bool ongoingAnimation;
   late bool triggerIndexing;
 
-  //todo: sistemare disposizione csarte per rendere il cerchio più tondo (come era su android)
   @override
   void initState() {
     super.initState();
 
+    openingAnimDone = false;
     ongoingAnimation = false;
     triggerIndexing = false;
+    buildEnded = false;
     counter = 0;
 
     indexingList[0] = 0;
@@ -105,11 +111,6 @@ class CardSelectionState extends State<CardSelectionScreen>
     cardsMatrixMap["fifthCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["fifthCard"]).animate(cardsControllerMap["fifthCard"]!);
     cardsMatrixMap["sixthCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["sixthCard"]).animate(cardsControllerMap["sixthCard"]!);
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      for (AnimationController controller in cardsControllerMap.values){
-        controller.forward(from: 0);
-      }
-    });
   }
 
   double findAngle(double angle){
@@ -132,6 +133,10 @@ class CardSelectionState extends State<CardSelectionScreen>
   @override
   Widget build(BuildContext context) {
 
+    WidgetsBinding.instance?.addPostFrameCallback((_){
+      buildEnded = true;
+    });
+
     double pivotPointX = screenWidth * 0.2;
     double pivotPointY = screenHeight * 0.4;
 
@@ -139,8 +144,27 @@ class CardSelectionState extends State<CardSelectionScreen>
 
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
+      if(playerCards!=gameModel.playerCards && buildEnded){
+        List<CardData?> cardsList = gameModel.playerCards;
+        if(cardsList.length < 6){
+          for(int i = cardsList.length; i<6; i++){
+            cardsList.add(CardData("void", 0, 0, 0, 0,
+                cardType.Pollution,
+                researchSet.None, null,
+                gameModel.playerLevelCounter));
+          }
+        }
+        setPlayerCards(cardsList);
+      }
+
+      if(!gameModel.tutorialOngoing && !openingAnimDone){
+        openingAnimDone = true;
+        triggerOpeningAnim();
+      }
+
+
       if(!triggerIndexing){
-        firstCardsDataBinding(gameModel.playerCards);
+        firstCardsDataBinding(playerCards!);
       }
 
       if(gameModel.playerTimerCountdown == null && rotationSense== rotVersus.Up){
@@ -159,8 +183,6 @@ class CardSelectionState extends State<CardSelectionScreen>
 
               Expanded(flex: 1, child:
               GestureDetector(
-
-                //todo: dare più spazio sullo schermo al gesture detector(soprattutto per lo swipe up)
                   onHorizontalDragUpdate: (dragEndDetails){
                     if(rotationSense != rotVersus.Up && dragEndDetails.delta.dx > 20){
                       //swipe left
@@ -186,7 +208,7 @@ class CardSelectionState extends State<CardSelectionScreen>
                     if(!ongoingAnimation){
                       triggerIndexing = true;
                       ongoingAnimation = true;
-                      updateAnimation(rotationSense, screenHeight, gameModel.playerCards);
+                      updateAnimation(rotationSense, screenHeight, playerCards);
                     }},
 
                   onVerticalDragEnd:  gameModel.playerTimerCountdown!=null ? (_){
@@ -205,39 +227,51 @@ class CardSelectionState extends State<CardSelectionScreen>
                       AnimatedBuilder(builder: (context, child) =>
                           Transform(transform: cardsMatrixMap["sixthCard"]!.value,
                               origin: Offset(pivotPointX, pivotPointY),
-                              child: UndetailedCardLayout(cardsDataMap["sixthCard"])),
+                              child: UndetailedCardLayout(cardsDataMap["sixthCard"],
+                                  cardsAngleMap["sixthCard"]!,
+                                  !gameModel.tutorialOngoing)),
                         animation: cardsMatrixMap["sixthCard"]!,)),
                       Indexed(index: indexingList[1], child:
                       AnimatedBuilder(builder: (context, child) =>
                           Transform(transform: cardsMatrixMap["firstCard"]!.value,
                               origin: Offset(pivotPointX, pivotPointY),
-                              child: UndetailedCardLayout(cardsDataMap["firstCard"])),
+                              child: UndetailedCardLayout(cardsDataMap["firstCard"],
+                                  cardsAngleMap["firstCard"]!,
+                                  !gameModel.tutorialOngoing)),
                         animation: cardsMatrixMap["firstCard"]!,)),
                       Indexed(index: indexingList[2], child:
                       AnimatedBuilder(builder: (context, child) =>
                           Transform(transform: cardsMatrixMap["secondCard"]!
                               .value,
                               origin: Offset(pivotPointX, pivotPointY),
-                              child: UndetailedCardLayout(cardsDataMap["secondCard"])),
+                              child: UndetailedCardLayout(cardsDataMap["secondCard"],
+                                  cardsAngleMap["secondCard"]!,
+                                  !gameModel.tutorialOngoing)),
                         animation: cardsMatrixMap["secondCard"]!,)),
                       Indexed(index: indexingList[3], child:
                       AnimatedBuilder(builder: (context, child) =>
                           Transform(transform: cardsMatrixMap["thirdCard"]!.value,
                               origin: Offset(pivotPointX, pivotPointY),
-                              child: UndetailedCardLayout(cardsDataMap["thirdCard"])),
+                              child: UndetailedCardLayout(cardsDataMap["thirdCard"],
+                                  cardsAngleMap["thirdCard"]!,
+                                  !gameModel.tutorialOngoing)),
                         animation: cardsMatrixMap["thirdCard"]!,)),
                       Indexed(index: indexingList[4], child:
                       AnimatedBuilder(builder: (context, child) =>
                           Transform(transform: cardsMatrixMap["fourthCard"]!
                               .value,
                               origin: Offset(pivotPointX, pivotPointY),
-                              child: UndetailedCardLayout(cardsDataMap["fourthCard"])),
+                              child: UndetailedCardLayout(cardsDataMap["fourthCard"],
+                                  cardsAngleMap["fourthCard"]!,
+                                  !gameModel.tutorialOngoing)),
                         animation: cardsMatrixMap["fourthCard"]!,)),
                       Indexed(index: indexingList[5], child:
                       AnimatedBuilder(builder: (context, child) =>
                           Transform(transform: cardsMatrixMap["fifthCard"]!.value,
                               origin: Offset(pivotPointX, pivotPointY),
-                              child: UndetailedCardLayout(cardsDataMap["fifthCard"])),
+                              child: UndetailedCardLayout(cardsDataMap["fifthCard"],
+                                  cardsAngleMap["fifthCard"]!,
+                                  !gameModel.tutorialOngoing)),
                         animation: cardsMatrixMap["fifthCard"]!,)),
 
                     ],
@@ -246,9 +280,9 @@ class CardSelectionState extends State<CardSelectionScreen>
         ),
         InkWell(
             onTap: (){
-              String cardCode = cardsAngleMap.entries.where((element) => element.value == 0).single.key;
-              onFocusCard = gameModel.gameLogic.findCard(cardCode);
-              context.go("/cardInfoScreen");
+              String cardPosition = cardsAngleMap.entries.where((element) => element.value == 0).single.key;
+              onFocusCard = cardsDataMap[cardPosition];
+              context.push("/cardSelectionScreen/cardInfoScreen");
             },
             child: SizedBox(
           height: screenWidth * 0.2,
@@ -256,13 +290,13 @@ class CardSelectionState extends State<CardSelectionScreen>
           child: Center(child: Lottie.asset('assets/animations/InfoIcon.json',
               width: screenWidth * 0.35,
               height: screenWidth * 0.35,
-              animate: true)),
+              animate: !gameModel.tutorialOngoing)),
         ))
       ],));
     });
   }
 
-  void firstCardsDataBinding(List<CardData> playerCards){
+  void firstCardsDataBinding(List<CardData?> playerCards){
     int counter = 0;
     for(final entry in cardsAngleMap.entries){
       if(entry.value.toInt() != 180 && counter < playerCards.length){
@@ -276,10 +310,9 @@ class CardSelectionState extends State<CardSelectionScreen>
   }
 
   //todo: popolare di carte vuote se finiscono le carte giocabili
-  void updateCardsData(List<CardData> playerCards){
+  void updateCardsData(List<CardData?> playerCards){
     String cardsDownKey = cardsAngleMap.entries.where((element) => element.value.toInt() == 180).single.key;
     String lastCardRight = cardsAngleMap.entries.where((element) => element.value.toInt() == -60).single.key;
-    String lastCardUp = cardsAngleMap.entries.where((element) => element.value.toInt() == 0).single.key;
     String lastCardLeft = cardsAngleMap.entries.where((element) => element.value.toInt() == 60).single.key;
     switch(rotationSense){
       case rotVersus.Right: {
@@ -341,7 +374,7 @@ class CardSelectionState extends State<CardSelectionScreen>
            ongoingAnimation = false;
   });}}
 
-  void updateAnimation(rotVersus versus, double currentHeight, List<CardData>? playerCards){
+  void updateAnimation(rotVersus versus, double currentHeight, List<CardData?>? playerCards){
 
     if(playerCards!=null){
       updateCardsData(playerCards);
@@ -516,6 +549,24 @@ class CardSelectionState extends State<CardSelectionScreen>
       firstCardsDataBinding(playerCards);
     }
   }
+
+  Future<void> triggerOpeningAnim() async{
+    return Future<void>.delayed(const Duration(milliseconds: 200),
+            () {
+      for (final animController in cardsControllerMap.values){
+        animController.forward();
+    }});
+  }
+
+  Future<void> setPlayerCards(List<CardData?> cardsList) async{
+    return Future<void>.delayed(const Duration(milliseconds: 100),
+            () {
+              setState(() {
+                playerCards = cardsList;
+              });
+         });
+  }
+
 }
 
 enum pushResult{
