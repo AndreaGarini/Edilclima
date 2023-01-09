@@ -39,61 +39,74 @@ Future<void> main() async {
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final shellNavigatorKey = GlobalKey<NavigatorState>();
 
-//todo: risistema le routes in modo che si possa tornare indietro con il tasto del evice, ma togli lo splash dallo stack
+//todo: risistema le routes in modo che si possa tornare indietro con il tasto del device, ma togli lo splash dallo stack
 final router = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: "/initialScreen",
   routes: [
     ShellRoute(
-       navigatorKey: shellNavigatorKey,
-       builder: (context, state, child) {
-         return MainScreenContent(child);
-       },
-      routes: <RouteBase>[
-        GoRoute(path: "/cardSelectionScreen",
-          pageBuilder: (context, state) {
-          return NoTransitionPage(child: CardSelectionScreen());
-          },
-          routes: [ GoRoute(path: "cardInfoScreen",
+        navigatorKey: shellNavigatorKey,
+        builder: (context, state, child) {
+          return MainScreenContent(child);
+        },
+        routes: [
+          GoRoute(path: "/cardSelectionScreen",
               pageBuilder: (context, state) {
-                return NoTransitionPage(child: CardInfoScreen());
+                return NoTransitionPage(child: CardSelectionScreen());
+              },
+              parentNavigatorKey: shellNavigatorKey,
+              routes: [ GoRoute(path: "cardInfoScreen",
+                  parentNavigatorKey: shellNavigatorKey,
+                  pageBuilder: (context, state) {
+                    return NoTransitionPage(child: CardInfoScreen());
+                  }
+              )]
+          ),
+          GoRoute(path: "/retriveCardScreen",
+              parentNavigatorKey: shellNavigatorKey,
+              pageBuilder: (context, state) {
+                return NoTransitionPage(child: RetriveCardScreen());
               }
-          )]
-        ),
-        GoRoute(path: "/retriveCardScreen",
-            pageBuilder: (context, state) {
-              return NoTransitionPage(child: RetriveCardScreen());
-            }
-        ),
-        GoRoute(path: "/otherTeamsScreen",
-            pageBuilder: (context, state) {
-              return NoTransitionPage(child: OtherTeamsScreen());
-            }
-        ),
-      ]
+          ),
+          GoRoute(path: "/otherTeamsScreen",
+              parentNavigatorKey: shellNavigatorKey,
+              pageBuilder: (context, state) {
+                return NoTransitionPage(child: OtherTeamsScreen());
+              }
+          ),
+        ]
     ),
     GoRoute(
       path: '/initialScreen',
-      builder: (context, state) {print("initial screen in router"); return WaitingScreen();},
-    ),
-    GoRoute(
-      path: '/splashScreen',
-      builder: (context, state) => SplashScreen(),
-    ),
-    GoRoute(
-      path: '/matchMakingScreen',
-      builder: (context, state) => MatchMakingScreen(),
-    ),
-    GoRoute(
-      path: '/gameBoardScreen',
-      builder: (context, state) => GameBoardScreen(),
-    ),
-    GoRoute(
-      path: '/cameraScreen',
-      builder: (context, state) => CameraScreen(),
+        parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) { return WaitingScreen();},
+      routes: [
+        GoRoute(
+          path: 'cameraScreen',
+            parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) => CameraScreen(),
+          routes: [
+            GoRoute(
+              path: 'splashScreen',
+              parentNavigatorKey: rootNavigatorKey,
+              builder: (context, state) => SplashScreen(),
+        ),
+        GoRoute(
+          path: 'matchMakingScreen',
+            parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) => MatchMakingScreen(),
+          routes: [
+            GoRoute(
+              path: 'gameBoardScreen',
+              parentNavigatorKey: rootNavigatorKey,
+              builder: (context, state) => GameBoardScreen(),
+            ),
+          ]
+        ),
+      ]
     ),
   ],
-);
+)]);
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});

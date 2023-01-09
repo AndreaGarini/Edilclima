@@ -24,11 +24,10 @@ class MainScreenContent extends StatefulWidget {
   State<MainScreenContent> createState() => MainScreenContentState();
 }
 
-DialogData? lastDialogData;
-bool tutorialOpened = false;
-
 class MainScreenContentState extends State<MainScreenContent>{
 
+  bool tutorialOpened = false;
+  DialogData? lastDialogData;
 
   @override
   Widget build(BuildContext parentContext) {
@@ -37,14 +36,13 @@ class MainScreenContentState extends State<MainScreenContent>{
 
       var tutorialComponents = TutorialComponents(gameModel);
 
-      //todo: far partire il tutorial solo una volta
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         if(gameModel.playerLevelCounter == 1
             && gameModel.playerLevelStatus == "preparing"
             && gameModel.showDialog==null
             && gameModel.tutorialOngoing
             && !tutorialOpened){
-          startTutorial(parentContext, gameModel, tutorialComponents);
+            startTutorial(parentContext, gameModel, tutorialComponents);
         }
       });
 
@@ -65,8 +63,6 @@ class MainScreenContentState extends State<MainScreenContent>{
     });
   }
 
-
-  //todo: sistemare lo stile della dialog
   Future<void> openDialog(BuildContext context, DialogData data, GameModel gameModel){
 
     return showDialog<void>(context: context, builder: (BuildContext context){
@@ -114,19 +110,17 @@ class MainScreenContentState extends State<MainScreenContent>{
   Future<void> startTutorial(BuildContext parentContext,
       GameModel gameModel,
       TutorialComponents tutorialComponents) async{
-    return Future<void>.delayed(const Duration(milliseconds: 100),
+    tutorialOpened = true;
+    return Future<void>.delayed(const Duration(milliseconds: 1),
             () {
-              setState((){
-                tutorialOpened = true;
-              });
               DialogData data = DialogData("Le carte", tutorialComponents.tutorialWidget1(), true, "Ok!", tutorialComponents.buttonCallback1);
               gameModel.setDialogData(data);
   });}
 
   Future<void> setDialogAvailable(BuildContext parentContext, DialogData data, GameModel gameModel) async{
-    return Future<void>.delayed(const Duration(milliseconds: 200),
+    return Future<void>.delayed(const Duration(milliseconds: 1),
             () {
       openDialog(parentContext, data, gameModel);
-      setState((){ lastDialogData = gameModel.showDialog;});});
+      lastDialogData = data;});
   }
 }

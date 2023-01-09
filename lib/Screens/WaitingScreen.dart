@@ -41,9 +41,9 @@ class WaitingScreenState extends State<WaitingScreen> {
           Expanded(flex: 2, child: Center(child: AnimatedGradient("Edilclima", screenHeight * 0.12, 5200, 'Inspiration', true))),
           const Spacer(),
           Expanded(flex : 7, child: Lottie.asset('assets/animations/WaitingScreenHome.json')),
-          Expanded(flex: 1, child: SizedButton(screenWidth * 0.7, "Create new match", () {context.go("/matchMakingScreen");})),
+          Expanded(flex: 1, child: SizedButton(screenWidth * 0.7, "Create new match", () {context.push("/initialScreen/matchMakingScreen");})),
           const Spacer(),
-          Expanded(flex: 1, child: SizedButton(screenWidth * 0.7, "Join match", () {context.go("/cameraScreen");})),
+          Expanded(flex: 1, child: SizedButton(screenWidth * 0.7, "Join match", () {context.push("/initialScreen/cameraScreen");})),
           const Spacer(),
         ],
       ),);

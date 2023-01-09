@@ -13,6 +13,7 @@ class CameraScreen extends StatefulWidget {
 
 class CameraScreenState extends State<CameraScreen> {
 
+  bool pushRoute = false;
   @override
   void initState(){
     super.initState();
@@ -21,6 +22,7 @@ class CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
 
+
     return Material(
       color: Colors.white,
         child:
@@ -28,11 +30,14 @@ class CameraScreenState extends State<CameraScreen> {
     {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         updateData(gameModel);
+        if(gameModel.playerLevelCounter > 0 && !pushRoute){
+          if(!pushRoute){
+            pushRoute = true;
+            Future.delayed(const Duration(milliseconds: 500),()
+            {context.push("/initialScreen/cameraScreen/splashScreen");});
+          }
+        }
       });
-
-      if(gameModel.playerLevelCounter > 0){
-        Future.delayed(const Duration(milliseconds: 500),() {context.go("/splashScreen");});
-      }
 
       return Column(crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
@@ -59,6 +64,6 @@ class CameraScreenState extends State<CameraScreen> {
   }
 
   Future<void> updateData(GameModel gm) async{
-    return Future<void>.delayed(const Duration(milliseconds: 500), () {gm.listenToLevelChange();});
+    return Future<void>.delayed(const Duration(milliseconds: 1), () {gm.listenToLevelChange();});
   }
 }

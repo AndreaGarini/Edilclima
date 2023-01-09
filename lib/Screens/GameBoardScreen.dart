@@ -1,6 +1,4 @@
 
-import 'package:edilclima_app/Components/gameBoardScreen/GameBoardInfoCircle.dart';
-import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

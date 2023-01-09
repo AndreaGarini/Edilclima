@@ -309,7 +309,6 @@ class CardSelectionState extends State<CardSelectionScreen>
     }
   }
 
-  //todo: popolare di carte vuote se finiscono le carte giocabili
   void updateCardsData(List<CardData?> playerCards){
     String cardsDownKey = cardsAngleMap.entries.where((element) => element.value.toInt() == 180).single.key;
     String lastCardRight = cardsAngleMap.entries.where((element) => element.value.toInt() == -60).single.key;

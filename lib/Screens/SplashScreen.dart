@@ -1,39 +1,40 @@
 
-
-import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
-import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttericon/elusive_icons.dart';
-import 'package:fluttericon/modern_pictograms_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../GameModel.dart';
 
-class SplashScreen extends StatelessWidget{
+class SplashScreen extends StatefulWidget{
 
-  // carte ed icone carte
+  @override
+  State<StatefulWidget> createState() => SpashScreenState();
+}
 
+class SpashScreenState extends State<SplashScreen> {
 
+  bool pushRoute = false;
 
   @override
   Widget build(BuildContext context) {
 
-   return Consumer<GameModel>(builder: (context, gameModel, child) {
+    return Consumer<GameModel>(builder: (context, gameModel, child) {
 
-     //todo: fai un test senza connessione, per vedere se almeno non si rompe anche senza dati
+      //todo: fai un test senza connessione, per vedere se almeno non si rompe anche senza dati
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         updateData(gameModel);
+        if (gameModel.playerLevelCounter >0 && gameModel.playerLevelStatus != null) {
+          if(!pushRoute){
+            pushRoute = true;
+            Future.delayed(const Duration(milliseconds: 3000), () {
+              gameModel.tutorialOngoing = true;
+              context.go('/cardSelectionScreen');
+            });
+          }
+        }
       });
-
-      if (gameModel.playerLevelCounter >0 && gameModel.playerLevelStatus != null) {
-        Future.delayed(const Duration(milliseconds: 3000), () {
-          gameModel.tutorialOngoing = true;
-          context.go("/cardSelectionScreen");
-        });
-      }
 
       return Material(color: Colors.white, child: Lottie.asset('assets/animations/SplashScreenHand.json'));
     });
