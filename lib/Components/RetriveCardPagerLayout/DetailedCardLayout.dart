@@ -1,10 +1,9 @@
 
+import 'package:edilclima_app/Components/RetriveCardPagerLayout/VerticalStatsCard.dart';
 import 'package:edilclima_app/Components/generalFeatures/GradientText.dart';
 import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttericon/elusive_icons.dart';
-import 'package:fluttericon/modern_pictograms_icons.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../DataClasses/CardData.dart';
@@ -30,15 +29,15 @@ class DetailedCardLayout extends StatelessWidget{
 
     switch (cardData!.type){
       case cardType.Energy: {
-        lottieWidget = Lottie.asset('assets/animations/solarpanel.json');
+        lottieWidget = Lottie.asset('assets/animations/solarpanel.json', animate: false);
       }
       break;
       case cardType.Pollution: {
-        lottieWidget = Lottie.asset('assets/animations/55131-grow-your-forest.json');
+        lottieWidget = Lottie.asset('assets/animations/55131-grow-your-forest.json', animate: false);
       }
       break;
       case cardType.Research: {
-        lottieWidget = Lottie.asset('assets/animations/100337-research-lottie-animation.json');
+        lottieWidget = Lottie.asset('assets/animations/100337-research-lottie-animation.json', animate: false);
       }
       break;
     }
@@ -78,59 +77,29 @@ class DetailedCardLayout extends StatelessWidget{
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, cardData!.code, screenWidth * 0.07, FontWeight.bold))),
-                const Spacer(),
-                Expanded(flex: 1, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center, children: [
-                    Icon(ModernPictograms.dollar, color: darkOrangePalette),
-                    SizedBox(width: screenWidth * 0.02),
-                    StylizedText(darkBluePalette, ":  ${cardData!.money}", screenWidth * 0.05, FontWeight.bold)
-                  ],)),
-                Expanded(flex: 5, child: lottieWidget),
-                Expanded(flex: 1, child: Row(mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Spacer(),
-                    Expanded(flex: 5, child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center, children: [
-                        Icon(Icons.home, color: lightBluePalette),
-                      ],)),
-                    Expanded(flex: 5, child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center, children: [
-                        Icon(Elusive.leaf, color: lightOrangePalette),
-                      ],)),
-                    Expanded(flex: 5, child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center, children: [
-                        Icon(Elusive.lightbulb, color: darkBluePalette),
-                      ],)),
-                    const Spacer()
-                  ],)),
-                Expanded(flex: 2, child: Row(mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Spacer(),
-                    Expanded(flex: 5, child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center, children: [
-                          StylizedText(darkBluePalette, "Comfort: ", screenWidth * 0.04, FontWeight.normal),
-                          StylizedText(darkBluePalette, "${cardData!.comfort}", screenWidth * 0.04, FontWeight.bold)
-                      ],)),
-                    Expanded(flex: 5, child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center, children: [
-                      StylizedText(darkBluePalette, "Smog: ", screenWidth * 0.04, FontWeight.normal),
-                      StylizedText(darkBluePalette, "${cardData!.smog}", screenWidth * 0.04, FontWeight.bold)
-                      ],)),
-                    Expanded(flex: 5, child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center, children: [
-                      StylizedText(darkBluePalette, "Energy: ", screenWidth * 0.04, FontWeight.normal),
-                      StylizedText(darkBluePalette, "${cardData!.energy}", screenWidth * 0.04, FontWeight.bold)
-                      ],)),
-                    const Spacer()
-                  ],)),
-                Expanded(flex: 3, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                Divider(indent: screenWidth * 0.2, endIndent: screenWidth * 0.2, color: darkBluePalette, thickness: 1),
+                Expanded(flex: 3, child: lottieWidget),
+                Expanded(flex: 3, child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center, children: [
+                    Expanded(flex: 4, child: VerticalStatsCard("comfort", cardData!.comfort)),
+                    Expanded(flex: 4, child: VerticalStatsCard("smog", cardData!.comfort)),
+                    Expanded(flex: 4, child: VerticalStatsCard("energy", cardData!.comfort)),
+                    Expanded(flex: 4, child: VerticalStatsCard("money", cardData!.money)),
+                  ])),
+                Divider(indent: screenWidth * 0.2, endIndent: screenWidth * 0.2, color: darkBluePalette, thickness: 1),
+                Expanded(flex: 3, child:
+                Card(color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(screenHeight * 0.02)),
+                shadowColor: lightOrangePalette,
+                elevation: 3,
+                child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center, children: [
                     const Spacer(),
                     Expanded(flex: 6, child: Text(bodyText, style: const TextStyle(color: Colors.black))),
                     const Spacer()
-                  ],)),
+                  ]))
+                ),
                 const Spacer()
               ],
             )

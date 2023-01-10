@@ -32,6 +32,7 @@ class MainScreenContentState extends State<MainScreenContent>{
   @override
   Widget build(BuildContext parentContext) {
 
+    //todo: dialog ancora appaiono 2 volte
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
       var tutorialComponents = TutorialComponents(gameModel);
@@ -40,7 +41,6 @@ class MainScreenContentState extends State<MainScreenContent>{
         if(gameModel.playerLevelCounter == 1
             && gameModel.playerLevelStatus == "preparing"
             && gameModel.showDialog==null
-            && gameModel.tutorialOngoing
             && !tutorialOpened){
             startTutorial(parentContext, gameModel, tutorialComponents);
         }
@@ -113,6 +113,7 @@ class MainScreenContentState extends State<MainScreenContent>{
     tutorialOpened = true;
     return Future<void>.delayed(const Duration(milliseconds: 1),
             () {
+              gameModel.tutorialOngoing = true;
               DialogData data = DialogData("Le carte", tutorialComponents.tutorialWidget1(), true, "Ok!", tutorialComponents.buttonCallback1);
               gameModel.setDialogData(data);
   });}

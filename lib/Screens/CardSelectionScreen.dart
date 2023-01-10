@@ -141,10 +141,20 @@ class CardSelectionState extends State<CardSelectionScreen>
     double pivotPointY = screenHeight * 0.4;
 
     //todo: sistema il giro delle carte perchè c'è sempre quella che salta
-
+    //todo: contenuto carte scompare in transizione up
+    //todo: vedere se riesci a diminuire i rebuild innutili qui, magaru scorpora in più components
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
-      if(playerCards!=gameModel.playerCards && buildEnded){
+      var playerCardsCodes = playerCards.map((e) => e!.code).toList();
+      var gameModelCardsCodes = gameModel.playerCards.map((e) => e!.code).toList();
+      var matchingCardsCodes = gameModelCardsCodes.where((element) => playerCardsCodes.contains(element)).length;
+      var cardCodesInScreen = playerCardsCodes.where((element) => element!="void").length;
+
+      print("cond 1: ${matchingCardsCodes!=cardCodesInScreen}");
+      print("screen codes: ${playerCardsCodes}");
+      print("matching codes: ${matchingCardsCodes}");
+
+      if((matchingCardsCodes!=cardCodesInScreen && buildEnded) || cardCodesInScreen==0){
         List<CardData?> cardsList = gameModel.playerCards;
         if(cardsList.length < 6){
           for(int i = cardsList.length; i<6; i++){
@@ -154,7 +164,8 @@ class CardSelectionState extends State<CardSelectionScreen>
                 gameModel.playerLevelCounter));
           }
         }
-        setPlayerCards(cardsList);
+        print("player cards in model: ${gameModel.playerCards.map((e) => e!.code).toList().toString()}");
+        firstCardsDataBinding(cardsList!);
       }
 
       if(!gameModel.tutorialOngoing && !openingAnimDone){
@@ -162,14 +173,10 @@ class CardSelectionState extends State<CardSelectionScreen>
         triggerOpeningAnim();
       }
 
-
-      if(!triggerIndexing){
-        firstCardsDataBinding(playerCards!);
-      }
-
       if(gameModel.playerTimerCountdown == null && rotationSense== rotVersus.Up){
-        animateToStart(gameModel.playerCards);
+        animateToStart(playerCards!);
       }
+
       return Material(color: Colors.white,
       child:
       Stack(alignment: Alignment.centerRight,
@@ -290,23 +297,26 @@ class CardSelectionState extends State<CardSelectionScreen>
           child: Center(child: Lottie.asset('assets/animations/InfoIcon.json',
               width: screenWidth * 0.35,
               height: screenWidth * 0.35,
-              animate: !gameModel.tutorialOngoing)),
+              animate: /*!gameModel.tutorialOngoing*/ false)),
         ))
       ],));
     });
   }
 
-  void firstCardsDataBinding(List<CardData?> playerCards){
+  void firstCardsDataBinding(List<CardData?> cardsList){
+    Map<String, CardData?> avatarMap = {};
     int counter = 0;
     for(final entry in cardsAngleMap.entries){
-      if(entry.value.toInt() != 180 && counter < playerCards.length){
-        cardsDataMap[entry.key] = playerCards[counter];
+      if(entry.value.toInt() != 180 && counter < cardsList.length){
+        avatarMap[entry.key] = cardsList[counter];
         counter++;
       }
       else{
-        cardsDataMap[entry.key] = null;
+        avatarMap[entry.key] = null;
       }
     }
+    playerCards = cardsList;
+    newCardsData(avatarMap);
   }
 
   void updateCardsData(List<CardData?> playerCards){
@@ -521,7 +531,7 @@ class CardSelectionState extends State<CardSelectionScreen>
        }
   }
 
-  void animateToStart(List<CardData>? playerCards){
+  void animateToStart(List<CardData?> playerCards){
     //se il timer del player finisce con la card up la faccio tornare in down, ma anche se il player gioca
     for (String key in cardsAngleMap.keys){
       Matrix4 oldMatrix = cardsTransformMap[key]!;
@@ -544,9 +554,6 @@ class CardSelectionState extends State<CardSelectionScreen>
       controller.forward(from: 0);
     }
     rotationSense = rotVersus.Down;
-    if(playerCards!=null){
-      firstCardsDataBinding(playerCards);
-    }
   }
 
   Future<void> triggerOpeningAnim() async{
@@ -557,11 +564,11 @@ class CardSelectionState extends State<CardSelectionScreen>
     }});
   }
 
-  Future<void> setPlayerCards(List<CardData?> cardsList) async{
+  Future<void> newCardsData(Map<String, CardData?> avatarMap) async{
     return Future<void>.delayed(const Duration(milliseconds: 100),
             () {
               setState(() {
-                playerCards = cardsList;
+                cardsDataMap = avatarMap;
               });
          });
   }

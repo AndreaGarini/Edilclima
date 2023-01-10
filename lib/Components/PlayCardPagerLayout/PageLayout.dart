@@ -69,15 +69,15 @@ class PageLayoutState extends State<PageLayout>{
     if(widget.crd?.type != null){
       switch (widget.crd!.type){
         case cardType.Energy: {
-          lottieWidget = Lottie.asset('assets/animations/solarpanel.json');
+          lottieWidget = Lottie.asset('assets/animations/solarpanel.json', animate: false);
         }
         break;
         case cardType.Pollution: {
-          lottieWidget = Lottie.asset('assets/animations/55131-grow-your-forest.json');
+          lottieWidget = Lottie.asset('assets/animations/55131-grow-your-forest.json', animate: false);
         }
         break;
         case cardType.Research: {
-          lottieWidget = Lottie.asset('assets/animations/100337-research-lottie-animation.json');
+          lottieWidget = Lottie.asset('assets/animations/100337-research-lottie-animation.json', animate: false);
         }
         break;
       }

@@ -91,9 +91,11 @@ final router = GoRouter(
               parentNavigatorKey: rootNavigatorKey,
               builder: (context, state) => SplashScreen(),
         ),
-        GoRoute(
+      ]
+    ),
+      GoRoute(
           path: 'matchMakingScreen',
-            parentNavigatorKey: rootNavigatorKey,
+          parentNavigatorKey: rootNavigatorKey,
           builder: (context, state) => MatchMakingScreen(),
           routes: [
             GoRoute(
@@ -102,9 +104,7 @@ final router = GoRouter(
               builder: (context, state) => GameBoardScreen(),
             ),
           ]
-        ),
-      ]
-    ),
+      ),
   ],
 )]);
 

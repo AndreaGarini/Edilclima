@@ -1,4 +1,5 @@
 
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -93,8 +94,8 @@ with TickerProviderStateMixin{
   void calculateNewBarRatio(GameModel gameModel){
           switch (widget.barType){
             case "smog": {
-              barColorStart = Colors.red;
-              barColorEnd = Colors.redAccent;
+              barColorStart = lightOrangePalette.withAlpha(128);
+              barColorEnd = lightOrangePalette;
               if(gameModel.teamStats[widget.team]?.smog == null){
                   endChartBarRatio = 0;
               }
@@ -104,8 +105,8 @@ with TickerProviderStateMixin{
             }
             break;
             case "energy": {
-              barColorStart = Colors.cyan;
-              barColorEnd = Colors.cyanAccent;
+              barColorStart = darkBluePalette.withAlpha(128);
+              barColorEnd = darkBluePalette;
               if(gameModel.teamStats[widget.team]?.energy == null){
                   endChartBarRatio = 0;
               }
@@ -115,8 +116,8 @@ with TickerProviderStateMixin{
             }
             break;
             case "comfort": {
-              barColorStart = Colors.green;
-              barColorEnd = Colors.greenAccent;
+              barColorStart = lightBluePalette.withAlpha(128);
+              barColorEnd = lightBluePalette;
               if(gameModel.teamStats[widget.team]?.comfort == null){
                   endChartBarRatio = 0;
               }

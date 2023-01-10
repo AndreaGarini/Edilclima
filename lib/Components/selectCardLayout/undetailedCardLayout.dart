@@ -3,6 +3,7 @@ import 'dart:core';
 
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
+import 'package:edilclima_app/Components/selectCardLayout/HorizontalStatsCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/elusive_icons.dart';
@@ -30,15 +31,15 @@ class UndetailedCardLayout extends StatelessWidget {
     if (cardData!= null && cardData!.code != "void"){
       switch (cardData!.type){
         case cardType.Energy: {
-          lottieWidget = Lottie.asset('assets/animations/solarpanel.json', animate: animate);
+          lottieWidget = Lottie.asset('assets/animations/solarpanel.json', animate: false);
         }
         break;
         case cardType.Pollution: {
-          lottieWidget = Lottie.asset('assets/animations/55131-grow-your-forest.json',animate: animate);
+          lottieWidget = Lottie.asset('assets/animations/55131-grow-your-forest.json',animate: false);
         }
         break;
         case cardType.Research: {
-          lottieWidget = Lottie.asset('assets/animations/100337-research-lottie-animation.json', animate: animate);
+          lottieWidget = Lottie.asset('assets/animations/100337-research-lottie-animation.json', animate: false);
         }
         break;
       }
@@ -60,8 +61,8 @@ class UndetailedCardLayout extends StatelessWidget {
                     colors: [
                       darkBluePalette,
                       lightBluePalette,
-                      backgroundGreen,
-                      backgroundGreen,
+                      Colors.white,
+                      Colors.white,
                       lightOrangePalette,
                       darkOrangePalette,
                     ],
@@ -75,48 +76,27 @@ class UndetailedCardLayout extends StatelessWidget {
                 child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    const Spacer(),
-                    Expanded(flex: 1, child: StylizedText(darkBluePalette, cardData!.code, null, FontWeight.bold)),
-                    Expanded(flex: 5, child: lottieWidget),
-                    Expanded(flex: 5, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                    const Spacer(flex: 1),
+                    Expanded(flex: 2, child: StylizedText(darkBluePalette, cardData!.code, null, FontWeight.bold)),
+                    Divider(indent: screenWidth * 0.1, endIndent: screenWidth * 0.1, color: darkBluePalette, thickness: 1),
+                    Expanded(flex: 10, child: lottieWidget),
+                    Expanded(flex: 10, child:
+                    Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center, children: [
-                          const Spacer(),
                           Expanded(flex: 10, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center, children: [
                               Expanded(flex: 5, child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max,
                                   crossAxisAlignment: CrossAxisAlignment.end, children: [
-                                    Expanded(flex: 1, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.end, children: [
-                                          Icon(Icons.home, color: lightBluePalette),
-                                          StylizedText(darkBluePalette, " : ", null, FontWeight.normal),
-                                          StylizedText(darkBluePalette, "${cardData!.comfort}", null, FontWeight.bold)])),
-                                    Expanded(flex: 1, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.end, children: [
-                                          Icon(Elusive.leaf, color: lightOrangePalette),
-                                          StylizedText(darkBluePalette, " : ", null, FontWeight.normal),
-                                          StylizedText(darkBluePalette, "${cardData!.smog}", null, FontWeight.bold)
-                                        ])),
-                                  ]),),
-                              const Spacer(flex: 2),
+                                    Expanded(flex: 1, child: HorizontalStatsCard("comfort", cardData!.comfort)),
+                                    Expanded(flex: 1, child: HorizontalStatsCard("smog", cardData!.smog)),
+                                  ])),
                               Expanded(flex: 5, child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end,
                                 crossAxisAlignment: CrossAxisAlignment.end, children: [
-                                  Expanded(flex: 1, child:  Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.end, children: [
-                                        Icon(ModernPictograms.dollar, color: darkOrangePalette),
-                                        StylizedText(darkBluePalette, " : ", null, FontWeight.normal),
-                                        StylizedText(darkBluePalette, cardData!.money.toString(), null, FontWeight.bold)
-                                      ])),
-                                  Expanded(flex: 1, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.end, children: [
-                                        Icon(Elusive.lightbulb, color: darkBluePalette),
-                                        StylizedText(darkBluePalette, " : ", null, FontWeight.normal),
-                                        StylizedText(darkBluePalette, "${cardData!.energy}", null, FontWeight.bold)
-                                      ])),
+                                  Expanded(flex: 1, child: HorizontalStatsCard("money", cardData!.money)),
+                                  Expanded(flex: 1, child: HorizontalStatsCard("energy", cardData!.energy)),
                                 ],),),
                             ],)),
-                          const Spacer()
                         ])),
-                    const Spacer()
                   ],)
             )
         );

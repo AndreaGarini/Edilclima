@@ -1,5 +1,7 @@
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:edilclima_app/Components/generalFeatures/SizedButton.dart';
+import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
+import 'package:edilclima_app/Screens/WaitingScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -32,7 +34,7 @@ class MatchMakingState extends State<MatchMakingScreen> {
           return  Expanded(flex: 1,
               child: SizedButton(
                   currentWidth * 0.4, "Start match", () {
-                context.go("/gameBoardScreen");
+                context.go("/initialScreen/matchMakingScreen/gameBoardScreen");
               }));
         }
         else {
@@ -51,6 +53,24 @@ class MatchMakingState extends State<MatchMakingScreen> {
           mainAxisSize: MainAxisSize.max,
 
           children: [
+            Expanded(
+              flex: 1, child: Row(crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  const Spacer(),
+                  Expanded(flex: 4,
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        const Spacer(flex: 1,),
+                        Expanded(flex: 1,
+                            child: StylizedText(darkBluePalette, "connected players : ${gameModel.playerCounter}",
+                                screenWidth * 0.05, FontWeight.normal)),
+                        const Spacer(flex: 1,)
+                      ],),),
+                  const Spacer(flex: 2)
+                ]
+            ),),
             Expanded(
               flex: 1, child: Row(crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
@@ -75,27 +95,7 @@ class MatchMakingState extends State<MatchMakingScreen> {
               flex: 1, child: Row(crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Spacer(),
-                  Expanded(flex: 4,
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        const Spacer(flex: 1,),
-                        Expanded(flex: 1,
-                            child: FittedBox(fit: BoxFit.fitWidth, child:
-                            DefaultTextStyle(style: TextStyle(color: Colors
-                                .black),
-                                child: Text("connected players : ${gameModel.playerCounter}")))),
-                        const Spacer(flex: 1,)
-                      ],),),
-                  Spacer(flex: 2)
-                ]
-            ),),
-            Expanded(
-              flex: 1, child: Row(crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Spacer(),
+                  const Spacer(),
                   Expanded(flex: 2,
                     child: Column(crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
@@ -104,7 +104,7 @@ class MatchMakingState extends State<MatchMakingScreen> {
                         dynamicWidget(gameModel.startMatch),
                         const Spacer()
                       ],),),
-                  Spacer()
+                  const Spacer()
                 ]
             ),),
           ]

@@ -64,7 +64,8 @@ class GameModel extends ChangeNotifier{
   }
 
   void setPlayerCounter(){
-    db.child("test").child("players").onValue.listen((event) {
+    db.child("matches").child("test").child("players").onValue.listen((event) {
+      print("player counter called: ${playerCounter}");
       playerCounter = event.snapshot.children.length;
       notifyListeners();
     });
@@ -168,7 +169,7 @@ class GameModel extends ChangeNotifier{
   addPlayedCardsListener() {
     Map<String, Map<String, String>?> avatarMap = {};
 
-    //todo: controlla che giocando una carta o pendendola il numero di moves salga di uno
+    //todo: controlla che giocando una carta o perdendola il numero di moves salga di uno
     for (final team in ["team1", "team2", "team3", "team4"]){
       db.child("matches").child("test").child("teams").child(team).child("playedCards").onValue.listen((event) {
         if(event.snapshot.children.length - 1 != playedCardsPerTeam[team]!.length){

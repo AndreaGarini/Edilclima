@@ -1,21 +1,23 @@
 
 import 'dart:async';
 
+import 'package:edilclima_app/Components/InfoRowComponents/InfoRowDynamicContent.dart';
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
-import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:edilclima_app/GameModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttericon/modern_pictograms_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../Screens/CardSelectionScreen.dart';
-import '../../Screens/WaitingScreen.dart';
 
-bool infoRowDefaultLayout = true;
-pushResult lastPushResult = pushResult.CardDown;
+enum InfoRowLayout{
+  Base, Turn, Invalid, Budget, Research
+}
+
 
 class infoRow extends StatefulWidget{
+
+  int animTime = 700;
 
   @override
   State<infoRow> createState() => infoRowState();
@@ -25,203 +27,150 @@ class infoRow extends StatefulWidget{
 class infoRowState extends State<infoRow> with
     TickerProviderStateMixin{
 
-  late AnimationController indicatorController;
-
-  late final AnimationController slideOutController = AnimationController(
-    duration: const Duration(milliseconds: 700),
+  late AnimationController slideInControllerBase = AnimationController(
+    duration: Duration(milliseconds: widget.animTime),
     vsync: this,
-  )..forward();
+  )..forward(from: 0);
 
-  late final Animation<Offset> offsetAnimationOut = Tween<Offset>(
-    begin: Offset.zero,
-    end: const Offset(1.5, 0.0),
+  late Animation<Offset> offsetAnimationIn = Tween<Offset>(
+    begin: const Offset(-1.1, 0.0),
+    end: Offset.zero,
   ).animate(CurvedAnimation(
-    parent: slideOutController,
-    curve: Curves.easeIn,
+    parent: slideInControllerBase,
+    curve: Curves.linear,
   ));
 
-  late final AnimationController slideInController = AnimationController(
-    duration: const Duration(milliseconds: 700),
+  late final AnimationController slideOutControllerBase = AnimationController(
+    duration: Duration(milliseconds: widget.animTime),
     vsync: this,
   );
 
-  late final Animation<Offset> offsetAnimationIn = Tween<Offset>(
-    begin: const Offset(-1.5, 0.0),
-    end: Offset.zero,
+  late final Animation<Offset> offsetAnimationOut = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(1.1, 0.0),
   ).animate(CurvedAnimation(
-    parent: slideInController,
-    curve: Curves.easeIn,
+    parent: slideOutControllerBase,
+    curve: Curves.linear,
   ));
 
-  @override
-  void initState() {
-    super.initState();
-    indicatorController = AnimationController(vsync: this, duration: const Duration(seconds: 63));
-  }
+  InfoRowLayout toShowLayout = InfoRowLayout.Base;
+  bool animOut = false;
+  bool infoRowDefaultLayout = true;
+  bool readyToAnim = true;
 
-  @override
-  void dispose(){
-    super.dispose();
-    indicatorController.dispose();
-    slideInController.dispose();
-    slideOutController.dispose();
-  }
-
-  timerIndicator(GameModel gameModel){
-    if(gameModel.playerTimerCountdown==null || (gameModel.playerTimerCountdown != null && gameModel.playerTimerCountdown! > 60)){
-      //todo: aggiungere animazione di attesa turno per il counter
-      return const Text("");
+  InfoRowLayout evaluateLayout(pushResult lastPush){
+    if(infoRowDefaultLayout){
+        switch(lastPush){
+          case pushResult.InvalidCard: {
+              return InfoRowLayout.Invalid;
+          }
+          case  pushResult.LowBudget: {
+              return InfoRowLayout.Budget;
+          }
+          case  pushResult.ResearchNeeded: {
+              return InfoRowLayout.Research;
+          }
+          default : {
+              return InfoRowLayout.Base;
+          }
+        }
     }
+
     else{
-      return TweenAnimationBuilder<double>(duration: const Duration(seconds: 63),
-        curve: Curves.easeInOut,
-        tween: Tween<double>(
-          begin: 1,
-          end: 0
-        ),
-        builder: (context, value, _) {
-          var colorAnim = ColorTween(begin: Colors.green, end: Colors.red).animate(indicatorController);
-          indicatorController.value = 1 - value;
-          return LinearProgressIndicator(value: value, valueColor:  colorAnim);
-        });
+        return InfoRowLayout.Turn;
     }
+  }
+
+  void endingLayoutChange (pushResult lastPush){
+      InfoRowLayout newLayout = evaluateLayout(lastPush);
+
+      if(toShowLayout!=newLayout && toShowLayout==InfoRowLayout.Base && readyToAnim){
+        readyToAnim = false;
+        baseLayoutOut(newLayout);
+        animationEnded();
+      }
   }
 
   @override
   Widget build(BuildContext context) {
 
-    //todo: il timer non aggiorna i dati ad ogni secondo, sostituire con progress bar
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
-
-      if(!gameModel.tutorialOngoing){
-        slideInController.forward();
-      }
-
-      offsetAnimationOut.addStatusListener((status){
-        if(status == AnimationStatus.completed){
-          setState(() {
-            lastPushResult = gameModel.push.first() as pushResult;
-          });
-        }
-      });
+      endingLayoutChange(gameModel.push.first() as pushResult);
 
         if (gameModel.playerTimer==null && gameModel.playerTimerCountdown!=null){
-          updateData(gameModel, false);
-          int duration = gameModel.splash ? 63 : 62;
+          infoRowDefaultLayout = false;
+          int duration = 70;
           gameModel.playerTimer = setPlayerTimer(duration, 1, gameModel);
-          Future<void>.delayed(Duration(seconds: duration - 60), () {setState(() {
+          Future<void>.delayed(Duration(milliseconds: widget.animTime * 4), () {
             infoRowDefaultLayout = true;
-          });});
+          });
         }
 
-      dynamicContent(pushResult lastPush) {
-        switch (lastPush) {
-          case pushResult.InvalidCard :
-            {
-              return Row(
-                mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  const Spacer(),
-                  Expanded(flex: 2, child: Card(color: backgroundGreen, child: Center(child:  StylizedText(darkOrangePalette, "Carta non valida",
-                      screenWidth * 0.07, FontWeight.normal)))),
-                  const Spacer()
-                ],
-              );
-            }
-          case pushResult.LowBudget :
-            {
-              return Row(
-                mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  const Spacer(),
-                  Expanded(flex: 2, child: Card(color: backgroundGreen, child: Center(child:  StylizedText(darkOrangePalette, "Budget terminato",
-                      screenWidth * 0.07, FontWeight.normal)))),
-                  const Spacer()
-                ],
-              );
-            }
-          case pushResult.ResearchNeeded :
-            {
-              return Row(
-                mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  const Spacer(),
-                  Expanded(flex: 2, child: Card(color: backgroundGreen, child: Center(child:  StylizedText(darkOrangePalette, "Ricerche richieste: ${gameModel.push.second()}",
-                      screenWidth * 0.07, FontWeight.normal)))),
-                  const Spacer()
-                ],
-              );
-            }
-          default:
-            {
-              if (infoRowDefaultLayout) {
-                return Card(color: backgroundGreen,
-                child: Row(mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, gameModel.team, screenWidth * 0.07, FontWeight.bold))),
-                      Expanded(flex: 1, child: Center(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center, children: [
-                            Icon(ModernPictograms.dollar, color: darkOrangePalette),
-                            SizedBox(width: screenWidth * 0.02),
-                            StylizedText(darkBluePalette, gameModel.teamStats[gameModel.team]?.budget.toString() ?? "", screenWidth * 0.07, FontWeight.bold)
-                          ]))),
-                      Expanded(flex: 1, child: Center(child: Row(
-                        mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Spacer(),
-                          Expanded(flex: 2, child: timerIndicator(gameModel)),
-                          const Spacer()
-                        ],
-                      ))),
-                    ]));
-              }
-              else {
-               return Row(
-                 mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                 crossAxisAlignment: CrossAxisAlignment.end,
-                 children: [
-                   const Spacer(),
-                   Expanded(flex: 2, child: Center(child: StylizedText(darkBluePalette, "Your turn",
-                       screenWidth * 0.07, FontWeight.normal))),
-                   const Spacer()
-                 ],
-               );
-              }
-            }
-        }
-      }
-
-          return
-            Material(
-                color: darkBluePalette,
-                child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center, children: [
-                      Expanded(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center, children: [
-                            const Spacer(),
-                            Expanded(flex: 12, child: lastPushResult == gameModel.push.first() ? SlideTransition(
-                                position: offsetAnimationIn,
-                                child: dynamicContent(lastPushResult)) :
-                            SlideTransition(
-                                position: offsetAnimationOut,
-                                child: dynamicContent(lastPushResult))),
-                            const Spacer()
-                          ])),
-                    ]));
+      return
+        Material(
+            color: darkBluePalette,
+            child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center, children: [
+                  Expanded(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center, children: [
+                        const Spacer(),
+                        Expanded(flex: 12, child: SlideTransition(
+                            position: animOut ? offsetAnimationOut : offsetAnimationIn,
+                            child: InfoRowDynamicContent(toShowLayout))),
+                        const Spacer()
+                      ])),
+                ]));
   });
   }
 
-  Future<void> updateData(GameModel gm, bool stateValue) async{
-    return Future<void>.delayed(const Duration(milliseconds: 100), () {setState(() {
-      infoRowDefaultLayout = stateValue;
-    });});
+  //coroutines per animazioni
+
+  Future<void> baseLayoutOut(InfoRowLayout newLayout) async{
+    newLayoutIn(newLayout);
+    return Future<void>.delayed(const Duration(milliseconds: 100), () {
+      slideOutControllerBase.forward(from: 0);
+      setState(() {
+        animOut = true;
+      });});
+  }
+
+
+  Future<void> newLayoutIn(InfoRowLayout newLayout) async{
+    newLayoutOut();
+    return Future<void>.delayed(Duration(milliseconds: widget.animTime + 100), () {
+      slideInControllerBase.forward(from: 0);
+      setState(() {
+        animOut = false;
+        toShowLayout = newLayout;
+      });});
+  }
+
+
+  Future<void> newLayoutOut() async{
+    returnToBaseLayout();
+    return Future<void>.delayed(Duration(milliseconds: widget.animTime * 2 + 1000), () {
+      slideOutControllerBase.forward(from: 0);
+      setState(() {
+        animOut = true;
+      });
+    });
+  }
+
+  Future<void> returnToBaseLayout() async{
+    return Future<void>.delayed(Duration(milliseconds: widget.animTime * 3 + 1000), () {
+      slideInControllerBase.forward(from: 0);
+     setState(() {
+       toShowLayout = InfoRowLayout.Base;
+       animOut = false;
+     });
+    });
+  }
+
+  Future<void> animationEnded() async{
+    return Future<void>.delayed(Duration(milliseconds: widget.animTime * 4 + 1000), () {
+      readyToAnim = true;
+    });
   }
 
   Timer setPlayerTimer(int timeToFinish, int TickInterval, GameModel gm){
