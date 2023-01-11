@@ -37,8 +37,8 @@ class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
              crossAxisAlignment: CrossAxisAlignment.end,
              children: [
                const Spacer(),
-               Expanded(flex: 2, child: Card(color: backgroundGreen, child: Center(child:  StylizedText(darkOrangePalette, "Carta non valida",
-                   screenWidth * 0.07, FontWeight.normal)))),
+               Expanded(flex: 8, child: Card(color: backgroundGreen, child: Center(child:  StylizedText(darkOrangePalette, "Carta non valida",
+                   screenWidth * 0.05, FontWeight.normal)))),
                const Spacer()
              ],
            );
@@ -50,8 +50,8 @@ class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
              crossAxisAlignment: CrossAxisAlignment.end,
              children: [
                const Spacer(),
-               Expanded(flex: 2, child: Card(color: backgroundGreen, child: Center(child:  StylizedText(darkOrangePalette, "Budget terminato",
-                   screenWidth * 0.07, FontWeight.normal)))),
+               Expanded(flex: 8, child: Card(color: backgroundGreen, child: Center(child:  StylizedText(darkOrangePalette, "Budget terminato",
+                   screenWidth * 0.05, FontWeight.normal)))),
                const Spacer()
              ],
            );
@@ -63,8 +63,8 @@ class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
              crossAxisAlignment: CrossAxisAlignment.end,
              children: [
                const Spacer(),
-               Expanded(flex: 2, child: Card(color: backgroundGreen, child: Center(child:  StylizedText(darkOrangePalette, "Ricerche richieste: ${gameModel.push.second()}",
-                   screenWidth * 0.07, FontWeight.normal)))),
+               Expanded(flex: 8, child: Card(color: backgroundGreen, child: Center(child:  StylizedText(darkOrangePalette, "Gioca prima: ${gameModel.push.second()}",
+                   screenWidth * 0.05, FontWeight.normal)))),
                const Spacer()
              ],
            );
@@ -100,7 +100,7 @@ class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
            children: [
              const Spacer(),
              Expanded(flex: 2, child: Card(color: backgroundGreen, child: Center(child: StylizedText(darkOrangePalette, "Your turn",
-                 screenWidth * 0.07, FontWeight.normal)))),
+                 screenWidth * 0.06, FontWeight.bold)))),
              const Spacer()
            ],
          );

@@ -1,5 +1,5 @@
 
-import 'package:edilclima_app/DataClasses/DialogData.dart';
+import 'package:edilclima_app/Components/generalFeatures/SizedButton.dart';
 import 'package:edilclima_app/GameModel.dart';
 import 'package:edilclima_app/Screens/WaitingScreen.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,11 +9,22 @@ import 'package:fluttericon/elusive_icons.dart';
 import 'ColorPalette.dart';
 import 'StylizedText.dart';
 
-class TutorialComponents {
+class TutorialComponents extends StatefulWidget {
 
+  //todo: stile della dialog da sistemare e dialog da arrotondare
   GameModel gameModel;
+  Function? closeTutorialCallback;
 
-  TutorialComponents(this.gameModel);
+  TutorialComponents(this.gameModel, this.closeTutorialCallback);
+
+  @override
+  State<StatefulWidget> createState() => TutorialComponentsState();
+}
+
+class TutorialComponentsState extends State<TutorialComponents> {
+
+  late Widget tutorialScreen;
+  late Function currentCallback;
 
   String textWidget1 = "Le carte simboleggiano le mosse che è possibile effettuare. \n Ogni carta presenta delle icone che indicano : ";
 
@@ -46,7 +57,7 @@ class TutorialComponents {
                     crossAxisAlignment: CrossAxisAlignment.center, children: [
                       Expanded(flex: 1, child: Icon(Elusive.lightbulb, color: darkBluePalette, size: screenWidth * 0.1),),
                       Expanded(flex: 4, child: Center(child: StylizedText(darkBluePalette, " : l' impatto energetico", screenWidth * 0.04, FontWeight.normal),))
-                    ]))
+                    ])) ,
               ])),
         ]);
   }
@@ -58,9 +69,9 @@ class TutorialComponents {
           const Spacer(),
           Expanded(flex: 8, child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center, children: [
-                Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, textWidget2, screenWidth * 0.04, FontWeight.normal))),
+                Expanded(flex: 5, child: Center(child: StylizedText(darkBluePalette, textWidget2, screenWidth * 0.04, FontWeight.normal))),
+                const Spacer()
               ])),
-          const Spacer()
         ]);
   }
 
@@ -105,16 +116,43 @@ class TutorialComponents {
   }
 
   void buttonCallback1 (){
-    DialogData data = DialogData("Possibili azioni", tutorialWidget2(), true, "Ok!", buttonCallback2);
-    gameModel.setDialogData(data);
+    setState((){
+      tutorialScreen = tutorialWidget2();
+    });
+    currentCallback = buttonCallback2;
   }
 
   void buttonCallback2 (){
-    DialogData data = DialogData("Sfogliare le carte", tutorialWidget3(), true, "Ok!", buttonCallback3);
-    gameModel.setDialogData(data);
+    setState(() {
+      tutorialScreen = tutorialWidget3();
+    });
+    currentCallback = closingCallback;
   }
 
-  void buttonCallback3 (){
-    gameModel.endTutorialAndNotify();
+
+  void closingCallback (){
+    if(widget.closeTutorialCallback!=null){
+      widget.closeTutorialCallback!();
+    }
+    widget.gameModel.endTutorialAndNotify();
   }
+
+  @override
+  void initState() {
+    super.initState();
+
+    tutorialScreen = tutorialWidget1();
+    currentCallback = buttonCallback1;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max,
+    crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Expanded(flex: 8, child: tutorialScreen),
+        Expanded(flex: 2, child: Center(child: SizedButton(screenWidth * 0.3, "Ok!", () {currentCallback.call();})))
+      ],);
+  }
+
 }

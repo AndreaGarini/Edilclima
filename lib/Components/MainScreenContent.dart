@@ -28,6 +28,7 @@ class MainScreenContentState extends State<MainScreenContent>{
 
   bool tutorialOpened = false;
   DialogData? lastDialogData;
+  late TutorialComponents tutorialComponents;
 
   @override
   Widget build(BuildContext parentContext) {
@@ -35,7 +36,8 @@ class MainScreenContentState extends State<MainScreenContent>{
     //todo: dialog ancora appaiono 2 volte
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
-      var tutorialComponents = TutorialComponents(gameModel);
+      tutorialComponents = TutorialComponents(gameModel,
+              (){Navigator.of(parentContext).pop(); });
 
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         if(gameModel.playerLevelCounter == 1
@@ -63,11 +65,13 @@ class MainScreenContentState extends State<MainScreenContent>{
     });
   }
 
-  Future<void> openDialog(BuildContext context, DialogData data, GameModel gameModel){
+  Future<void> openDialog(BuildContext context,
+      DialogData data,
+      GameModel gameModel){
 
     return showDialog<void>(context: context, builder: (BuildContext context){
 
-      if(!data.addButton)
+      if(!data.buttonAdded)
         {
           Future.delayed(const Duration(seconds: 2), () {
             gameModel.setDialogData(null);
@@ -76,8 +80,7 @@ class MainScreenContentState extends State<MainScreenContent>{
           return Dialog(child: Center(child:
             AnimatedGradient(data.title, screenWidth * 0.4, 1500, 'Inspiration', false)));
         }
-
-      else {
+      else{
         return Dialog(child: Column(mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -87,7 +90,7 @@ class MainScreenContentState extends State<MainScreenContent>{
                 Expanded( child: Center(child: StylizedText(darkBluePalette, data.title, screenWidth * 0.08, FontWeight.bold))),
               ],
             )),
-            Expanded(flex: 6, child: Row(mainAxisSize: MainAxisSize.max,
+            Expanded(flex: 8, child: Row(mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Spacer(),
@@ -95,12 +98,6 @@ class MainScreenContentState extends State<MainScreenContent>{
                 const Spacer()
               ],
             )),
-            const Spacer(),
-            data.addButton ? SizedButton(screenWidth * 0.5, data.buttonText!,
-                        (){ Navigator.of(context).pop();
-                data.buttonCallback!.call(); })
-                : const Spacer(),
-            const Spacer()
           ],
         ));
       }
@@ -113,8 +110,7 @@ class MainScreenContentState extends State<MainScreenContent>{
     tutorialOpened = true;
     return Future<void>.delayed(const Duration(milliseconds: 1),
             () {
-              gameModel.tutorialOngoing = true;
-              DialogData data = DialogData("Le carte", tutorialComponents.tutorialWidget1(), true, "Ok!", tutorialComponents.buttonCallback1);
+              DialogData data = DialogData("Le carte", tutorialComponents, true);
               gameModel.setDialogData(data);
   });}
 

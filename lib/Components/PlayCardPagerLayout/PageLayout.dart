@@ -32,9 +32,12 @@ class PageLayoutState extends State<PageLayout>{
 
     String res = "";
 
-    gameModel.gameLogic.findCard(playableCard)?.resCard?.forEach((element) { res = res + element;});
-    bool allResPlayed = res=="" ? true : false;
+    //così prendo tutte le ricerch necessarie ma non ci stanno nella info row
+    //gameModel.gameLogic.findCard(playableCard)?.resCard?.forEach((element) { res = res + element;});
 
+    //così prendo solo la prima
+    res = res + (gameModel.gameLogic.findCard(playableCard)?.resCard?.first ?? "");
+    bool allResPlayed = res == "" ? true : false;
     return Pair(!((resNeeded && allResPlayed) || !resNeeded), res);
   }
 
@@ -44,11 +47,15 @@ class PageLayoutState extends State<PageLayout>{
     def() {
       var budget = gameModel.getBudgetSnapshot(
           gameModel.playedCardsPerTeam[gameModel.team]!.values.toList());
+
       if (gameModel.gameLogic.findCard(playableCard)!.money < budget) {
-        gameModel.playCardInPos(widget.index, playableCard);
-        gameModel.changePushValue(Pair(pushResult.CardDown, null));
-        gameModel.stopPlayerTimer();
-        gameModel.setTimeOutTrue();
+
+        if(gameModel.playCardInPosCheck(widget.index, playableCard)){
+          gameModel.changePushValue(Pair(pushResult.CardDown, null));
+          gameModel.stopPlayerTimer();
+          gameModel.setTimeOutTrue();
+        }
+
       }
       else {
         gameModel.changePushValue(Pair(pushResult.LowBudget, null));
@@ -88,7 +95,7 @@ class PageLayoutState extends State<PageLayout>{
         child:  Container(
         decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
         boxShadow: [ BoxShadow(
-        color: darkGreyPalette.withOpacity(0.5),
+        color: lightBluePalette.withOpacity(0.4),
         spreadRadius: 1,
         blurRadius: 6,
         offset: const Offset(0, 0), // changes position of shadow
@@ -110,8 +117,8 @@ class PageLayoutState extends State<PageLayout>{
         Card(shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0)),
             color: backgroundGreen,
-            shadowColor: darkGreyPalette,
-            elevation: 10,
+            shadowColor: lightBluePalette,
+            elevation: 1,
             child: Center(child: widget.crd?.code!=null ?
              lottieWidget :
             ShinyContent(Text("Click to play card",
@@ -124,18 +131,14 @@ class PageLayoutState extends State<PageLayout>{
   Widget build(BuildContext context) {
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
-      return Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center, children: [
-          Expanded(flex: 1, child:
+      return
           Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, widget.crd?.code ?? "no card", null, FontWeight.bold))),
               Expanded(flex: 4, child: SizedBox(width: screenWidth * 0.45 * 1.3, child: clickableCard(gameModel))),
               const Spacer(flex: 2)
-            ],)),
-
-        ],);
+            ],);
     });
   }
 

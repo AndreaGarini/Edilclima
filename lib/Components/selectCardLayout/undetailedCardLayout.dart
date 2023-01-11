@@ -6,11 +6,8 @@ import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:edilclima_app/Components/selectCardLayout/HorizontalStatsCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttericon/elusive_icons.dart';
-import 'package:fluttericon/modern_pictograms_icons.dart';
 import 'package:lottie/lottie.dart';
 import '../../DataClasses/CardData.dart';
-import '../../Screens/CardSelectionScreen.dart';
 import '../../Screens/WaitingScreen.dart';
 import '../generalFeatures/GradientText.dart';
 
@@ -44,13 +41,13 @@ class UndetailedCardLayout extends StatelessWidget {
         break;
       }
 
-      if(angle == 0 && !ongoingAnimation){
+      if(angle == 0){
         return Container(
             width: screenWidth * 0.45,
             height: screenHeight * 0.35,
             decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
                 boxShadow: [ BoxShadow(
-                  color: darkGreyPalette.withOpacity(0.5),
+                  color: lightOrangePalette.withOpacity(0.6),
                   spreadRadius: 1,
                   blurRadius: 6,
                   offset: const Offset(0, 0), // changes position of shadow
@@ -107,7 +104,7 @@ class UndetailedCardLayout extends StatelessWidget {
             height: screenHeight * 0.35,
             decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
                 boxShadow: [ BoxShadow(
-                  color: darkGreyPalette.withOpacity(0.5),
+                  color: darkBluePalette.withOpacity(0.2),
                   spreadRadius: 1,
                   blurRadius: 6,
                   offset: const Offset(0, 0), // changes position of shadow
@@ -147,9 +144,9 @@ class UndetailedCardLayout extends StatelessWidget {
           height: screenHeight * 0.35,
           decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
               boxShadow: [ BoxShadow(
-                color: darkGreyPalette.withOpacity(0.5),
-                spreadRadius: 1,
-                blurRadius: 6,
+                color: darkBluePalette.withOpacity(0.2),
+                spreadRadius: 0.5,
+                blurRadius: 3,
                 offset: const Offset(0, 0), // changes position of shadow
               )],
               gradient:  LinearGradient(

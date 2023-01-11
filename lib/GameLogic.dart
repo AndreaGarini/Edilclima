@@ -86,21 +86,6 @@ class GameLogic {
     CardsMap = { for (var e in CardsList) e.code : e };
   }
 
-  //todo: non più utilizzata, quindi puoi eliminarla
-  Timer setPlayerTimer(int timeToFinish, int TickInterval, Function onTick, Function onFinish){
-    var counter = timeToFinish;
-    var playerTimer = Timer.periodic(Duration(seconds: TickInterval), (timer) {
-      onTick();
-      counter--;
-      if (counter == 0) {
-        onFinish();
-        timer.cancel();
-      }
-    });
-
-    return playerTimer;
-  }
-
   void setLevelTimer(Function onTick, Function onFinish){
     var counter = 420;
     var levelTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -212,12 +197,17 @@ class GameLogic {
       int targetReachedPoints = 200;
       int movesNegPoints = 5;
 
-      //todo: qui potresti ottenere dei null check (sulle playedCardDatas ma anche sulla zone), per cui se serve rendi le variabili nullable
+      print("played cards in evaluate points: ${map.values}");
+      //todo: qui potresti ottenere dei null (sulle playedCardDatas ma anche sulla zone), per cui se serve rendi le variabili nullable
 
       int budget = zoneMap[level]!.budget;
+      print("budget in evaluate points: ${budget}");
       for (final value in map.values) {
+        print("card code in evaluate points: ${CardsMap[value]!.code}");
+        print("card cost: ${CardsMap[value]!.money}");
         budget += CardsMap[value]!.money;
       }
+      print("budget after costs: ${budget}");
 
       int energy = zoneMap[level]!.initEnergy;
       for (final value in map.values) {
@@ -231,7 +221,7 @@ class GameLogic {
 
       int comfort = zoneMap[level]!.initComfort;
       for (final value in map.values) {
-        budget += CardsMap[value]!.comfort;
+        comfort += CardsMap[value]!.comfort;
       }
 
       if (energy > zoneMap[level]!.TargetE) points += targetReachedPoints;

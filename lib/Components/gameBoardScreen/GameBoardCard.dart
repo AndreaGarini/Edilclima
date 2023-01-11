@@ -37,7 +37,7 @@ class GameBoardCardState extends State<GameBoardCard> {
             ],)),
             //qui la zona per le carte giocate
             const Expanded(flex: 2, child: Text("ckjhj"))
-          ],));
+          ]));
   }
 
 }

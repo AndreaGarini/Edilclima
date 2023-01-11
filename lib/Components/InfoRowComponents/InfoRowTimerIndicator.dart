@@ -15,13 +15,15 @@ class InfoRowTimerIndicator extends StatefulWidget{
 class InfoRowTimerIndicatorState extends State<InfoRowTimerIndicator>
   with SingleTickerProviderStateMixin{
 
-  //todo: timer riparte da 0 quando ritorna il layout di default post animazione
-
   late AnimationController indicatorController;
+  late bool timerBeginSetted;
+  late double timerBegin;
+  late int timerDuration;
 
   @override
   void initState() {
     super.initState();
+    timerBeginSetted = false;
     indicatorController = AnimationController(vsync: this, duration: const Duration(seconds: 63));
   }
 
@@ -38,14 +40,20 @@ class InfoRowTimerIndicatorState extends State<InfoRowTimerIndicator>
     return Consumer<GameModel>(builder: (context, gameModel, child){
 
         if(gameModel.playerTimerCountdown==null || (gameModel.playerTimerCountdown != null && gameModel.playerTimerCountdown! > 60)){
-          //todo: aggiungere animazione di attesa turno per il counter
           return const Text("");
         }
         else{
+
+          if(!timerBeginSetted){
+            timerBeginSetted = true;
+            timerBegin = gameModel.playerTimerCountdown!/62;
+            timerDuration = (62 * timerBegin).toInt();
+          }
+
           return TweenAnimationBuilder<double>(duration: const Duration(seconds: 63),
               curve: Curves.easeInOut,
               tween: Tween<double>(
-                  begin: 1,
+                  begin: timerBegin,
                   end: 0
               ),
               builder: (context, value, _) {

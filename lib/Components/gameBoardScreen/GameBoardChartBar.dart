@@ -94,7 +94,7 @@ with TickerProviderStateMixin{
   void calculateNewBarRatio(GameModel gameModel){
           switch (widget.barType){
             case "smog": {
-              barColorStart = lightOrangePalette.withAlpha(128);
+              barColorStart = lightOrangePalette.withAlpha(200);
               barColorEnd = lightOrangePalette;
               if(gameModel.teamStats[widget.team]?.smog == null){
                   endChartBarRatio = 0;
@@ -105,7 +105,7 @@ with TickerProviderStateMixin{
             }
             break;
             case "energy": {
-              barColorStart = darkBluePalette.withAlpha(128);
+              barColorStart = darkBluePalette.withAlpha(200);
               barColorEnd = darkBluePalette;
               if(gameModel.teamStats[widget.team]?.energy == null){
                   endChartBarRatio = 0;
@@ -116,7 +116,7 @@ with TickerProviderStateMixin{
             }
             break;
             case "comfort": {
-              barColorStart = lightBluePalette.withAlpha(128);
+              barColorStart = lightBluePalette.withAlpha(200);
               barColorEnd = lightBluePalette;
               if(gameModel.teamStats[widget.team]?.comfort == null){
                   endChartBarRatio = 0;

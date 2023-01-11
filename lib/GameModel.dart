@@ -130,7 +130,7 @@ class GameModel extends ChangeNotifier{
     push = newPush;
     pushCoroutine!=null ? pushCoroutine!.ignore() : (){};
     if(newPush.first()!=pushResult.CardDown){
-      pushCoroutine = Future<void>.delayed(const Duration(seconds: 2),
+      pushCoroutine = Future<void>.delayed(const Duration(seconds: 5),
               () {push = Pair(pushResult.CardDown, null); notifyListeners();})
           .whenComplete(() => pushCoroutine = null);
     }
@@ -293,7 +293,7 @@ class GameModel extends ChangeNotifier{
             }
             break;
             case"play" : {
-              setDialogData(DialogData("level $playerLevelCounter", null, false, null, null));
+              setDialogData(DialogData("level $playerLevelCounter", null, false));
             }
             break;
           }
@@ -360,14 +360,18 @@ class GameModel extends ChangeNotifier{
   }
 
   void createPlayerTimer(Timer timer){
-    playerTimer = timer;
+    if(playerTimer==null){
+      playerTimer = timer;
+      notifyListeners();
+    }
   }
 
   void playerTimerOnTick(){
+    //todo: se qualcosa nella row non funziona sul timer il problema potrebbe essere il notify listener commentato
     if (playerTimerCountdown!=null){
       //se non è ancora finito il tempo di livello eseguo
       playerTimerCountdown = playerTimerCountdown! - 1;
-      notifyListeners();
+      //notifyListeners();
     }
   }
 
@@ -384,13 +388,23 @@ class GameModel extends ChangeNotifier{
   }
 
   void setTimeOutTrue() async {
-
     await db.child("matches").child("test").child("teams").child(team)
         .child("ableToPlay").set("");
   }
 
-  void playCardInPos(int pos, String cardCode) async{
+  bool playCardInPosCheck(int pos, String cardCode){
+    //todo: aggiungere un feedback se provi a giocare una carta in una pos occupata?
+    String month = gameLogic.months[pos];
+    if(!playedCardsPerTeam[team]!.keys.contains(month)){
+      playCardInPos(pos, cardCode);
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
 
+  void playCardInPos(int pos, String cardCode) async{
     await db.child("matches").child("test").child("teams").child(team)
         .child("playedCards").child(gameLogic.months[pos]).set(cardCode).
     then((value) => {

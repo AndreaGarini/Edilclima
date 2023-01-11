@@ -57,6 +57,7 @@ class CardSelectionState extends State<CardSelectionScreen>
     with TickerProviderStateMixin {
 
   late bool triggerIndexing;
+  late bool firstBinding;
 
   @override
   void initState() {
@@ -65,6 +66,7 @@ class CardSelectionState extends State<CardSelectionScreen>
     openingAnimDone = false;
     ongoingAnimation = false;
     triggerIndexing = false;
+    firstBinding = false;
     buildEnded = false;
     counter = 0;
 
@@ -96,12 +98,12 @@ class CardSelectionState extends State<CardSelectionScreen>
     cardsTransformMap["fifthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["fifthCard"]!));
     cardsTransformMap["sixthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["sixthCard"]!));
 
-    cardsControllerMap["firstCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 700));
-    cardsControllerMap["secondCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 700));
-    cardsControllerMap["thirdCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 700));
-    cardsControllerMap["fourthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 700));
-    cardsControllerMap["fifthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 700));
-    cardsControllerMap["sixthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 700));
+    cardsControllerMap["firstCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    cardsControllerMap["secondCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    cardsControllerMap["thirdCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    cardsControllerMap["fourthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    cardsControllerMap["fifthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    cardsControllerMap["sixthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
 
     cardsMatrixMap["firstCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["firstCard"]).animate(cardsControllerMap["firstCard"]!)
     ..addStatusListener((status) => {changeIndexing(status)});
@@ -141,8 +143,7 @@ class CardSelectionState extends State<CardSelectionScreen>
     double pivotPointY = screenHeight * 0.4;
 
     //todo: sistema il giro delle carte perchè c'è sempre quella che salta
-    //todo: contenuto carte scompare in transizione up
-    //todo: vedere se riesci a diminuire i rebuild innutili qui, magaru scorpora in più components
+    //todo: vedere se riesci a diminuire i rebuild inutili qui, magari scorpora in più components
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
       var playerCardsCodes = playerCards.map((e) => e!.code).toList();
@@ -150,11 +151,25 @@ class CardSelectionState extends State<CardSelectionScreen>
       var matchingCardsCodes = gameModelCardsCodes.where((element) => playerCardsCodes.contains(element)).length;
       var cardCodesInScreen = playerCardsCodes.where((element) => element!="void").length;
 
-      print("cond 1: ${matchingCardsCodes!=cardCodesInScreen}");
-      print("screen codes: ${playerCardsCodes}");
-      print("matching codes: ${matchingCardsCodes}");
+      //primo indexing ad ogni apertura della pagina
+      WidgetsBinding.instance?.addPostFrameCallback((_){
+        if(!triggerIndexing && !firstBinding){
+          firstBinding = true;
+          List<CardData?> cardsList = gameModel.playerCards;
+          if(cardsList.length < 6){
+            for(int i = cardsList.length; i<6; i++){
+              cardsList.add(CardData("void", 0, 0, 0, 0,
+                  cardType.Pollution,
+                  researchSet.None, null,
+                  gameModel.playerLevelCounter));
+            }
+          }
+          firstCardsDataBinding(cardsList!);
+        }
+      });
 
-      if((matchingCardsCodes!=cardCodesInScreen && buildEnded) || cardCodesInScreen==0){
+      //se ho giocato o preso una carta faccio il rebinding
+      if(matchingCardsCodes!=cardCodesInScreen && buildEnded){
         List<CardData?> cardsList = gameModel.playerCards;
         if(cardsList.length < 6){
           for(int i = cardsList.length; i<6; i++){
@@ -164,7 +179,6 @@ class CardSelectionState extends State<CardSelectionScreen>
                 gameModel.playerLevelCounter));
           }
         }
-        print("player cards in model: ${gameModel.playerCards.map((e) => e!.code).toList().toString()}");
         firstCardsDataBinding(cardsList!);
       }
 
@@ -173,7 +187,7 @@ class CardSelectionState extends State<CardSelectionScreen>
         triggerOpeningAnim();
       }
 
-      if(gameModel.playerTimerCountdown == null && rotationSense== rotVersus.Up){
+      if(gameModel.playerTimer == null && rotationSense== rotVersus.Up){
         animateToStart(playerCards!);
       }
 
@@ -187,7 +201,6 @@ class CardSelectionState extends State<CardSelectionScreen>
             children: [
               Expanded(flex: 1,
                   child: PlayCardPager(gameModel.gameLogic.months.length)),
-
               Expanded(flex: 1, child:
               GestureDetector(
                   onHorizontalDragUpdate: (dragEndDetails){
@@ -202,11 +215,11 @@ class CardSelectionState extends State<CardSelectionScreen>
                   },
 
                   onVerticalDragUpdate: (dragEndDetails) {
-                    if(rotationSense != rotVersus.Up && dragEndDetails.delta.dy < -20 && gameModel.playerTimerCountdown!=null){
+                    if(rotationSense != rotVersus.Up && dragEndDetails.delta.dy < -20 && gameModel.playerTimer!=null){
                       //swipe down
                       rotationSense = rotVersus.Up;
                     }
-                    else if(rotationSense == rotVersus.Up && dragEndDetails.delta.dy > 20 && gameModel.playerTimerCountdown!=null){
+                    else if(rotationSense == rotVersus.Up && dragEndDetails.delta.dy > 20 && gameModel.playerTimer!=null){
                       //swipe up
                       rotationSense = rotVersus.Down;
                     }
@@ -218,7 +231,7 @@ class CardSelectionState extends State<CardSelectionScreen>
                       updateAnimation(rotationSense, screenHeight, playerCards);
                     }},
 
-                  onVerticalDragEnd:  gameModel.playerTimerCountdown!=null ? (_){
+                  onVerticalDragEnd:  gameModel.playerTimer!=null ? (_){
                     if(!ongoingAnimation){
                       triggerIndexing = true;
                       ongoingAnimation = true;
@@ -565,7 +578,7 @@ class CardSelectionState extends State<CardSelectionScreen>
   }
 
   Future<void> newCardsData(Map<String, CardData?> avatarMap) async{
-    return Future<void>.delayed(const Duration(milliseconds: 100),
+    return Future<void>.delayed(const Duration(milliseconds: 50),
             () {
               setState(() {
                 cardsDataMap = avatarMap;

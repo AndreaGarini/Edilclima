@@ -21,9 +21,21 @@ class BottomNavBarState extends  State<BottomNavBar>{
   BottomNavBarState(this.parentContext);
 
   var navItems = [
-    BottomNavBarItem(icon: const Icon(Elusive.up_hand), label: "Gioca carta", route: "/cardSelectionScreen"),
-    BottomNavBarItem(icon: const Icon(Elusive.down_hand), label: "Prendi carta", route: "/retriveCardScreen"),
-    BottomNavBarItem(icon: const Icon(Icons.people), label: "Squadre", route: "/otherTeamsScreen"),
+    BottomNavBarItem(
+        icon: const Icon(Elusive.up_hand),
+        label: "Gioca carta",
+        route: "/cardSelectionScreen",
+        color: darkBluePalette),
+    BottomNavBarItem(
+        icon: const Icon(Elusive.down_hand),
+        label: "Prendi carta",
+        route: "/retriveCardScreen",
+        color: darkBluePalette),
+    BottomNavBarItem(
+        icon: const Icon(Icons.people),
+        label: "Squadre",
+        route: "/otherTeamsScreen",
+        color: darkBluePalette),
   ];
 
 
@@ -31,6 +43,7 @@ class BottomNavBarState extends  State<BottomNavBar>{
   Widget build(BuildContext context) {
 
     return BottomNavigationBar(items: navItems,
+        type: BottomNavigationBarType.shifting,
         currentIndex: calculateSelectedIndex(context),
         onTap: (index) => onTapCallback(index),
         backgroundColor: darkBluePalette,
@@ -71,8 +84,8 @@ class BottomNavBarState extends  State<BottomNavBar>{
 class BottomNavBarItem extends BottomNavigationBarItem{
 
 
-  BottomNavBarItem({required this.route, required String label, required Widget icon})
-   : super(icon: icon, label: label);
+  BottomNavBarItem({required this.route, required String label, required Widget icon, required Color color})
+   : super(icon: icon, label: label, backgroundColor: color);
 
   final String route;
 }

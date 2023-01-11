@@ -37,7 +37,7 @@ class infoRowState extends State<infoRow> with
     end: Offset.zero,
   ).animate(CurvedAnimation(
     parent: slideInControllerBase,
-    curve: Curves.linear,
+    curve: Curves.easeInQuad,
   ));
 
   late final AnimationController slideOutControllerBase = AnimationController(
@@ -50,7 +50,7 @@ class infoRowState extends State<infoRow> with
     end: const Offset(1.1, 0.0),
   ).animate(CurvedAnimation(
     parent: slideOutControllerBase,
-    curve: Curves.linear,
+    curve: Curves.easeOutQuad,
   ));
 
   InfoRowLayout toShowLayout = InfoRowLayout.Base;
@@ -101,7 +101,7 @@ class infoRowState extends State<infoRow> with
         if (gameModel.playerTimer==null && gameModel.playerTimerCountdown!=null){
           infoRowDefaultLayout = false;
           int duration = 70;
-          gameModel.playerTimer = setPlayerTimer(duration, 1, gameModel);
+          setPlayerTimer(duration, 1, gameModel);
           Future<void>.delayed(Duration(milliseconds: widget.animTime * 4), () {
             infoRowDefaultLayout = true;
           });
@@ -173,16 +173,18 @@ class infoRowState extends State<infoRow> with
     });
   }
 
-  Timer setPlayerTimer(int timeToFinish, int TickInterval, GameModel gm){
-    var counter = timeToFinish;
-    var playerTimer = Timer.periodic(Duration(seconds: TickInterval), (timer) {
-      gm.playerTimerOnTick();
-      counter--;
-      if (counter == 0) {
-        gm.playerTimerOnFinish();
-        timer.cancel();
-      }
+  Future<void> setPlayerTimer(int timeToFinish, int TickInterval, GameModel gameModel) async{
+    return Future<void>.delayed(const Duration(milliseconds: 50), () {
+      var counter = timeToFinish;
+      var playerTimer = Timer.periodic(Duration(seconds: TickInterval), (timer) {
+        gameModel.playerTimerOnTick();
+        counter--;
+        if (counter == 0) {
+          gameModel.playerTimerOnFinish();
+          timer.cancel();
+        }
+      });
+      gameModel.createPlayerTimer(playerTimer);
     });
-    return playerTimer;
   }
 }

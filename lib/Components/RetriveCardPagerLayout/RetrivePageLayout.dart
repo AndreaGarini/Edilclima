@@ -1,7 +1,6 @@
 
 import 'package:edilclima_app/Components/RetriveCardPagerLayout/DetailedCardLayout.dart';
 import 'package:edilclima_app/Components/generalFeatures/SizedButton.dart';
-import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
 import 'package:edilclima_app/Screens/WaitingScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,10 +37,13 @@ class RetriveCardLayoutState extends State<RetrivePageLayout>{
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         DetailedCardLayout(cardData),
-        SizedButton(screenWidth * 0.3, "Retrive card", ableToRetrive ? (){
-          gameModel.retriveCardInPos(widget.pos);
-          buttonCallback(gameModel);} : null)
-      ],);
+        SizedBox(height: screenHeight * 0.01, width: screenWidth * 0.8),
+        SizedBox(height: screenHeight * 0.07,
+            width: screenWidth * 0.8,
+            child: Center(child: SizedButton(screenWidth * 0.6, "Retrieve card", ableToRetrive ? (){
+              gameModel.retriveCardInPos(widget.pos);
+              buttonCallback(gameModel);} : null)))
+      ]);
     });
   }
 

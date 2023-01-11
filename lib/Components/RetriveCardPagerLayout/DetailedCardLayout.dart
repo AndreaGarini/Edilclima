@@ -1,4 +1,5 @@
 
+import 'package:edilclima_app/Components/RetriveCardPagerLayout/DetailedCardContent.dart';
 import 'package:edilclima_app/Components/RetriveCardPagerLayout/VerticalStatsCard.dart';
 import 'package:edilclima_app/Components/generalFeatures/GradientText.dart';
 import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
@@ -27,28 +28,14 @@ class DetailedCardLayout extends StatelessWidget{
 
     late Widget lottieWidget;
 
-    switch (cardData!.type){
-      case cardType.Energy: {
-        lottieWidget = Lottie.asset('assets/animations/solarpanel.json', animate: false);
-      }
-      break;
-      case cardType.Pollution: {
-        lottieWidget = Lottie.asset('assets/animations/55131-grow-your-forest.json', animate: false);
-      }
-      break;
-      case cardType.Research: {
-        lottieWidget = Lottie.asset('assets/animations/100337-research-lottie-animation.json', animate: false);
-      }
-      break;
-    }
-
     if(cardData!=null){
+
       return Container(
           width: screenWidth * 0.8,
           height: height ?? screenHeight * 0.6,
           decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
               boxShadow: [ BoxShadow(
-                color: darkGreyPalette.withOpacity(0.5),
+                color: lightOrangePalette.withOpacity(0.6),
                 spreadRadius: 1,
                 blurRadius: 6,
                 offset: const Offset(0, 0), // changes position of shadow
@@ -71,38 +58,14 @@ class DetailedCardLayout extends StatelessWidget{
             elevation: 10,
             color: backgroundGreen,
             shadowColor: darkGreyPalette,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, cardData!.code, screenWidth * 0.07, FontWeight.bold))),
-                Divider(indent: screenWidth * 0.2, endIndent: screenWidth * 0.2, color: darkBluePalette, thickness: 1),
-                Expanded(flex: 3, child: lottieWidget),
-                Expanded(flex: 3, child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center, children: [
-                    Expanded(flex: 4, child: VerticalStatsCard("comfort", cardData!.comfort)),
-                    Expanded(flex: 4, child: VerticalStatsCard("smog", cardData!.comfort)),
-                    Expanded(flex: 4, child: VerticalStatsCard("energy", cardData!.comfort)),
-                    Expanded(flex: 4, child: VerticalStatsCard("money", cardData!.money)),
-                  ])),
-                Divider(indent: screenWidth * 0.2, endIndent: screenWidth * 0.2, color: darkBluePalette, thickness: 1),
-                Expanded(flex: 3, child:
-                Card(color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(screenHeight * 0.02)),
-                shadowColor: lightOrangePalette,
-                elevation: 3,
-                child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center, children: [
-                    const Spacer(),
-                    Expanded(flex: 6, child: Text(bodyText, style: const TextStyle(color: Colors.black))),
-                    const Spacer()
-                  ]))
-                ),
-                const Spacer()
-              ],
-            )
+            child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center, children: [
+                SizedBox(height: screenHeight * 0.57,
+                width: screenWidth * 0.8,
+                child: DetailedCardContent(cardData!, bodyText)),
+                SizedBox(height: screenHeight * 0.01,
+                width: screenWidth * 0.8,)
+              ],)
         ),
       );
     }
