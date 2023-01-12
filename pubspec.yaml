@@ -47,6 +47,7 @@ dependencies:
   fluttericon: 2.0.0
   lottie: ^1.2.1
   page_transition: "^2.0.9"
+  flutter_shake_animated: ^0.0.5
 
 dev_dependencies:
   flutter_test:

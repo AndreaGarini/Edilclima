@@ -39,7 +39,6 @@ class TutorialComponentsState extends State<TutorialComponents> {
 
     return Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center, children: [
-          const Spacer(),
           Expanded(flex: 8, child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center, children: [
                 Expanded(flex: 2, child: StylizedText(darkBluePalette, textWidget1, screenWidth * 0.05, FontWeight.normal)),
@@ -66,11 +65,9 @@ class TutorialComponentsState extends State<TutorialComponents> {
 
     return Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center, children: [
-          const Spacer(),
           Expanded(flex: 8, child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center, children: [
-                Expanded(flex: 5, child: Center(child: StylizedText(darkBluePalette, textWidget2, screenWidth * 0.04, FontWeight.normal))),
-                const Spacer()
+                Expanded(flex: 5, child: Center(child: StylizedText(darkBluePalette, textWidget2, screenWidth * 0.045, FontWeight.normal))),
               ])),
         ]);
   }
@@ -79,7 +76,6 @@ class TutorialComponentsState extends State<TutorialComponents> {
 
     return Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center, children: [
-          const Spacer(),
           Expanded(flex: 8, child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center, children: [
                 Expanded(flex: 2, child: StylizedText(darkBluePalette, textWidget3, screenWidth * 0.04, FontWeight.normal)),
@@ -111,7 +107,6 @@ class TutorialComponentsState extends State<TutorialComponents> {
                       StylizedText(darkBluePalette, "Swipe down sulla carta selezionata per riporla", screenWidth * 0.035, FontWeight.normal),))
                     ])),
               ])),
-          const Spacer()
         ]);
   }
 
@@ -131,10 +126,10 @@ class TutorialComponentsState extends State<TutorialComponents> {
 
 
   void closingCallback (){
+    widget.gameModel.endTutorialAndNotify();
     if(widget.closeTutorialCallback!=null){
       widget.closeTutorialCallback!();
     }
-    widget.gameModel.endTutorialAndNotify();
   }
 
   @override

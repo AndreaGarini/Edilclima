@@ -36,7 +36,7 @@ class GameBoardCardState extends State<GameBoardCard> {
                   child: GameBoardChartBar("comfort", widget.team, widget.usableHeight),)
             ],)),
             //qui la zona per le carte giocate
-            const Expanded(flex: 2, child: Text("ckjhj"))
+            const Expanded(flex: 2, child: Text(""))
           ]));
   }
 

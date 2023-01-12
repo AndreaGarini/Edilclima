@@ -4,6 +4,7 @@ import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:edilclima_app/Screens/WaitingScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,14 @@ class MatchMakingScreen extends StatefulWidget {
 
 class MatchMakingState extends State<MatchMakingScreen> {
 
+
+  late bool playShakeAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    playShakeAnim = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +42,7 @@ class MatchMakingState extends State<MatchMakingScreen> {
         if(state) {
           return  Expanded(flex: 1,
               child: SizedButton(
-                  currentWidth * 0.4, "Start match", () {
+                  currentWidth * 0.4, "Inizia il match", () {
                 context.go("/initialScreen/matchMakingScreen/gameBoardScreen");
               }));
         }
@@ -41,9 +50,13 @@ class MatchMakingState extends State<MatchMakingScreen> {
           return  Expanded(flex: 1,
               child: SizedButton(
                 //todo: se premi due volte questo button fai next lvel due volte lato gm e non trova la zone
-                  currentWidth * 0.4, "Prepare match", () {
-                gameModel.prepareMatch();
-              }));
+                  currentWidth * 0.4, "Prepara il match", gameModel.playerCounter==0 ?
+                  (){
+                    setState((){
+                      playShakeAnim = true;
+                    });
+                  stopShakeAnim();} :
+                  () {gameModel.prepareMatch();}));
         }
       }
 
@@ -55,7 +68,7 @@ class MatchMakingState extends State<MatchMakingScreen> {
           children: [
             Expanded(
               flex: 1, child: Row(crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
+                mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Spacer(),
                   Expanded(flex: 4,
@@ -64,15 +77,22 @@ class MatchMakingState extends State<MatchMakingScreen> {
                       children: [
                         const Spacer(flex: 1,),
                         Expanded(flex: 1,
-                            child: StylizedText(darkBluePalette, "connected players : ${gameModel.playerCounter}",
-                                screenWidth * 0.05, FontWeight.normal)),
+                            child: ShakeWidget(
+                              duration: const Duration(milliseconds: 1000),
+                              shakeConstant: ShakeHorizontalConstant1(),
+                              autoPlay: playShakeAnim,
+                              enableWebMouseHover: true,
+                              child: StylizedText(darkBluePalette, "Giocatori connessi : ${gameModel.playerCounter}",
+                                  screenWidth * 0.05, FontWeight.normal),
+                            )),
                         const Spacer(flex: 1,)
                       ],),),
-                  const Spacer(flex: 2)
+                  const Spacer()
                 ]
             ),),
             Expanded(
               flex: 1, child: Row(crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Spacer(),
@@ -83,7 +103,7 @@ class MatchMakingState extends State<MatchMakingScreen> {
                         const Spacer(),
                         Expanded(flex: 1,
                             child: SizedButton(
-                                currentWidth * 0.4, "Create new match", () {
+                                currentWidth * 0.4, "Crea un nuovo match", () {
                              gameModel.createNewMatch();
                             })),
                         const Spacer()
@@ -93,6 +113,7 @@ class MatchMakingState extends State<MatchMakingScreen> {
             ),),
             Expanded(
               flex: 1, child: Row(crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   const Spacer(),
@@ -110,6 +131,15 @@ class MatchMakingState extends State<MatchMakingScreen> {
           ]
       );
     }));
+  }
+
+  Future<void> stopShakeAnim() async{
+    return Future<void>.delayed(const Duration(milliseconds: 1000),
+            () {
+      setState((){
+        playShakeAnim = false;
+      });
+    });
   }
 
 }

@@ -129,7 +129,10 @@ class GameLogic {
     Map<String, Map<String, Object>> resultingMap = {};
     var teams = ["team1", "team2", "team3", "team4"];
     for (final team in teams){
-      resultingMap.putIfAbsent(team, () => {"ableToPlay" : "", "playedCards" : "", "points" : 0});
+      resultingMap.putIfAbsent(team, () => {"ableToPlay" : "",
+        "playedCards" : "",
+        "points" : 0,
+        "drawableCards" : ""});
     }
     return resultingMap;
   }
@@ -162,6 +165,16 @@ class GameLogic {
     }
 
     return resultingMap;
+  }
+
+  Map<String, bool> createDrawableCardsMap(int level){
+    Map<String, bool> avatarMap = {};
+
+    CardsList.where((element) => element.level==level).map((e) => e.code)
+        .toList().forEach((element) {
+           avatarMap.putIfAbsent(element, () => true);
+        });
+    return avatarMap;
   }
 
   String findNextPlayer(String team, String lastPlayer){
@@ -197,17 +210,12 @@ class GameLogic {
       int targetReachedPoints = 200;
       int movesNegPoints = 5;
 
-      print("played cards in evaluate points: ${map.values}");
       //todo: qui potresti ottenere dei null (sulle playedCardDatas ma anche sulla zone), per cui se serve rendi le variabili nullable
 
       int budget = zoneMap[level]!.budget;
-      print("budget in evaluate points: ${budget}");
       for (final value in map.values) {
-        print("card code in evaluate points: ${CardsMap[value]!.code}");
-        print("card cost: ${CardsMap[value]!.money}");
         budget += CardsMap[value]!.money;
       }
-      print("budget after costs: ${budget}");
 
       int energy = zoneMap[level]!.initEnergy;
       for (final value in map.values) {

@@ -26,7 +26,6 @@ class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
   @override
   Widget build(BuildContext context) {
 
-    //todo: sistemare fontsize delle scritte
    return Consumer<GameModel>(builder: (context, gameModel, child){
 
      switch (widget.layout) {
@@ -99,7 +98,7 @@ class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
            crossAxisAlignment: CrossAxisAlignment.end,
            children: [
              const Spacer(),
-             Expanded(flex: 2, child: Card(color: backgroundGreen, child: Center(child: StylizedText(darkOrangePalette, "Your turn",
+             Expanded(flex: 3, child: Card(color: backgroundGreen, child: Center(child: StylizedText(darkOrangePalette, "Tocca a te",
                  screenWidth * 0.06, FontWeight.bold)))),
              const Spacer()
            ],

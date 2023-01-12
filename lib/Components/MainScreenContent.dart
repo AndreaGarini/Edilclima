@@ -1,7 +1,5 @@
-
 import 'package:edilclima_app/Components/generalFeatures/AnimatedGradient.dart';
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
-import 'package:edilclima_app/Components/generalFeatures/SizedButton.dart';
 import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:edilclima_app/Components/generalFeatures/TutorialComponents.dart';
 import 'package:edilclima_app/DataClasses/DialogData.dart';
@@ -37,7 +35,7 @@ class MainScreenContentState extends State<MainScreenContent>{
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
       tutorialComponents = TutorialComponents(gameModel,
-              (){Navigator.of(parentContext).pop(); });
+              (){ Navigator.of(parentContext).pop();});
 
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         if(gameModel.playerLevelCounter == 1
@@ -74,14 +72,21 @@ class MainScreenContentState extends State<MainScreenContent>{
       if(!data.buttonAdded)
         {
           Future.delayed(const Duration(seconds: 2), () {
+            if(gameModel.tutorialOngoing){
+              gameModel.endTutorialAndNotify();
+            }
             gameModel.setDialogData(null);
             Navigator.of(context).pop();
           });
-          return Dialog(child: Center(child:
+          return Dialog(
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15))),
+              child: Center(child:
             AnimatedGradient(data.title, screenWidth * 0.4, 1500, 'Inspiration', false)));
         }
       else{
-        return Dialog(child: Column(mainAxisSize: MainAxisSize.max,
+        return Dialog(
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15))),
+            child: Column(mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(flex: 2, child: Row(mainAxisSize: MainAxisSize.max,

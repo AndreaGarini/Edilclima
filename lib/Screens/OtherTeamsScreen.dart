@@ -33,14 +33,14 @@ class OtherTeamsScreenState extends State<OtherTeamsScreen> {
           shrinkWrap: true,
           children: <Widget>[
             SizedBox(width: screenWidth, height: screenHeight * 0.1,
-            child: Center(child: Text("Your team", style:
+            child: Center(child: Text("Il tuo team", style:
             TextStyle(color: darkBluePalette,
                 fontSize: screenHeight * 0.05,
                 fontWeight: FontWeight.bold)))),
             SizedBox(width: screenWidth, height: screenHeight * 0.4,
             child: TeamCardLayout(gameModel.teamStats.entries.where((element) => element.key==gameModel.team).single)),
             SizedBox(width: screenWidth, height: screenHeight * 0.1,
-            child: Center(child: Text("Other teams", style:
+            child: Center(child: Text("Gli altri team", style:
             TextStyle(color: darkBluePalette,
                 fontSize: screenHeight * 0.05,
                 fontWeight: FontWeight.bold)))),

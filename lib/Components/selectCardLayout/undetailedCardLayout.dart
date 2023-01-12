@@ -4,6 +4,7 @@ import 'dart:core';
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:edilclima_app/Components/selectCardLayout/HorizontalStatsCard.dart';
+import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -25,6 +26,7 @@ class UndetailedCardLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    //todo: sistemare l'animazione centrale che impazzisce
     if (cardData!= null && cardData!.code != "void"){
       switch (cardData!.type){
         case cardType.Energy: {
@@ -41,7 +43,7 @@ class UndetailedCardLayout extends StatelessWidget {
         break;
       }
 
-      if(angle == 0){
+      if(angle == 0 && !ongoingAnimation){
         return Container(
             width: screenWidth * 0.45,
             height: screenHeight * 0.35,
@@ -132,7 +134,9 @@ class UndetailedCardLayout extends StatelessWidget {
                   children: <Widget>[
                     const Spacer(),
                     Expanded(flex: 1, child: StylizedText(darkBluePalette, cardData!.code, null, FontWeight.bold)),
-                    const Spacer(flex: 11),
+                    Divider(indent: screenWidth * 0.1, endIndent: screenWidth * 0.1, color: darkBluePalette, thickness: 1),
+                    Expanded(flex: 6, child: lottieWidget),
+                    const Spacer(flex: 6),
                   ])
             )
         );

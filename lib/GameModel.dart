@@ -1,6 +1,7 @@
 
 import 'dart:async';
 import 'dart:ffi';
+import 'dart:math';
 
 import 'package:edilclima_app/Components/generalFeatures/TutorialComponents.dart';
 import 'package:edilclima_app/GameLogic.dart';
@@ -20,6 +21,7 @@ class GameModel extends ChangeNotifier{
   int playerCounter = 0;
   GameLogic gameLogic = GameLogic();
   int count = 1; //todo: variabile per dare un nome in test ai players, da sostituire con i vari uid
+  //todo: aggiungi ciò che serve per crare la modalità single player o player<4
 
   DatabaseReference db = FirebaseDatabase.instance.ref();
   int teamsNum = 0;
@@ -37,6 +39,7 @@ class GameModel extends ChangeNotifier{
 
   //variabili lato player
   List<CardData> playerCards = [];
+  List<CardData> drawableCards = [];
   String team = "null";
   int playerLevelCounter = 0;
   String? playerLevelStatus;
@@ -65,7 +68,6 @@ class GameModel extends ChangeNotifier{
 
   void setPlayerCounter(){
     db.child("matches").child("test").child("players").onValue.listen((event) {
-      print("player counter called: ${playerCounter}");
       playerCounter = event.snapshot.children.length;
       notifyListeners();
     });
@@ -99,12 +101,15 @@ class GameModel extends ChangeNotifier{
       }
     });
 
-    await dbPoint.get().then((value) =>
-        db.child("matches").child("test").child("players").set(
-            gameLogic.selectTeamForPlayers(value)
-        )).
-    then((_) { db.child("matches").child("test").child("teams").set(gameLogic.createTeamsOnDb());}).
-    then((_) => { giveCardsToPlayers(gameLogic.nextLevel())});
+      await dbPoint.get().then((value) =>
+          db.child("matches").child("test").child("players").set(
+              gameLogic.selectTeamForPlayers(value)
+          )).
+      then((_) { db.child("matches").child("test").child("teams").set(gameLogic.createTeamsOnDb());}).
+      then((_) {
+        print("prepare match master level counter: ${gameLogic.masterLevelCounter}");
+        giveCardsToPlayers(1);}).
+    then((_) => gameLogic.masterLevelCounter = 1);
   }
 
   void giveCardsToPlayers(int level) async{
@@ -117,6 +122,7 @@ class GameModel extends ChangeNotifier{
       }
     }).
     then((_) => setStartingCardsPerLevel(level)).
+    then((_) => setDrawableCards(level)).
     then((_) =>  addPlayedCardsListener()).
     then((_) => giveCardsCallback());
   }
@@ -124,6 +130,21 @@ class GameModel extends ChangeNotifier{
   void giveCardsCallback() {
     startMatch = true;
     notifyListeners();
+  }
+
+  void setDrawableCards(int level) async{
+    //todo: definisci la lista delle drawable cards (non metterci le ricerche)
+    //todo: aggiungi un pushResult per quando le drawable sono finite(non metterci le ricerche)
+    Map<String, bool> drawableCardsPerLevel = gameLogic.createDrawableCardsMap(level);
+    drawableCardsPerLevel.putIfAbsent("void", () => false);
+
+    await db.child("matches").child("test").child("teams").get().then((value) =>{
+      for (final team in value.children){
+        db.child("matches").child("test").child("teams").child(team.key!)
+            .child("drawableCards").set(drawableCardsPerLevel)
+      }
+      });
+
   }
 
   void changePushValue(Pair newPush){
@@ -317,6 +338,7 @@ class GameModel extends ChangeNotifier{
     bindCardsForPlayer();
     notifyAbleToPlayChange();
     addPlayedCardsListener();
+    addDrawableCardsListener();
   }
 
   void bindCardsForPlayer() {
@@ -330,6 +352,18 @@ class GameModel extends ChangeNotifier{
       }
       playerCards = list;
       notifyListeners();
+    });
+  }
+
+  void addDrawableCardsListener(){
+    db.child("matches").child("test").child("teams")
+        .child(team).child("drawableCards").onValue.listen((event) {
+         event.snapshot.children.map((e) => e.key)
+             .toList().forEach((element) {
+               if(gameLogic.findCard(element!)!=null && element!="void"){
+                 drawableCards.add(gameLogic.findCard(element)!);
+               }
+         });
     });
   }
 
@@ -411,6 +445,22 @@ class GameModel extends ChangeNotifier{
       db.child("matches").child("test").child("players").child("1")
           .child("ownedCards").child(cardCode).remove()
     });
+  }
+
+  void drawCard() async{
+    int randomCardPos;
+    do{
+      randomCardPos = (drawableCards.length * Random().nextDouble()).toInt();
+    }while(randomCardPos >= drawableCards.length);
+
+    String cardCode = drawableCards[randomCardPos].code;
+    print("draw card chosen card: ${drawableCards[randomCardPos].code}");
+    await db.child("matches").child("test").child("teams").child(team)
+        .child("drawableCards").child(drawableCards[randomCardPos].code)
+        .remove().then((_) =>
+    db.child("matches").child("test").child("players").child("1")
+        .child("ownedCards").child(cardCode).set(true)
+    );
   }
 
   void retriveCardInPos(int pos) async{

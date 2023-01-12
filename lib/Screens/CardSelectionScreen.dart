@@ -1,6 +1,7 @@
 
 import 'dart:math';
 
+import 'package:edilclima_app/Components/DrawCardFab/DrawCardFab.dart';
 import 'package:edilclima_app/Components/PlayCardPagerLayout/PlayCardPager.dart';
 import 'package:edilclima_app/DataClasses/CardData.dart';
 import 'package:flutter/cupertino.dart';
@@ -56,6 +57,7 @@ List<CardData?> playerCards = List.generate(6, (index) => CardData("void", 0, 0,
 class CardSelectionState extends State<CardSelectionScreen>
     with TickerProviderStateMixin {
 
+  //todo: animazione per il draw card(?)
   late bool triggerIndexing;
   late bool firstBinding;
 
@@ -193,126 +195,130 @@ class CardSelectionState extends State<CardSelectionScreen>
 
       return Material(color: Colors.white,
       child:
-      Stack(alignment: Alignment.centerRight,
-      children: [
-        Column(mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(flex: 1,
-                  child: PlayCardPager(gameModel.gameLogic.months.length)),
-              Expanded(flex: 1, child:
-              GestureDetector(
-                  onHorizontalDragUpdate: (dragEndDetails){
-                    if(rotationSense != rotVersus.Up && dragEndDetails.delta.dx > 20){
-                      //swipe left
-                      rotationSense = rotVersus.Right;
-                    }
-                    else if(rotationSense != rotVersus.Up && dragEndDetails.delta.dx < -20){
-                      //swipe right
-                      rotationSense = rotVersus.Left;
-                    }
-                  },
-
-                  onVerticalDragUpdate: (dragEndDetails) {
-                    if(rotationSense != rotVersus.Up && dragEndDetails.delta.dy < -20 && gameModel.playerTimer!=null){
-                      //swipe down
-                      rotationSense = rotVersus.Up;
-                    }
-                    else if(rotationSense == rotVersus.Up && dragEndDetails.delta.dy > 20 && gameModel.playerTimer!=null){
-                      //swipe up
-                      rotationSense = rotVersus.Down;
-                    }
-                  },
-                  onHorizontalDragEnd: (_){
-                    if(!ongoingAnimation){
-                      triggerIndexing = true;
-                      ongoingAnimation = true;
-                      updateAnimation(rotationSense, screenHeight, playerCards);
-                    }},
-
-                  onVerticalDragEnd:  gameModel.playerTimer!=null ? (_){
-                    if(!ongoingAnimation){
-                      triggerIndexing = true;
-                      ongoingAnimation = true;
-                      updateAnimation(rotationSense, screenHeight, null);
-                    }} : (_){},
-
-                  child:
-                  SizedBox(width: screenWidth, height: screenHeight * 0.5, child:
-                  Indexer(
-                    alignment: AlignmentDirectional.center,
+          Stack(alignment: Alignment.bottomRight,
+          children: [
+            Stack(alignment: Alignment.centerRight,
+              children: [
+                Column(mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Indexed(index: indexingList[0], child:
-                      AnimatedBuilder(builder: (context, child) =>
-                          Transform(transform: cardsMatrixMap["sixthCard"]!.value,
-                              origin: Offset(pivotPointX, pivotPointY),
-                              child: UndetailedCardLayout(cardsDataMap["sixthCard"],
-                                  cardsAngleMap["sixthCard"]!,
-                                  !gameModel.tutorialOngoing)),
-                        animation: cardsMatrixMap["sixthCard"]!,)),
-                      Indexed(index: indexingList[1], child:
-                      AnimatedBuilder(builder: (context, child) =>
-                          Transform(transform: cardsMatrixMap["firstCard"]!.value,
-                              origin: Offset(pivotPointX, pivotPointY),
-                              child: UndetailedCardLayout(cardsDataMap["firstCard"],
-                                  cardsAngleMap["firstCard"]!,
-                                  !gameModel.tutorialOngoing)),
-                        animation: cardsMatrixMap["firstCard"]!,)),
-                      Indexed(index: indexingList[2], child:
-                      AnimatedBuilder(builder: (context, child) =>
-                          Transform(transform: cardsMatrixMap["secondCard"]!
-                              .value,
-                              origin: Offset(pivotPointX, pivotPointY),
-                              child: UndetailedCardLayout(cardsDataMap["secondCard"],
-                                  cardsAngleMap["secondCard"]!,
-                                  !gameModel.tutorialOngoing)),
-                        animation: cardsMatrixMap["secondCard"]!,)),
-                      Indexed(index: indexingList[3], child:
-                      AnimatedBuilder(builder: (context, child) =>
-                          Transform(transform: cardsMatrixMap["thirdCard"]!.value,
-                              origin: Offset(pivotPointX, pivotPointY),
-                              child: UndetailedCardLayout(cardsDataMap["thirdCard"],
-                                  cardsAngleMap["thirdCard"]!,
-                                  !gameModel.tutorialOngoing)),
-                        animation: cardsMatrixMap["thirdCard"]!,)),
-                      Indexed(index: indexingList[4], child:
-                      AnimatedBuilder(builder: (context, child) =>
-                          Transform(transform: cardsMatrixMap["fourthCard"]!
-                              .value,
-                              origin: Offset(pivotPointX, pivotPointY),
-                              child: UndetailedCardLayout(cardsDataMap["fourthCard"],
-                                  cardsAngleMap["fourthCard"]!,
-                                  !gameModel.tutorialOngoing)),
-                        animation: cardsMatrixMap["fourthCard"]!,)),
-                      Indexed(index: indexingList[5], child:
-                      AnimatedBuilder(builder: (context, child) =>
-                          Transform(transform: cardsMatrixMap["fifthCard"]!.value,
-                              origin: Offset(pivotPointX, pivotPointY),
-                              child: UndetailedCardLayout(cardsDataMap["fifthCard"],
-                                  cardsAngleMap["fifthCard"]!,
-                                  !gameModel.tutorialOngoing)),
-                        animation: cardsMatrixMap["fifthCard"]!,)),
+                      Expanded(flex: 1,
+                          child: PlayCardPager(gameModel.gameLogic.months.length)),
+                      Expanded(flex: 1, child:
+                      GestureDetector(
+                          onHorizontalDragUpdate: (dragEndDetails){
+                            if(rotationSense != rotVersus.Up && dragEndDetails.delta.dx > 20){
+                              //swipe left
+                              rotationSense = rotVersus.Right;
+                            }
+                            else if(rotationSense != rotVersus.Up && dragEndDetails.delta.dx < -20){
+                              //swipe right
+                              rotationSense = rotVersus.Left;
+                            }
+                          },
 
-                    ],
-                  )))),
-            ]
-        ),
-        InkWell(
-            onTap: (){
-              String cardPosition = cardsAngleMap.entries.where((element) => element.value == 0).single.key;
-              onFocusCard = cardsDataMap[cardPosition];
-              context.push("/cardSelectionScreen/cardInfoScreen");
-            },
-            child: SizedBox(
-          height: screenWidth * 0.2,
-          width: screenWidth * 0.2,
-          child: Center(child: Lottie.asset('assets/animations/InfoIcon.json',
-              width: screenWidth * 0.35,
-              height: screenWidth * 0.35,
-              animate: /*!gameModel.tutorialOngoing*/ false)),
-        ))
-      ],));
+                          onVerticalDragUpdate: (dragEndDetails) {
+                            if(rotationSense != rotVersus.Up && dragEndDetails.delta.dy < -20 && gameModel.playerTimer!=null){
+                              //swipe down
+                              rotationSense = rotVersus.Up;
+                            }
+                            else if(rotationSense == rotVersus.Up && dragEndDetails.delta.dy > 20 && gameModel.playerTimer!=null){
+                              //swipe up
+                              rotationSense = rotVersus.Down;
+                            }
+                          },
+                          onHorizontalDragEnd: (_){
+                            if(!ongoingAnimation){
+                              triggerIndexing = true;
+                              ongoingAnimation = true;
+                              updateAnimation(rotationSense, screenHeight, playerCards);
+                            }},
+
+                          onVerticalDragEnd:  gameModel.playerTimer!=null ? (_){
+                            if(!ongoingAnimation){
+                              triggerIndexing = true;
+                              ongoingAnimation = true;
+                              updateAnimation(rotationSense, screenHeight, null);
+                            }} : (_){},
+
+                          child:
+                          SizedBox(width: screenWidth, height: screenHeight * 0.5, child:
+                          Indexer(
+                            alignment: AlignmentDirectional.center,
+                            children: [
+                              Indexed(index: indexingList[0], child:
+                              AnimatedBuilder(builder: (context, child) =>
+                                  Transform(transform: cardsMatrixMap["sixthCard"]!.value,
+                                      origin: Offset(pivotPointX, pivotPointY),
+                                      child: UndetailedCardLayout(cardsDataMap["sixthCard"],
+                                          cardsAngleMap["sixthCard"]!,
+                                          !gameModel.tutorialOngoing)),
+                                animation: cardsMatrixMap["sixthCard"]!,)),
+                              Indexed(index: indexingList[1], child:
+                              AnimatedBuilder(builder: (context, child) =>
+                                  Transform(transform: cardsMatrixMap["firstCard"]!.value,
+                                      origin: Offset(pivotPointX, pivotPointY),
+                                      child: UndetailedCardLayout(cardsDataMap["firstCard"],
+                                          cardsAngleMap["firstCard"]!,
+                                          !gameModel.tutorialOngoing)),
+                                animation: cardsMatrixMap["firstCard"]!,)),
+                              Indexed(index: indexingList[2], child:
+                              AnimatedBuilder(builder: (context, child) =>
+                                  Transform(transform: cardsMatrixMap["secondCard"]!
+                                      .value,
+                                      origin: Offset(pivotPointX, pivotPointY),
+                                      child: UndetailedCardLayout(cardsDataMap["secondCard"],
+                                          cardsAngleMap["secondCard"]!,
+                                          !gameModel.tutorialOngoing)),
+                                animation: cardsMatrixMap["secondCard"]!,)),
+                              Indexed(index: indexingList[3], child:
+                              AnimatedBuilder(builder: (context, child) =>
+                                  Transform(transform: cardsMatrixMap["thirdCard"]!.value,
+                                      origin: Offset(pivotPointX, pivotPointY),
+                                      child: UndetailedCardLayout(cardsDataMap["thirdCard"],
+                                          cardsAngleMap["thirdCard"]!,
+                                          !gameModel.tutorialOngoing)),
+                                animation: cardsMatrixMap["thirdCard"]!,)),
+                              Indexed(index: indexingList[4], child:
+                              AnimatedBuilder(builder: (context, child) =>
+                                  Transform(transform: cardsMatrixMap["fourthCard"]!
+                                      .value,
+                                      origin: Offset(pivotPointX, pivotPointY),
+                                      child: UndetailedCardLayout(cardsDataMap["fourthCard"],
+                                          cardsAngleMap["fourthCard"]!,
+                                          !gameModel.tutorialOngoing)),
+                                animation: cardsMatrixMap["fourthCard"]!,)),
+                              Indexed(index: indexingList[5], child:
+                              AnimatedBuilder(builder: (context, child) =>
+                                  Transform(transform: cardsMatrixMap["fifthCard"]!.value,
+                                      origin: Offset(pivotPointX, pivotPointY),
+                                      child: UndetailedCardLayout(cardsDataMap["fifthCard"],
+                                          cardsAngleMap["fifthCard"]!,
+                                          !gameModel.tutorialOngoing)),
+                                animation: cardsMatrixMap["fifthCard"]!,)),
+
+                            ],
+                          )))),
+                    ]
+                ),
+                InkWell(
+                    onTap: (){
+                      String cardPosition = cardsAngleMap.entries.where((element) => element.value == 0).single.key;
+                      onFocusCard = cardsDataMap[cardPosition];
+                      context.push("/cardSelectionScreen/cardInfoScreen");
+                    },
+                    child: SizedBox(
+                      height: screenWidth * 0.2,
+                      width: screenWidth * 0.2,
+                      child: Center(child: Lottie.asset('assets/animations/InfoIcon.json',
+                          width: screenWidth * 0.35,
+                          height: screenWidth * 0.35,
+                          animate: /*!gameModel.tutorialOngoing*/ false)),
+                    ))
+              ],),
+            DrawCardFab()
+          ],));
     });
   }
 
@@ -589,5 +595,5 @@ class CardSelectionState extends State<CardSelectionScreen>
 }
 
 enum pushResult{
-Success, CardDown, InvalidCard, LowBudget, ResearchNeeded
+Success, CardDown, InvalidCard, LowBudget, ResearchNeeded, //NoDraw
 }

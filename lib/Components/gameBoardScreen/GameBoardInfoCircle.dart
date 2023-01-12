@@ -38,14 +38,14 @@ class GameBoardInfoCircleState extends State<GameBoardInfoCircle> {
       }
       dynamicButton(){
         if(gameModel.masterLevelStatus=="preparing"){
-          String text = "prepare level ${gameModel.gameLogic.masterLevelCounter}";
+          String text = "prepara livello ${gameModel.gameLogic.masterLevelCounter}";
           return SizedButton(
               screenHeight * 0.2,
               text,
                   () {gameModel.prepareLevel(gameModel.gameLogic.masterLevelCounter);});
         }
         else{
-          String text = "start level ${gameModel.gameLogic.masterLevelCounter}";
+          String text = "inizia livello ${gameModel.gameLogic.masterLevelCounter}";
           return SizedButton(
               screenHeight * 0.2,
               text,
