@@ -15,6 +15,7 @@ class InfoRowTimerIndicator extends StatefulWidget{
 class InfoRowTimerIndicatorState extends State<InfoRowTimerIndicator>
   with SingleTickerProviderStateMixin{
 
+  //todo: tempo troppo lungo per aggiornare il db quando il timer finisce
   late AnimationController indicatorController;
   late bool timerBeginSetted;
   late double timerBegin;

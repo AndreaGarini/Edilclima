@@ -17,9 +17,9 @@ class UndetailedCardLayout extends StatelessWidget {
   CardData? cardData;
   double angle;
   bool animate;
-  
+  Function animCallback;
   late Widget lottieWidget; 
-  UndetailedCardLayout(this.cardData, this.angle, this.animate);
+  UndetailedCardLayout(this.cardData, this.angle, this.animate, this.animCallback);
   
   
 
@@ -27,7 +27,7 @@ class UndetailedCardLayout extends StatelessWidget {
   Widget build(BuildContext context) {
 
     //todo: sistemare l'animazione centrale che impazzisce
-    if (cardData!= null && cardData!.code != "void"){
+   if (cardData!= null && cardData!.code != "void"){
       switch (cardData!.type){
         case cardType.Energy: {
           lottieWidget = Lottie.asset('assets/animations/solarpanel.json', animate: false);
@@ -44,29 +44,34 @@ class UndetailedCardLayout extends StatelessWidget {
       }
 
       if(angle == 0 && !ongoingAnimation){
-        return Container(
+        return
+                Listener(
+                  onPointerMove: (moveEvent){
+                if(moveEvent.delta.dx > 5) {
+                  rotationSense = rotVersus.Right;
+                }
+                if(moveEvent.delta.dx < -5) {
+                  rotationSense = rotVersus.Left;
+                }
+              },
+          onPointerUp: (_){
+          if(!ongoingAnimation){
+          animCallback();
+          }
+          },
+          child:
+
+          Container(
             width: screenWidth * 0.45,
             height: screenHeight * 0.35,
             decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
+                color: Colors.white,
                 boxShadow: [ BoxShadow(
-                  color: lightOrangePalette.withOpacity(0.6),
+                  color: lightBluePalette.withOpacity(0.6),
                   spreadRadius: 1,
-                  blurRadius: 6,
+                  blurRadius: 1,
                   offset: const Offset(0, 0), // changes position of shadow
-                )],
-                gradient:  LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      darkBluePalette,
-                      lightBluePalette,
-                      Colors.white,
-                      Colors.white,
-                      lightOrangePalette,
-                      darkOrangePalette,
-                    ],
-                    stops: const [0,0.1,0.2,0.8,0.9, 1]
-                )),
+                )]),
             child:
             Card(
                 color: backgroundGreen,
@@ -98,32 +103,20 @@ class UndetailedCardLayout extends StatelessWidget {
                         ])),
                   ],)
             )
-        );
+        ));
       }
       else{
         return Container(
-            width: screenWidth * 0.45,
+            width: screenWidth * 0.4,
             height: screenHeight * 0.35,
             decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
+                color: Colors.white,
                 boxShadow: [ BoxShadow(
                   color: darkBluePalette.withOpacity(0.2),
                   spreadRadius: 1,
-                  blurRadius: 6,
+                  blurRadius: 1,
                   offset: const Offset(0, 0), // changes position of shadow
-                )],
-                gradient:  LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      darkBluePalette,
-                      lightBluePalette,
-                      backgroundGreen,
-                      backgroundGreen,
-                      lightOrangePalette,
-                      darkOrangePalette,
-                    ],
-                    stops: const [0,0.1,0.2,0.8,0.9, 1]
-                )),
+                )]),
             child:
             Card(
                 color: backgroundGreen,
@@ -132,11 +125,10 @@ class UndetailedCardLayout extends StatelessWidget {
                 child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    const Spacer(),
-                    Expanded(flex: 1, child: StylizedText(darkBluePalette, cardData!.code, null, FontWeight.bold)),
+                    const Spacer(flex: 1),
+                    Expanded(flex: 2, child: StylizedText(darkBluePalette, cardData!.code, null, FontWeight.bold)),
                     Divider(indent: screenWidth * 0.1, endIndent: screenWidth * 0.1, color: darkBluePalette, thickness: 1),
-                    Expanded(flex: 6, child: lottieWidget),
-                    const Spacer(flex: 6),
+                    const Spacer(flex: 20)
                   ])
             )
         );
@@ -144,28 +136,16 @@ class UndetailedCardLayout extends StatelessWidget {
     }
     else{
       return Container(
-          width: screenWidth * 0.45,
+          width: screenWidth * 0.4,
           height: screenHeight * 0.35,
           decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
+              color: Colors.white,
               boxShadow: [ BoxShadow(
                 color: darkBluePalette.withOpacity(0.2),
                 spreadRadius: 0.5,
-                blurRadius: 3,
+                blurRadius: 1,
                 offset: const Offset(0, 0), // changes position of shadow
-              )],
-              gradient:  LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    darkBluePalette,
-                    lightBluePalette,
-                    backgroundGreen,
-                    backgroundGreen,
-                    lightOrangePalette,
-                    darkOrangePalette,
-                  ],
-                  stops: const [0,0.1,0.2,0.8,0.9, 1]
-              )),
+              )]),
           child:
           Card(
               color: backgroundGreen,
@@ -177,7 +157,7 @@ class UndetailedCardLayout extends StatelessWidget {
                     const Spacer(),
                     Expanded(flex: 1, child: Center(child: GradientText("No card",
                         [darkBluePalette, lightBluePalette, lightOrangePalette],
-                        screenWidth * 0.2))),
+                        screenWidth * 0.15))),
                     const Spacer(),
                   ])
           )

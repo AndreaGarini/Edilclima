@@ -3,8 +3,10 @@ import 'dart:math';
 
 import 'package:edilclima_app/Components/DrawCardFab/DrawCardFab.dart';
 import 'package:edilclima_app/Components/PlayCardPagerLayout/PlayCardPager.dart';
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:edilclima_app/DataClasses/CardData.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:indexed/indexed.dart';
@@ -26,7 +28,7 @@ Map<String, Matrix4> cardsTransformMap = Map();
 Map<String, AnimationController> cardsControllerMap = Map();
 Map<String, Animation<Matrix4>> cardsMatrixMap = Map();
 Map<String, double> cardsAngleMap = Map();
-var indexingList = List.generate(6, (index) => 0);
+Map<String, int> indexingList = Map();//List.generate(6, (index) => 0);
 Map<String, CardData?> cardsDataMap = {};
 
 
@@ -46,9 +48,7 @@ enum rotVersus {
 rotVersus rotationSense = rotVersus.None;
 String playableCard = "null";
 CardData? onFocusCard;
-bool openingAnimDone = false;
-late bool ongoingAnimation;
-late bool buildEnded;
+bool ongoingAnimation = false;
 List<CardData?> playerCards = List.generate(6, (index) => CardData("void", 0, 0, 0, 0,
     cardType.Pollution,
     researchSet.None, null,
@@ -57,9 +57,11 @@ List<CardData?> playerCards = List.generate(6, (index) => CardData("void", 0, 0,
 class CardSelectionState extends State<CardSelectionScreen>
     with TickerProviderStateMixin {
 
-  //todo: animazione per il draw card(?)
   late bool triggerIndexing;
   late bool firstBinding;
+  late bool openingAnimDone;
+  late bool buildEnded;
+
 
   @override
   void initState() {
@@ -72,12 +74,12 @@ class CardSelectionState extends State<CardSelectionScreen>
     buildEnded = false;
     counter = 0;
 
-    indexingList[0] = 0;
-    indexingList[1] = 1;
-    indexingList[2] = 2;
-    indexingList[3] = 3;
-    indexingList[4] = 2;
-    indexingList[5] = 1;
+    indexingList["firstCard"] = 1;
+    indexingList["secondCard"] = 2;
+    indexingList["thirdCard"] = 3;
+    indexingList["fourthCard"] = 2;
+    indexingList["fifthCard"] = 1;
+    indexingList["sixthCard"] = 0;
 
     cardsAngleMap["firstCard"] = -60;
     cardsAngleMap["secondCard"] = -30;
@@ -93,36 +95,31 @@ class CardSelectionState extends State<CardSelectionScreen>
     cardsDataMap["fifthCard"] = null;
     cardsDataMap["sixthCard"] = null;
 
-    cardsTransformMap["firstCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["firstCard"]!));
-    cardsTransformMap["secondCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["secondCard"]!));
+    cardsTransformMap["firstCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["firstCard"]!))..setTranslationRaw(-50, 0, 0);
+    cardsTransformMap["secondCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["secondCard"]!))..setTranslationRaw(-50, 0, 0);
     cardsTransformMap["thirdCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["thirdCard"]!))..scale(1.2, 1.2);
-    cardsTransformMap["fourthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["fourthCard"]!));
-    cardsTransformMap["fifthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["fifthCard"]!));
+    cardsTransformMap["fourthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["fourthCard"]!))..setTranslationRaw(50, 0, 0);
+    cardsTransformMap["fifthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["fifthCard"]!))..setTranslationRaw(50, 0, 0);
     cardsTransformMap["sixthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["sixthCard"]!));
 
-    cardsControllerMap["firstCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
-    cardsControllerMap["secondCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
-    cardsControllerMap["thirdCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
-    cardsControllerMap["fourthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
-    cardsControllerMap["fifthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
-    cardsControllerMap["sixthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    cardsControllerMap["firstCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
+    cardsControllerMap["secondCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
+    cardsControllerMap["thirdCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
+    cardsControllerMap["fourthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
+    cardsControllerMap["fifthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
+    cardsControllerMap["sixthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
 
-    cardsMatrixMap["firstCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["firstCard"]).animate(cardsControllerMap["firstCard"]!)
-    ..addStatusListener((status) => {changeIndexing(status)});
-    cardsMatrixMap["secondCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["secondCard"]).animate(cardsControllerMap["secondCard"]!);
-    cardsMatrixMap["thirdCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["thirdCard"]).animate(cardsControllerMap["thirdCard"]!);
-    cardsMatrixMap["fourthCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["fourthCard"]).animate(cardsControllerMap["fourthCard"]!);
-    cardsMatrixMap["fifthCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["fifthCard"]).animate(cardsControllerMap["fifthCard"]!);
-    cardsMatrixMap["sixthCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["sixthCard"]).animate(cardsControllerMap["sixthCard"]!);
+    cardsMatrixMap["firstCard"] = Tween<Matrix4>(begin: cardsTransformMap["firstCard"], end : cardsTransformMap["firstCard"]).animate(cardsControllerMap["firstCard"]!);
+    cardsMatrixMap["secondCard"] = Tween<Matrix4>(begin: cardsTransformMap["secondCard"], end : cardsTransformMap["secondCard"]).animate(cardsControllerMap["secondCard"]!);
+    cardsMatrixMap["thirdCard"] = Tween<Matrix4>(begin: cardsTransformMap["thirdCard"], end : cardsTransformMap["thirdCard"]).animate(cardsControllerMap["thirdCard"]!);
+    cardsMatrixMap["fourthCard"] = Tween<Matrix4>(begin: cardsTransformMap["fourthCard"], end : cardsTransformMap["fourthCard"]).animate(cardsControllerMap["fourthCard"]!);
+    cardsMatrixMap["fifthCard"] = Tween<Matrix4>(begin: cardsTransformMap["fifthCard"], end : cardsTransformMap["fifthCard"]).animate(cardsControllerMap["fifthCard"]!);
+    cardsMatrixMap["sixthCard"] = Tween<Matrix4>(begin: cardsTransformMap["sixthCard"], end : cardsTransformMap["sixthCard"]).animate(cardsControllerMap["sixthCard"]!);
 
   }
 
   double findAngle(double angle){
     return pi * angle/180;
-  }
-
-  void createMatrix(Map<String, int> cardsTransformMap){
-
   }
 
   @override
@@ -136,7 +133,6 @@ class CardSelectionState extends State<CardSelectionScreen>
 
   @override
   Widget build(BuildContext context) {
-
     WidgetsBinding.instance?.addPostFrameCallback((_){
       buildEnded = true;
     });
@@ -186,120 +182,80 @@ class CardSelectionState extends State<CardSelectionScreen>
 
       if(!gameModel.tutorialOngoing && !openingAnimDone){
         openingAnimDone = true;
-        triggerOpeningAnim();
       }
 
       if(gameModel.playerTimer == null && rotationSense== rotVersus.Up){
-        animateToStart(playerCards!);
+        //animateToStart(playerCards!);
       }
 
-      return Material(color: Colors.white,
-      child:
-          Stack(alignment: Alignment.bottomRight,
-          children: [
-            Stack(alignment: Alignment.centerRight,
-              children: [
-                Column(mainAxisSize: MainAxisSize.max,
+      return
+        Stack(alignment: Alignment.centerRight,
+            children: [
+        Column(mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Expanded(flex: 1,
+                      Expanded( flex: 1,
                           child: PlayCardPager(gameModel.gameLogic.months.length)),
                       Expanded(flex: 1, child:
-                      GestureDetector(
-                          onHorizontalDragUpdate: (dragEndDetails){
-                            if(rotationSense != rotVersus.Up && dragEndDetails.delta.dx > 20){
-                              //swipe left
-                              rotationSense = rotVersus.Right;
-                            }
-                            else if(rotationSense != rotVersus.Up && dragEndDetails.delta.dx < -20){
-                              //swipe right
-                              rotationSense = rotVersus.Left;
-                            }
-                          },
-
-                          onVerticalDragUpdate: (dragEndDetails) {
-                            if(rotationSense != rotVersus.Up && dragEndDetails.delta.dy < -20 && gameModel.playerTimer!=null){
-                              //swipe down
-                              rotationSense = rotVersus.Up;
-                            }
-                            else if(rotationSense == rotVersus.Up && dragEndDetails.delta.dy > 20 && gameModel.playerTimer!=null){
-                              //swipe up
-                              rotationSense = rotVersus.Down;
-                            }
-                          },
-                          onHorizontalDragEnd: (_){
-                            if(!ongoingAnimation){
-                              triggerIndexing = true;
-                              ongoingAnimation = true;
-                              updateAnimation(rotationSense, screenHeight, playerCards);
-                            }},
-
-                          onVerticalDragEnd:  gameModel.playerTimer!=null ? (_){
-                            if(!ongoingAnimation){
-                              triggerIndexing = true;
-                              ongoingAnimation = true;
-                              updateAnimation(rotationSense, screenHeight, null);
-                            }} : (_){},
-
-                          child:
-                          SizedBox(width: screenWidth, height: screenHeight * 0.5, child:
                           Indexer(
                             alignment: AlignmentDirectional.center,
                             children: [
-                              Indexed(index: indexingList[0], child:
+                              Indexed(index: indexingList["sixthCard"]!, child:
                               AnimatedBuilder(builder: (context, child) =>
                                   Transform(transform: cardsMatrixMap["sixthCard"]!.value,
                                       origin: Offset(pivotPointX, pivotPointY),
                                       child: UndetailedCardLayout(cardsDataMap["sixthCard"],
                                           cardsAngleMap["sixthCard"]!,
-                                          !gameModel.tutorialOngoing)),
+                                          !gameModel.tutorialOngoing, animCallback)),
                                 animation: cardsMatrixMap["sixthCard"]!,)),
-                              Indexed(index: indexingList[1], child:
+                              Indexed(index: indexingList["firstCard"]!, child:
                               AnimatedBuilder(builder: (context, child) =>
                                   Transform(transform: cardsMatrixMap["firstCard"]!.value,
                                       origin: Offset(pivotPointX, pivotPointY),
                                       child: UndetailedCardLayout(cardsDataMap["firstCard"],
                                           cardsAngleMap["firstCard"]!,
-                                          !gameModel.tutorialOngoing)),
+                                          !gameModel.tutorialOngoing, animCallback)),
                                 animation: cardsMatrixMap["firstCard"]!,)),
-                              Indexed(index: indexingList[2], child:
+                              Indexed(index: indexingList["secondCard"]!, child:
                               AnimatedBuilder(builder: (context, child) =>
                                   Transform(transform: cardsMatrixMap["secondCard"]!
                                       .value,
                                       origin: Offset(pivotPointX, pivotPointY),
-                                      child: UndetailedCardLayout(cardsDataMap["secondCard"],
-                                          cardsAngleMap["secondCard"]!,
-                                          !gameModel.tutorialOngoing)),
+                                      child:
+                               UndetailedCardLayout(cardsDataMap["secondCard"],
+                                            cardsAngleMap["secondCard"]!,
+                                            !gameModel.tutorialOngoing, animCallback)),
                                 animation: cardsMatrixMap["secondCard"]!,)),
-                              Indexed(index: indexingList[3], child:
+                              Indexed(index: indexingList["thirdCard"]!, child:
                               AnimatedBuilder(builder: (context, child) =>
                                   Transform(transform: cardsMatrixMap["thirdCard"]!.value,
                                       origin: Offset(pivotPointX, pivotPointY),
-                                      child: UndetailedCardLayout(cardsDataMap["thirdCard"],
+                                      child:
+                                      UndetailedCardLayout(cardsDataMap["thirdCard"],
                                           cardsAngleMap["thirdCard"]!,
-                                          !gameModel.tutorialOngoing)),
-                                animation: cardsMatrixMap["thirdCard"]!,)),
-                              Indexed(index: indexingList[4], child:
+                                          !gameModel.tutorialOngoing, animCallback)),
+                                animation: cardsMatrixMap["thirdCard"]!)),
+                              Indexed(index: indexingList["fourthCard"]!, child:
                               AnimatedBuilder(builder: (context, child) =>
                                   Transform(transform: cardsMatrixMap["fourthCard"]!
                                       .value,
                                       origin: Offset(pivotPointX, pivotPointY),
                                       child: UndetailedCardLayout(cardsDataMap["fourthCard"],
                                           cardsAngleMap["fourthCard"]!,
-                                          !gameModel.tutorialOngoing)),
+                                          !gameModel.tutorialOngoing, animCallback)),
                                 animation: cardsMatrixMap["fourthCard"]!,)),
-                              Indexed(index: indexingList[5], child:
+                              Indexed(index: indexingList["fifthCard"]!, child:
                               AnimatedBuilder(builder: (context, child) =>
                                   Transform(transform: cardsMatrixMap["fifthCard"]!.value,
                                       origin: Offset(pivotPointX, pivotPointY),
                                       child: UndetailedCardLayout(cardsDataMap["fifthCard"],
                                           cardsAngleMap["fifthCard"]!,
-                                          !gameModel.tutorialOngoing)),
+                                          !gameModel.tutorialOngoing, animCallback)),
                                 animation: cardsMatrixMap["fifthCard"]!,)),
-
                             ],
-                          )))),
+                          )
+                      ),
                     ]
                 ),
                 InkWell(
@@ -315,11 +271,14 @@ class CardSelectionState extends State<CardSelectionScreen>
                           width: screenWidth * 0.35,
                           height: screenWidth * 0.35,
                           animate: /*!gameModel.tutorialOngoing*/ false)),
-                    ))
-              ],),
-            DrawCardFab()
-          ],));
+                    ))]);
     });
+  }
+
+  void animCallback(){
+    triggerIndexing = true;
+    ongoingAnimation = true;
+    updateAnimation(rotationSense, screenHeight, playerCards);
   }
 
   void firstCardsDataBinding(List<CardData?> cardsList){
@@ -375,9 +334,39 @@ class CardSelectionState extends State<CardSelectionScreen>
   }
 
   void changeIndexing(AnimationStatus status){
+      print("change indexing");
        if (status == AnimationStatus.completed && triggerIndexing){
          setState(() {
-           switch(rotationSense){
+           for(final entry in cardsAngleMap.entries){
+             switch(entry.value.toInt()){
+               case 30: {
+                 indexingList[entry.key] = 2;
+               }
+               break;
+               case 60: {
+                 indexingList[entry.key] = 1;
+               }
+               break;
+               case -30: {
+                 indexingList[entry.key] = 2;
+               }
+               break;
+               case -60: {
+                 indexingList[entry.key] = 1;
+               }
+               break;
+               case 180: {
+                 indexingList[entry.key] = 0;
+               }
+               break;
+               case 0: {
+                 indexingList[entry.key] = 3;
+               }
+               break;
+             }
+           }
+
+           /*switch(rotationSense){
              case rotVersus.Right : {
                for (int i = 0; i < 3; i++){
                  indexingList[((6 - counter)%6 + i)%6] += 1;
@@ -398,8 +387,7 @@ class CardSelectionState extends State<CardSelectionScreen>
              } break;
              default:
                break;
-           }
-           ongoingAnimation = false;
+           }*/
   });}}
 
   void updateAnimation(rotVersus versus, double currentHeight, List<CardData?>? playerCards){
@@ -432,8 +420,29 @@ class CardSelectionState extends State<CardSelectionScreen>
                  cardsAngleMap[key] = newAngle;
 
                  switch(newAngle.toInt()){
+                   case 30: {
+                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))
+                       ..setTranslationRaw(50, 0, 0);
+                   }
+                   break;
+                   case 60: {
+                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))
+                       ..setTranslationRaw(50, 0, 0);
+                   }
+                   break;
+                   case -30: {
+                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))
+                       ..setTranslationRaw(-50, 0, 0);
+                   }
+                   break;
+                   case -60: {
+                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))
+                       ..setTranslationRaw(-50, 0, 0);
+                   }
+                   break;
                    case 180: {
-                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))..setTranslationRaw(0, 100, 0);
+                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))
+                       ..setTranslationRaw(0, 100, 0);
                    }
                    break;
                    case 0: {
@@ -441,18 +450,22 @@ class CardSelectionState extends State<CardSelectionScreen>
                        ..setTranslationRaw(0, -currentHeight * 0.01, 0);
                    }
                    break;
-                   default: {
-                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!));
-                   }
-                   break;
                  }
 
                  cardsMatrixMap[key] = Tween<Matrix4>(begin: oldMatrix, end : cardsTransformMap[key]).animate(cardsControllerMap[key]!);
                }
 
-               for (AnimationController controller in cardsControllerMap.values){
-                 controller.forward(from: 0);
+               List<AnimationController> delayedControllers = [];
+
+               for (final entry in cardsControllerMap.entries){
+                 if(cardsAngleMap[entry.key]! > 0 && cardsAngleMap[entry.key]!=180){
+                   entry.value.forward(from: 0);
+                 }
+                 else{
+                   delayedControllers.add(entry.value);
+                 }
                }
+               delayedAnimation(delayedControllers);
          } break;
 
          case rotVersus.Left :{
@@ -477,8 +490,29 @@ class CardSelectionState extends State<CardSelectionScreen>
                  cardsAngleMap[key] = newAngle;
 
                  switch(newAngle.toInt()){
+                   case 30: {
+                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))
+                       ..setTranslationRaw(50, 0, 0);
+                   }
+                   break;
+                   case 60: {
+                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))
+                       ..setTranslationRaw(50, 0, 0);
+                   }
+                   break;
+                   case -30: {
+                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))
+                       ..setTranslationRaw(-50, 0, 0);
+                   }
+                   break;
+                   case -60: {
+                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))
+                       ..setTranslationRaw(-50, 0, 0);
+                   }
+                   break;
                    case 180: {
-                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))..setTranslationRaw(0, 100, 0);
+                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))
+                       ..setTranslationRaw(0, 100, 0);
                    }
                    break;
                    case 0: {
@@ -486,17 +520,21 @@ class CardSelectionState extends State<CardSelectionScreen>
                        ..setTranslationRaw(0, -currentHeight * 0.01, 0);
                    }
                    break;
-                   default: {
-                     cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!));
-                   }
-                   break;
                  }
                  cardsMatrixMap[key] = Tween<Matrix4>(begin: oldMatrix, end : cardsTransformMap[key]).animate(cardsControllerMap[key]!);
                }
 
-               for (AnimationController controller in cardsControllerMap.values){
-                 controller.forward(from: 0);
+               List<AnimationController> delayedControllers = [];
+
+               for (final entry in cardsControllerMap.entries){
+                 if(cardsAngleMap[entry.key]! < 0 && cardsAngleMap[entry.key]!=180){
+                   entry.value.forward(from: 0);
+                 }
+                 else{
+                   delayedControllers.add(entry.value);
+                 }
                }
+               delayedAnimation(delayedControllers);
          } break;
 
          case rotVersus.Up : {
@@ -591,6 +629,28 @@ class CardSelectionState extends State<CardSelectionScreen>
               });
          });
   }
+
+  Future<void> delayedAnimation(List<AnimationController> delayedControllers) async{
+    return Future<void>.delayed(const Duration(milliseconds: 150),
+        (){
+          changeIndexing(AnimationStatus.completed);
+          notifyAnimFinished();
+          for(final animationController in delayedControllers){
+              animationController.forward(from: 0);
+          }
+        }
+        );
+  }
+
+  Future<void> notifyAnimFinished() async{
+    return Future<void>.delayed(const Duration(milliseconds: 150),
+            (){
+              ongoingAnimation = false;
+        }
+    );
+  }
+
+
 
 }
 

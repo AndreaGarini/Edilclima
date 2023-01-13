@@ -38,28 +38,38 @@ class MainScreenContentState extends State<MainScreenContent>{
               (){ Navigator.of(parentContext).pop();});
 
       WidgetsBinding.instance?.addPostFrameCallback((_) {
-        if(gameModel.playerLevelCounter == 1
+        /*if(gameModel.playerLevelCounter == 1
             && gameModel.playerLevelStatus == "preparing"
             && gameModel.showDialog==null
             && !tutorialOpened){
             startTutorial(parentContext, gameModel, tutorialComponents);
-        }
+        }*/
       });
 
       if(gameModel.showDialog!=null && gameModel.showDialog!=lastDialogData){
         setDialogAvailable(parentContext, gameModel.showDialog!, gameModel);
       }
 
-      return Scaffold(
+      return
+        Stack(children: [Scaffold(
         body: Column(mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Container(height: screenHeight * 0.05, color: darkBluePalette),
             Expanded(flex: 1, child: infoRow()),
             Expanded(flex: 10, child: widget.child)
           ],),
-        bottomNavigationBar:  SizedBox(width: screenWidth, height: screenHeight * 0.1, child: BottomNavBar(context))
-      );
+      bottomNavigationBar:  SizedBox(width: screenWidth, height: screenHeight * 0.12, child: BottomNavBar(context))
+      ),
+          Positioned(top: screenHeight * 0.05, left: screenWidth * 0.07, width: screenWidth * 0.85, height: screenHeight * 0.1,
+          child: Container(
+            decoration: BoxDecoration(border: Border.all(
+              color: Colors.red,
+              width: screenWidth * 0.02,
+            ), color: Colors.transparent),
+          ),)
+        ]);
     });
   }
 

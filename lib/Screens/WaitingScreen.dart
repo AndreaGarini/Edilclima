@@ -30,7 +30,7 @@ class WaitingScreenState extends State<WaitingScreen> {
     screenHeight = MediaQuery
         .of(context)
         .size
-        .height;
+        .height - 120;
 
     return Material(color: Colors.white, child:
       Column(
@@ -38,7 +38,7 @@ class WaitingScreenState extends State<WaitingScreen> {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           const Spacer(),
-          Expanded(flex: 2, child: Center(child: AnimatedGradient("Edilclima", screenHeight * 0.12, 5200, 'Inspiration', true))),
+          Expanded(flex: 2, child: Center(child: AnimatedGradient("Edilclima", screenHeight * 0.13, 5200, 'Inspiration', true))),
           const Spacer(),
           Expanded(flex : 7, child: Lottie.asset('assets/animations/WaitingScreenHome.json')),
           Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, "Chi sei?", screenWidth * 0.08, FontWeight.normal))),

@@ -34,25 +34,13 @@ class DetailedCardLayout extends StatelessWidget{
           width: screenWidth * 0.8,
           height: height ?? screenHeight * 0.6,
           decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
+              color: Colors.white,
               boxShadow: [ BoxShadow(
                 color: lightOrangePalette.withOpacity(0.6),
                 spreadRadius: 1,
-                blurRadius: 6,
+                blurRadius: 1,
                 offset: const Offset(0, 0), // changes position of shadow
-              )],
-              gradient:  LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    darkBluePalette,
-                    lightBluePalette,
-                    backgroundGreen,
-                    backgroundGreen,
-                    lightOrangePalette,
-                    darkOrangePalette,
-                  ],
-                  stops: const [0,0.1,0.2,0.8,0.9, 1]
-              )),
+              )]),
         child: Card(shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0)),
             elevation: 10,
@@ -74,25 +62,13 @@ class DetailedCardLayout extends StatelessWidget{
           width: screenWidth * 0.8,
           height: screenHeight * 0.6,
           decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
+              color: Colors.white,
               boxShadow: [ BoxShadow(
                 color: darkGreyPalette.withOpacity(0.5),
                 spreadRadius: 1,
-                blurRadius: 6,
+                blurRadius: 1,
                 offset: const Offset(0, 0), // changes position of shadow
-              )],
-              gradient:  LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    darkBluePalette,
-                    lightBluePalette,
-                    backgroundGreen,
-                    backgroundGreen,
-                    lightOrangePalette,
-                    darkOrangePalette,
-                  ],
-                  stops: const [0,0.1,0.2,0.8,0.9, 1]
-              )),
+              )]),
           child: Card(
               color: backgroundGreen,
               shape: RoundedRectangleBorder(

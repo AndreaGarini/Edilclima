@@ -27,7 +27,7 @@ class SpashScreenState extends State<SplashScreen> {
         updateData(gameModel);
         if (gameModel.playerLevelCounter >0 && gameModel.playerLevelStatus != null) {
           if(!pushRoute){
-            gameModel.tutorialOngoing = true;
+            //gameModel.tutorialOngoing = true;
             pushRoute = true;
             Future.delayed(const Duration(milliseconds: 3000), () {
               context.go('/cardSelectionScreen');

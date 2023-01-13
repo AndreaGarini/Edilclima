@@ -94,25 +94,13 @@ class PageLayoutState extends State<PageLayout>{
         onTap: gameModel.playerTimer!=null ? () {onTap(gameModel);} : (){},
         child:  Container(
         decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
+        color: Colors.white,
         boxShadow: [ BoxShadow(
         color: lightBluePalette.withOpacity(0.4),
         spreadRadius: 1,
-        blurRadius: 6,
+        blurRadius: 1,
         offset: const Offset(0, 0), // changes position of shadow
-        )],
-        gradient:  LinearGradient(
-        begin: Alignment.topRight,
-        end: Alignment.bottomLeft,
-        colors: [
-          lightOrangePalette,
-          darkOrangePalette,
-          backgroundGreen,
-          backgroundGreen,
-          darkBluePalette,
-          lightBluePalette,
-        ],
-        stops: const [0,0.1,0.2,0.8,0.9, 1]
-        )),
+        )]),
         child:
         Card(shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0)),

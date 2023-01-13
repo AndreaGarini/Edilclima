@@ -18,55 +18,20 @@ class TeamCardLayout extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-   return  Container(
-       width: screenWidth * 0.45,
-       height: screenHeight * 0.35,
-       decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
-    boxShadow: [ BoxShadow(
-    color: darkGreyPalette.withOpacity(0.5),
-    spreadRadius: 1,
-    blurRadius: 6,
-    offset: const Offset(0, 0), // changes position of shadow
-    )],
-    gradient:  LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-    darkBluePalette,
-    lightBluePalette,
-    backgroundGreen,
-    backgroundGreen,
-    lightOrangePalette,
-    darkOrangePalette,
-    ],
-    stops: const [0,0.1,0.2,0.8,0.9, 1]
-    )),
-    child: Container(
+   return Container(
     width: screenWidth * 0.45,
     height: screenHeight * 0.35,
     decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
+    color: Colors.white,
     boxShadow: [ BoxShadow(
     color: darkGreyPalette.withOpacity(0.5),
     spreadRadius: 1,
-    blurRadius: 6,
+    blurRadius: 1,
     offset: const Offset(0, 0), // changes position of shadow
-    )],
-    gradient:  LinearGradient(
-    begin: Alignment.topRight,
-    end: Alignment.bottomLeft,
-    colors: [
-    darkBluePalette,
-    lightBluePalette,
-    Colors.transparent,
-    Colors.transparent,
-    lightOrangePalette,
-    darkOrangePalette,
-    ],
-    stops: const [0,0.1,0.2,0.8,0.9, 1]
-    )),
+    )]),
     child: Card(shape: RoundedRectangleBorder(
        borderRadius: BorderRadius.circular(15.0)),
-    elevation: 10,
+    elevation: 3,
     color: backgroundGreen,
     child: Stack(
       alignment: Alignment.bottomRight,
@@ -140,15 +105,15 @@ class TeamCardLayout extends StatelessWidget{
             ],)),
         ],),
       SizedBox(
-        height: screenWidth * 0.32,
+        height: screenWidth * 0.3,
         width: screenWidth * 0.5,
         child: Center(child: Lottie.asset('assets/animations/TeamWorking.json',
-            width: screenWidth * 0.35,
-            height: screenWidth * 0.35,
+            width: screenWidth * 0.2,
+            height: screenWidth * 0.2,
             animate: false)),
       )
     ])
-   )));
+   ));
   }
 
 

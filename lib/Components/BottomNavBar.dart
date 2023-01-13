@@ -43,7 +43,6 @@ class BottomNavBarState extends  State<BottomNavBar>{
   Widget build(BuildContext context) {
 
     return BottomNavigationBar(items: navItems,
-        type: BottomNavigationBarType.shifting,
         currentIndex: calculateSelectedIndex(context),
         onTap: (index) => onTapCallback(index),
         backgroundColor: darkBluePalette,

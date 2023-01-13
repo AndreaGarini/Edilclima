@@ -22,22 +22,30 @@ class VerticalStatsCard extends StatelessWidget{
 
     switch(dataType){
       case "smog" : {
-        icon = Icon(Elusive.leaf, color: lightOrangePalette);
+        icon = Icon(Elusive.leaf,
+            color: lightOrangePalette,
+            size: screenWidth * 0.05);
         text = "Smog : ";
       }
       break;
       case "energy" : {
-        icon = Icon(Elusive.lightbulb, color: darkBluePalette);
+        icon = Icon(Elusive.lightbulb,
+            color: darkBluePalette,
+            size: screenWidth * 0.05);
         text = "Energy : ";
       }
       break;
       case "comfort" : {
-        icon = Icon(Icons.home, color: lightBluePalette);
+        icon = Icon(Icons.home,
+            color: lightBluePalette,
+            size: screenWidth * 0.05);
         text = "Comfort : ";
       }
       break;
       case "money" : {
-        icon = Icon(ModernPictograms.dollar, color: darkOrangePalette, size: screenWidth * 0.05,);
+        icon = Icon(ModernPictograms.dollar,
+          color: darkOrangePalette,
+          size: screenWidth * 0.05,);
         text = "Cost : ";
       }
     }
@@ -60,7 +68,7 @@ class VerticalStatsCard extends StatelessWidget{
                    boxShadow: [ BoxShadow(
                      color: lightBluePalette.withOpacity(0.5),
                      spreadRadius: 1,
-                     blurRadius: 6,
+                     blurRadius: 1,
                      offset: const Offset(0, 0), // changes position of shadow
                    )]),
                child: icon)),

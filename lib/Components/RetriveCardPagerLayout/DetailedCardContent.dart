@@ -40,7 +40,7 @@ class DetailedCardContent extends StatelessWidget{
     SingleChildScrollView(
             child: ConstrainedBox(
                 constraints: BoxConstraints(
-                    maxHeight: screenHeight * 0.8),
+                    maxHeight: screenHeight),
                 child:
                 IntrinsicHeight(
                   child:
@@ -71,7 +71,7 @@ class DetailedCardContent extends StatelessWidget{
                                 Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.center, children: [
                                       const Spacer(),
-                                      Expanded(flex: 6, child: Text(bodyText, style: const TextStyle(color: Colors.black))),
+                                      Expanded(flex: 6, child: StylizedText(darkBluePalette, bodyText, screenHeight * 0.025, FontWeight.normal)),
                                       const Spacer()
                                     ])
                               ])
