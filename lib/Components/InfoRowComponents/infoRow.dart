@@ -53,32 +53,39 @@ class infoRowState extends State<infoRow> with
     curve: Curves.easeOutQuad,
   ));
 
+  @override
+  void dispose() {
+    super.dispose();
+    slideInControllerBase.dispose();
+    slideOutControllerBase.dispose();
+  }
+
   InfoRowLayout toShowLayout = InfoRowLayout.Base;
   bool animOut = false;
   bool infoRowDefaultLayout = true;
   bool readyToAnim = true;
 
   InfoRowLayout evaluateLayout(pushResult lastPush){
-    if(infoRowDefaultLayout){
-        switch(lastPush){
-          case pushResult.InvalidCard: {
-              return InfoRowLayout.Invalid;
+          if(infoRowDefaultLayout){
+            switch(lastPush){
+              case pushResult.InvalidCard: {
+                return InfoRowLayout.Invalid;
+              }
+              case  pushResult.LowBudget: {
+                return InfoRowLayout.Budget;
+              }
+              case  pushResult.ResearchNeeded: {
+                return InfoRowLayout.Research;
+              }
+              default : {
+                return InfoRowLayout.Base;
+              }
+            }
           }
-          case  pushResult.LowBudget: {
-              return InfoRowLayout.Budget;
-          }
-          case  pushResult.ResearchNeeded: {
-              return InfoRowLayout.Research;
-          }
-          default : {
-              return InfoRowLayout.Base;
-          }
-        }
-    }
 
-    else{
-        return InfoRowLayout.Turn;
-    }
+          else{
+            return InfoRowLayout.Turn;
+          }
   }
 
   void endingLayoutChange (pushResult lastPush){

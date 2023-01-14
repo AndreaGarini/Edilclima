@@ -1,7 +1,6 @@
 
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:edilclima_app/Components/generalFeatures/SizedButton.dart';
-import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:edilclima_app/GameModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -37,14 +36,14 @@ class OverlayerTutorialFeatures extends StatelessWidget{
       case 0: {
         //info row
         return Stack(children: [
-          Positioned(top: screenHeight * 0.05, left: screenWidth * 0.07, width: screenWidth * 0.85, height: screenHeight * 0.09,
+          Positioned(top: 0, left: screenWidth * 0.075, width: screenWidth * 0.85, height: screenHeight * 0.08,
               child: Container(
                 decoration: BoxDecoration(border: Border.all(
                   color: lightBluePalette,
                   width: screenWidth * 0.02,
                 ), color: Colors.transparent),
               )),
-          Positioned(top: screenHeight * 0.15, left: 0, width: screenWidth, height: screenHeight * 0.4,
+          Positioned(top: screenHeight * 0.1, left: 0, width: screenWidth, height: screenHeight * 0.4,
               child: Padding(padding: EdgeInsets.all(screenWidth * 0.02),
               child:
                 Container(
@@ -78,14 +77,14 @@ class OverlayerTutorialFeatures extends StatelessWidget{
       case 1: {
         //swipable cards
         return Stack(children: [
-          Positioned(top: screenHeight * 0.15, left: 0, width: screenWidth, height: screenHeight * 0.4,
+          Positioned(top: screenHeight * 0.08, left: 0, width: screenWidth, height: screenHeight * 0.35,
               child: Container(
                 decoration: BoxDecoration(border: Border.all(
                   color: lightBluePalette,
                   width: screenWidth * 0.02,
                 ), color: Colors.transparent),
               )),
-          Positioned(top: screenHeight * 0.55, left: 0, width: screenWidth, height: screenHeight * 0.4,
+          Positioned(top: screenHeight * 0.45, left: 0, width: screenWidth, height: screenHeight * 0.35,
               child: Padding(padding: EdgeInsets.all(screenWidth * 0.02),
                 child:
                     Container(
@@ -119,14 +118,14 @@ class OverlayerTutorialFeatures extends StatelessWidget{
       case 2: {
         //rosa carte 1
         return Stack(children: [
-          Positioned(top: screenHeight * 0.55, left: 0, width: screenWidth, height: screenHeight * 0.55,
+          Positioned(top: screenHeight * 0.4, left: 0, width: screenWidth, height: screenHeight * 0.48,
               child: Container(
                 decoration: BoxDecoration(border: Border.all(
                   color: lightBluePalette,
                   width: screenWidth * 0.02,
                 ), color: Colors.transparent),
               )),
-          Positioned(top: screenHeight * 0.15, left: 0, width: screenWidth, height: screenHeight * 0.4,
+          Positioned(top: screenHeight * 0.08, left: 0, width: screenWidth, height: screenHeight * 0.33,
               child: Padding(padding: EdgeInsets.all(screenWidth * 0.02),
                 child: Container(
                   color: lightBluePalette,
@@ -159,14 +158,14 @@ class OverlayerTutorialFeatures extends StatelessWidget{
       case 3: {
         //rosa carte 2
         return Stack(children: [
-          Positioned(top: screenHeight * 0.55, left: 0, width: screenWidth, height: screenHeight * 0.55,
+          Positioned(top: screenHeight * 0.4, left: 0, width: screenWidth, height: screenHeight * 0.48,
               child: Container(
                 decoration: BoxDecoration(border: Border.all(
                   color: lightBluePalette,
                   width: screenWidth * 0.02,
                 ), color: Colors.transparent),
               )),
-          Positioned(top: screenHeight * 0.15, left: 0, width: screenWidth, height: screenHeight * 0.4,
+          Positioned(top: screenHeight * 0.08, left: 0, width: screenWidth, height: screenHeight * 0.33,
               child: Padding(padding: EdgeInsets.all(screenWidth * 0.02),
                 child: Container(
                       color: lightBluePalette,
@@ -199,9 +198,7 @@ class OverlayerTutorialFeatures extends StatelessWidget{
       case 4: {
         //bottom nav bar (usa freccia easy)
         return Stack(children: [
-          Positioned(top: screenHeight * 0.55, left: 0, width: screenWidth, height: screenHeight * 0.55,
-              child: Image.asset('assets/images/arrow-down.png', scale: 0.5,)),
-          Positioned(top: screenHeight * 0.15, left: 0, width: screenWidth, height: screenHeight * 0.4,
+          Positioned(top: screenHeight * 0.08, left: 0, width: screenWidth, height: screenHeight * 0.33,
               child: Padding(padding: EdgeInsets.all(screenWidth * 0.02),
                 child: Container(
                   color: lightBluePalette,

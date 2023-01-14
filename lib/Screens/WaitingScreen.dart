@@ -23,32 +23,30 @@ class WaitingScreenState extends State<WaitingScreen> {
   @override
   Widget build(BuildContext context) {
 
-    screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height - 120;
-
-    return Material(color: Colors.white, child:
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          const Spacer(),
-          Expanded(flex: 2, child: Center(child: AnimatedGradient("Edilclima", screenHeight * 0.13, 5200, 'Inspiration', true))),
-          const Spacer(),
-          Expanded(flex : 7, child: Lottie.asset('assets/animations/WaitingScreenHome.json')),
-          Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, "Chi sei?", screenWidth * 0.08, FontWeight.normal))),
-          Divider(indent: screenWidth * 0.3, endIndent: screenWidth * 0.3, color: darkBluePalette, thickness: 2,),
-          const Spacer(),
-          Expanded(flex: 1, child: SizedButton(screenWidth * 0.6, "Il master", () {context.push("/initialScreen/matchMakingScreen");})),
-          const Spacer(),
-          Expanded(flex: 1, child: SizedButton(screenWidth * 0.6, "Un giocatore", () {context.push("/initialScreen/cameraScreen");})),
-          const Spacer(),
-        ],
-      ),);
+    return
+    SafeArea(child:
+       LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints){
+         screenWidth = constraints.maxWidth;
+         screenHeight = constraints.maxHeight;
+         return Material(color: Colors.white, child:
+         Column(
+           crossAxisAlignment: CrossAxisAlignment.center,
+           mainAxisSize: MainAxisSize.max,
+           children: <Widget>[
+             const Spacer(),
+             Expanded(flex: 2, child: Center(child: AnimatedGradient("Edilclima", screenHeight * 0.11, 5200, 'Inspiration', true))),
+             const Spacer(),
+             Expanded(flex : 7, child: Lottie.asset('assets/animations/WaitingScreenHome.json')),
+             Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, "Chi sei?", screenWidth * 0.08, FontWeight.normal))),
+             Divider(indent: screenWidth * 0.3, endIndent: screenWidth * 0.3, color: darkBluePalette, thickness: 2,),
+             const Spacer(),
+             Expanded(flex: 1, child: SizedButton(screenWidth * 0.6, "Il master", () {context.push("/initialScreen/matchMakingScreen");})),
+             const Spacer(),
+             Expanded(flex: 1, child: SizedButton(screenWidth * 0.6, "Un giocatore", () {context.push("/initialScreen/cameraScreen");})),
+             const Spacer(),
+           ],
+         ),);
+       })
+    );
   }
 }

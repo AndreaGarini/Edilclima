@@ -65,7 +65,7 @@ class UndetailedCardLayout extends StatelessWidget {
 
           Container(
             width: screenWidth * 0.45,
-            height: screenHeight * 0.35,
+            height: screenHeight * 0.3,
             decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
                 color: Colors.white,
                 boxShadow: [ BoxShadow(
@@ -109,8 +109,8 @@ class UndetailedCardLayout extends StatelessWidget {
       }
       else{
         return Container(
-            width: screenWidth * 0.4,
-            height: screenHeight * 0.35,
+            width: screenWidth * 0.35,
+            height: screenHeight * 0.3,
             decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
                 color: Colors.white,
                 boxShadow: [ BoxShadow(
@@ -138,8 +138,8 @@ class UndetailedCardLayout extends StatelessWidget {
     }
     else{
       return Container(
-          width: screenWidth * 0.4,
-          height: screenHeight * 0.35,
+          width: screenWidth * 0.35,
+          height: screenHeight * 0.3,
           decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
               color: Colors.white,
               boxShadow: [ BoxShadow(

@@ -23,6 +23,9 @@ class MainScreenContent extends StatefulWidget {
   State<MainScreenContent> createState() => MainScreenContentState();
 }
 
+double mainHeight = 0;
+double mainWidth = 0;
+
 class MainScreenContentState extends State<MainScreenContent>{
 
   DialogData? lastDialogData;
@@ -44,7 +47,7 @@ class MainScreenContentState extends State<MainScreenContent>{
   @override
   Widget build(BuildContext parentContext) {
 
-    //todo: dialog ancora appaiono 2 volte
+    //todo: sistemare le misure dai main screen in base alla main height
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
       WidgetsBinding.instance?.addPostFrameCallback((_){
@@ -53,8 +56,6 @@ class MainScreenContentState extends State<MainScreenContent>{
            firstOpening = false;
         }
       });
-      /*tutorialComponents = TutorialComponents(gameModel,
-              (){ Navigator.of(parentContext).pop();});*/
 
       if(gameModel.showDialog!=null && gameModel.showDialog!=lastDialogData){
         setDialogAvailable(parentContext, gameModel.showDialog!, gameModel);
@@ -64,32 +65,42 @@ class MainScreenContentState extends State<MainScreenContent>{
           && gameModel.playerLevelStatus == "preparing"
           && gameModel.tutorialDone==false){
           return
-            Stack(children: [Scaffold(
-                body: Column(mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(height: screenHeight * 0.05, color: darkBluePalette),
-                    Expanded(flex: 1, child: infoRow()),
-                    Expanded(flex: 10, child: widget.child)
-                  ],),
-                bottomNavigationBar:  SizedBox(width: screenWidth, height: screenHeight * 0.12, child: BottomNavBar(context))
-            ),
-              OverlayerTutorialFeatures(tutorialPhase, buttonCallback, gameModel)
-            ]);
+            SafeArea(child:
+                LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints){
+                  mainHeight = constraints.maxHeight;
+                  mainWidth = constraints.maxWidth;
+                  return Stack(children: [Scaffold(
+                      body: Column(mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(flex: 1, child: infoRow()),
+                          Expanded(flex: 10, child: widget.child)
+                        ],),
+                      bottomNavigationBar:  SizedBox(width: screenWidth, height: screenHeight * 0.12, child: BottomNavBar(context))
+                  ),
+                    OverlayerTutorialFeatures(tutorialPhase, buttonCallback, gameModel)
+                  ]);
+            })
+            );
         }
         else{
-          return Scaffold(
+          return
+            SafeArea(child:
+              LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints){
+            mainHeight = constraints.maxHeight;
+            mainWidth = constraints.maxWidth;
+            return Scaffold(
               body: Column(mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(height: screenHeight * 0.05, color: darkBluePalette),
                   Expanded(flex: 1, child: infoRow()),
                   Expanded(flex: 10, child: widget.child)
                 ],),
               bottomNavigationBar:  SizedBox(width: screenWidth, height: screenHeight * 0.12, child: BottomNavBar(context))
           );
+              }));
         }
     });
   }

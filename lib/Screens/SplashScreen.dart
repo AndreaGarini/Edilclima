@@ -36,7 +36,9 @@ class SpashScreenState extends State<SplashScreen> {
         }
       });
 
-      return Material(color: Colors.white, child: Lottie.asset('assets/animations/SplashScreenHand.json'));
+      return SafeArea(child:
+      Material(color: Colors.white, child: Lottie.asset('assets/animations/SplashScreenHand.json'))
+      );
     });
   }
 

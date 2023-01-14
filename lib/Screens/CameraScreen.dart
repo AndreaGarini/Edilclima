@@ -23,7 +23,8 @@ class CameraScreenState extends State<CameraScreen> {
   Widget build(BuildContext context) {
 
 
-    return Material(
+    return SafeArea(child:
+        Material(
       color: Colors.white,
         child:
     Consumer<GameModel>(builder: (context, gameModel, child)
@@ -60,7 +61,7 @@ class CameraScreenState extends State<CameraScreen> {
           ]
 
       );
-    }));
+    })));
   }
 
   Future<void> updateData(GameModel gm) async{

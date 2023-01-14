@@ -28,6 +28,14 @@ class PageLayout extends StatefulWidget{
 
 class PageLayoutState extends State<PageLayout>{
 
+  late bool wrongClick;
+
+  @override
+  void initState() {
+    super.initState();
+    wrongClick = false;
+  }
+
   Pair resNeededCheck(GameModel gameModel){
     bool resNeeded = gameModel.gameLogic.findCard(playableCard)?.research == researchSet.Needed;
 
@@ -46,36 +54,43 @@ class PageLayoutState extends State<PageLayout>{
     String month = gameModel.gameLogic.months[widget.index];
     var posOccupied = gameModel.playedCardsPerTeam[gameModel.team]!.keys.contains(month);
 
-    if(!posOccupied && gameModel.playerTimer!=null){
+    if(!posOccupied){
+      if(gameModel.playerTimer!=null){
+        var resPair = resNeededCheck(gameModel);
 
-      var resPair = resNeededCheck(gameModel);
+        def() {
+          var budget = gameModel.getBudgetSnapshot(
+              gameModel.playedCardsPerTeam[gameModel.team]!.values.toList());
 
-      def() {
-        var budget = gameModel.getBudgetSnapshot(
-            gameModel.playedCardsPerTeam[gameModel.team]!.values.toList());
+          if (gameModel.gameLogic.findCard(playableCard)!.money < budget) {
 
-        if (gameModel.gameLogic.findCard(playableCard)!.money < budget) {
+            if(gameModel.playCardInPosCheck(widget.index, playableCard)){
+              gameModel.changePushValue(Pair(pushResult.CardDown, null));
+              gameModel.stopPlayerTimer();
+              gameModel.setTimeOutTrue();
+            }
 
-          if(gameModel.playCardInPosCheck(widget.index, playableCard)){
-            gameModel.changePushValue(Pair(pushResult.CardDown, null));
-            gameModel.stopPlayerTimer();
-            gameModel.setTimeOutTrue();
           }
+          else {
+            gameModel.changePushValue(Pair(pushResult.LowBudget, null));
+          }
+        }
 
-        }
-        else {
-          gameModel.changePushValue(Pair(pushResult.LowBudget, null));
-        }
+        KotlinWhen(
+            [KotlinPair(playableCard=="null", (){gameModel.changePushValue(Pair(pushResult.CardDown, null));}),
+              KotlinPair(playableCard=="void", (){gameModel.changePushValue(Pair(pushResult.InvalidCard, null));}),
+              KotlinPair(resPair.first() as bool, (){gameModel.changePushValue(Pair(pushResult.ResearchNeeded, resPair.second()));})],
+            def).whenExeute();
       }
-
-      KotlinWhen(
-          [KotlinPair(playableCard=="null", (){gameModel.changePushValue(Pair(pushResult.CardDown, null));}),
-            KotlinPair(playableCard=="void", (){gameModel.changePushValue(Pair(pushResult.InvalidCard, null));}),
-            KotlinPair(resPair.first() as bool, (){gameModel.changePushValue(Pair(pushResult.ResearchNeeded, resPair.second()));})],
-          def).whenExeute();
+      else{
+        setWrongClickFalse();
+        setState((){
+          wrongClick = true;
+        });
+      }
     }
 
-    else if(posOccupied) {
+    else {
       String cardCode = gameModel.playedCardsPerTeam[gameModel.team]![month]!;
       onFocusCard = gameModel.gameLogic.findCard(cardCode);
       context.push("/cardSelectionScreen/cardInfoScreen");
@@ -122,8 +137,9 @@ class PageLayoutState extends State<PageLayout>{
             elevation: 1,
             child: Center(child: widget.crd?.code!=null ?
              lottieWidget :
-            ShinyContent(Text("Click to play card",
-                style: TextStyle(fontSize: screenWidth * 0.05, fontWeight: FontWeight.bold, color: Colors.white)),
+            ShinyContent(
+                Text( wrongClick ? "Attendi il tuo turno" : "Clicca per giocare la carta",
+                style: TextStyle(fontSize: screenWidth * 0.04, fontWeight: FontWeight.bold, color: Colors.white)),
                 darkBluePalette)))
     ));
   }
@@ -143,6 +159,13 @@ class PageLayoutState extends State<PageLayout>{
     });
   }
 
+  Future<void> setWrongClickFalse(){
+    return Future.delayed(const Duration(milliseconds: 1500), (){
+      setState(() {
+        wrongClick = false;
+      });
+    });
+  }
 
 
 
