@@ -25,7 +25,6 @@ class UndetailedCardLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     //todo: sistemare l'animazione centrale che impazzisce
    if (cardData!= null && cardData!.code != "void"){
       switch (cardData!.type){
@@ -43,6 +42,9 @@ class UndetailedCardLayout extends StatelessWidget {
         break;
       }
 
+      if(angle==0){
+        print("ongoingAnim for card at angle 0: ${ongoingAnimation}");
+      }
       if(angle == 0 && !ongoingAnimation){
         return
                 Listener(

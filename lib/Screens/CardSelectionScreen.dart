@@ -28,7 +28,7 @@ Map<String, Matrix4> cardsTransformMap = Map();
 Map<String, AnimationController> cardsControllerMap = Map();
 Map<String, Animation<Matrix4>> cardsMatrixMap = Map();
 Map<String, double> cardsAngleMap = Map();
-Map<String, int> indexingList = Map();//List.generate(6, (index) => 0);
+Map<String, int> indexingList = Map();
 Map<String, CardData?> cardsDataMap = {};
 
 
@@ -49,6 +49,7 @@ rotVersus rotationSense = rotVersus.None;
 String playableCard = "null";
 CardData? onFocusCard;
 bool ongoingAnimation = false;
+bool firstOpening = true;
 List<CardData?> playerCards = List.generate(6, (index) => CardData("void", 0, 0, 0, 0,
     cardType.Pollution,
     researchSet.None, null,
@@ -67,6 +68,7 @@ class CardSelectionState extends State<CardSelectionScreen>
   void initState() {
     super.initState();
 
+    onFocusCard = null;
     openingAnimDone = false;
     ongoingAnimation = false;
     triggerIndexing = false;
@@ -95,12 +97,23 @@ class CardSelectionState extends State<CardSelectionScreen>
     cardsDataMap["fifthCard"] = null;
     cardsDataMap["sixthCard"] = null;
 
-    cardsTransformMap["firstCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["firstCard"]!))..setTranslationRaw(-50, 0, 0);
-    cardsTransformMap["secondCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["secondCard"]!))..setTranslationRaw(-50, 0, 0);
-    cardsTransformMap["thirdCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["thirdCard"]!))..scale(1.2, 1.2);
-    cardsTransformMap["fourthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["fourthCard"]!))..setTranslationRaw(50, 0, 0);
-    cardsTransformMap["fifthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["fifthCard"]!))..setTranslationRaw(50, 0, 0);
-    cardsTransformMap["sixthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["sixthCard"]!));
+    if(firstOpening){
+      cardsTransformMap["firstCard"] = Matrix4.identity(); //..setRotationZ(findAngle(cardsAngleMap["firstCard"]!))..setTranslationRaw(-50, 0, 0);
+      cardsTransformMap["secondCard"] = Matrix4.identity(); //..setRotationZ(findAngle(cardsAngleMap["secondCard"]!))..setTranslationRaw(-50, 0, 0);
+      cardsTransformMap["thirdCard"] = Matrix4.identity(); //..setRotationZ(findAngle(cardsAngleMap["thirdCard"]!))..scale(1.2, 1.2);
+      cardsTransformMap["fourthCard"] = Matrix4.identity(); //..setRotationZ(findAngle(cardsAngleMap["fourthCard"]!))..setTranslationRaw(50, 0, 0);
+      cardsTransformMap["fifthCard"] = Matrix4.identity();//..setRotationZ(findAngle(cardsAngleMap["fifthCard"]!))..setTranslationRaw(50, 0, 0);
+      cardsTransformMap["sixthCard"] = Matrix4.identity();//..setRotationZ(findAngle(cardsAngleMap["sixthCard"]!));
+    }
+    else{
+      cardsTransformMap["firstCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["firstCard"]!))..setTranslationRaw(-50, 0, 0);
+      cardsTransformMap["secondCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["secondCard"]!))..setTranslationRaw(-50, 0, 0);
+      cardsTransformMap["thirdCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["thirdCard"]!))..scale(1.2, 1.2);
+      cardsTransformMap["fourthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["fourthCard"]!))..setTranslationRaw(50, 0, 0);
+      cardsTransformMap["fifthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["fifthCard"]!))..setTranslationRaw(50, 0, 0);
+      cardsTransformMap["sixthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["sixthCard"]!));
+    }
+
 
     cardsControllerMap["firstCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
     cardsControllerMap["secondCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
@@ -109,12 +122,20 @@ class CardSelectionState extends State<CardSelectionScreen>
     cardsControllerMap["fifthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
     cardsControllerMap["sixthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
 
-    cardsMatrixMap["firstCard"] = Tween<Matrix4>(begin: cardsTransformMap["firstCard"], end : cardsTransformMap["firstCard"]).animate(cardsControllerMap["firstCard"]!);
-    cardsMatrixMap["secondCard"] = Tween<Matrix4>(begin: cardsTransformMap["secondCard"], end : cardsTransformMap["secondCard"]).animate(cardsControllerMap["secondCard"]!);
-    cardsMatrixMap["thirdCard"] = Tween<Matrix4>(begin: cardsTransformMap["thirdCard"], end : cardsTransformMap["thirdCard"]).animate(cardsControllerMap["thirdCard"]!);
-    cardsMatrixMap["fourthCard"] = Tween<Matrix4>(begin: cardsTransformMap["fourthCard"], end : cardsTransformMap["fourthCard"]).animate(cardsControllerMap["fourthCard"]!);
-    cardsMatrixMap["fifthCard"] = Tween<Matrix4>(begin: cardsTransformMap["fifthCard"], end : cardsTransformMap["fifthCard"]).animate(cardsControllerMap["fifthCard"]!);
-    cardsMatrixMap["sixthCard"] = Tween<Matrix4>(begin: cardsTransformMap["sixthCard"], end : cardsTransformMap["sixthCard"]).animate(cardsControllerMap["sixthCard"]!);
+    cardsMatrixMap["firstCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["firstCard"]).animate(cardsControllerMap["firstCard"]!);
+    cardsMatrixMap["secondCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["secondCard"]).animate(cardsControllerMap["secondCard"]!);
+    cardsMatrixMap["thirdCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["thirdCard"]).animate(cardsControllerMap["thirdCard"]!);
+    cardsMatrixMap["fourthCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["fourthCard"]).animate(cardsControllerMap["fourthCard"]!);
+    cardsMatrixMap["fifthCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["fifthCard"]).animate(cardsControllerMap["fifthCard"]!);
+    cardsMatrixMap["sixthCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["sixthCard"]).animate(cardsControllerMap["sixthCard"]!);
+
+    if(!firstOpening){
+      WidgetsBinding.instance?.addPostFrameCallback((_){
+        for (AnimationController controller in cardsControllerMap.values){
+          controller.forward(from: 0);
+        }
+      });
+    }
 
   }
 
@@ -365,32 +386,13 @@ class CardSelectionState extends State<CardSelectionScreen>
                break;
              }
            }
-
-           /*switch(rotationSense){
-             case rotVersus.Right : {
-               for (int i = 0; i < 3; i++){
-                 indexingList[((6 - counter)%6 + i)%6] += 1;
-               }
-               for (int i = 0; i < 3; i++){
-                 indexingList[(5 - (6 + counter)%6 -i)%6 ] -= 1;
-               }
-               counter++;
-             } break;
-             case rotVersus.Left : {
-               for (int i = 0; i < 3; i++){
-                 indexingList[(6 - (6 + counter)%6 -i)%6 ] += 1;
-               }
-               for (int i = 0; i < 3; i++){
-                 indexingList[((6 - counter)%6 + i + 1)%6] -= 1;
-               }
-               counter--;
-             } break;
-             default:
-               break;
-           }*/
   });}}
 
   void updateAnimation(rotVersus versus, double currentHeight, List<CardData?>? playerCards){
+
+    if(firstOpening){
+      firstOpening = false;
+    }
 
     if(playerCards!=null){
       updateCardsData(playerCards);
@@ -633,8 +635,8 @@ class CardSelectionState extends State<CardSelectionScreen>
   Future<void> delayedAnimation(List<AnimationController> delayedControllers) async{
     return Future<void>.delayed(const Duration(milliseconds: 150),
         (){
-          changeIndexing(AnimationStatus.completed);
           notifyAnimFinished();
+          changeIndexing(AnimationStatus.completed);
           for(final animationController in delayedControllers){
               animationController.forward(from: 0);
           }
@@ -643,14 +645,12 @@ class CardSelectionState extends State<CardSelectionScreen>
   }
 
   Future<void> notifyAnimFinished() async{
-    return Future<void>.delayed(const Duration(milliseconds: 150),
+    return Future<void>.delayed(const Duration(milliseconds: 50),
             (){
               ongoingAnimation = false;
         }
     );
   }
-
-
 
 }
 

@@ -6,18 +6,21 @@ class StylizedText extends StatelessWidget{
 
   var textColor = Colors.black;
   String text = "";
-  double? fontSize = 0;
+  double? fontSize;
   FontWeight fontWeight = FontWeight.normal;
 
   StylizedText(this.textColor, this.text, this.fontSize, this.fontWeight);
 
   @override
   Widget build(BuildContext context) {
-      return Text(text, style: TextStyle(color: textColor,
-          fontSize: fontSize,
-          fontWeight: fontWeight,
-          fontFamily: 'Roboto',),
-      textAlign: TextAlign.justify,);
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Text(text, style: TextStyle(color: textColor,
+        fontSize: null,
+        fontWeight: fontWeight,
+        fontFamily: 'Roboto',),
+        textAlign: TextAlign.justify),
+    );
   }
 
 }

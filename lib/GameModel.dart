@@ -22,7 +22,7 @@ class GameModel extends ChangeNotifier{
   GameLogic gameLogic = GameLogic();
   int count = 1; //todo: variabile per dare un nome in test ai players, da sostituire con i vari uid
   //todo: aggiungi ciò che serve per crare la modalità single player o player<4
-
+  //todo: percorso di rientro automatico anche per il master (e player)
   DatabaseReference db = FirebaseDatabase.instance.ref();
   int teamsNum = 0;
   List<String> teamsNames = [];
@@ -49,6 +49,7 @@ class GameModel extends ChangeNotifier{
   Future? pushCoroutine;
   DialogData? showDialog;
   bool tutorialOngoing = false;
+  bool tutorialDone = false;
 
   //variabili sia master che player per schermate di splash e error
   bool splash = false;
@@ -62,15 +63,16 @@ class GameModel extends ChangeNotifier{
         "players" : "",
         "teams" : ""
       }
-    }}).then((_) {setPlayerCounter();})
-    .catchError((error){/*do something*/});
+    }});
   }
 
   void setPlayerCounter(){
-    db.child("matches").child("test").child("players").onValue.listen((event) {
-      playerCounter = event.snapshot.children.length;
-      notifyListeners();
-    });
+    db.child("matches").child("test").child("players").get().whenComplete(() =>
+        db.child("matches").child("test").child("players").onValue.listen((event) {
+          playerCounter = event.snapshot.children.length;
+          notifyListeners();
+        })
+    );
   }
 
   void prepareMatch() async{
@@ -112,6 +114,19 @@ class GameModel extends ChangeNotifier{
     then((_) => gameLogic.masterLevelCounter = 1);
   }
 
+  void setPlayerTutorial(){
+    db.child("matches").child("test").child("players").get().then((value) =>{
+    for(final player in value.children){
+        db.child("matches").child("test").child("players").child(player.key!)
+            .get().then((value) =>{
+          if(!value.child("tutorialDone").exists){
+            db.child("matches").child("test").child("players")
+                .child("1").child("tutorialDone").set(false)
+          }})}
+        });
+    }
+
+
   void giveCardsToPlayers(int level) async{
     Map<String, Map<String, bool>> cardsPerPlayerMap = gameLogic.CardsToPLayers(level);
 
@@ -124,7 +139,8 @@ class GameModel extends ChangeNotifier{
     then((_) => setStartingCardsPerLevel(level)).
     then((_) => setDrawableCards(level)).
     then((_) =>  addPlayedCardsListener()).
-    then((_) => giveCardsCallback());
+    then((_) => giveCardsCallback()).
+    then((_) => setPlayerTutorial());
   }
 
   void giveCardsCallback() {
@@ -339,6 +355,18 @@ class GameModel extends ChangeNotifier{
     notifyAbleToPlayChange();
     addPlayedCardsListener();
     addDrawableCardsListener();
+  }
+
+  void setTutorialDone(){
+    db.child("matches").child("test").child("players")
+        .child("1").child("tutorialDone").set(true);
+  }
+
+  void checkTutorial(){
+    db.child("matches").child("test").child("players")
+        .child("1").child("tutorialDone").get().then((value) => {
+          tutorialDone = value.value as bool
+    });
   }
 
   void bindCardsForPlayer() {

@@ -7,6 +7,7 @@ import 'package:edilclima_app/GameModel.dart';
 import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
@@ -42,31 +43,43 @@ class PageLayoutState extends State<PageLayout>{
   }
 
   void onTap(GameModel gameModel){
-    var resPair = resNeededCheck(gameModel);
+    String month = gameModel.gameLogic.months[widget.index];
+    var posOccupied = gameModel.playedCardsPerTeam[gameModel.team]!.keys.contains(month);
 
-    def() {
-      var budget = gameModel.getBudgetSnapshot(
-          gameModel.playedCardsPerTeam[gameModel.team]!.values.toList());
+    if(!posOccupied && gameModel.playerTimer!=null){
 
-      if (gameModel.gameLogic.findCard(playableCard)!.money < budget) {
+      var resPair = resNeededCheck(gameModel);
 
-        if(gameModel.playCardInPosCheck(widget.index, playableCard)){
-          gameModel.changePushValue(Pair(pushResult.CardDown, null));
-          gameModel.stopPlayerTimer();
-          gameModel.setTimeOutTrue();
+      def() {
+        var budget = gameModel.getBudgetSnapshot(
+            gameModel.playedCardsPerTeam[gameModel.team]!.values.toList());
+
+        if (gameModel.gameLogic.findCard(playableCard)!.money < budget) {
+
+          if(gameModel.playCardInPosCheck(widget.index, playableCard)){
+            gameModel.changePushValue(Pair(pushResult.CardDown, null));
+            gameModel.stopPlayerTimer();
+            gameModel.setTimeOutTrue();
+          }
+
         }
+        else {
+          gameModel.changePushValue(Pair(pushResult.LowBudget, null));
+        }
+      }
 
-      }
-      else {
-        gameModel.changePushValue(Pair(pushResult.LowBudget, null));
-      }
+      KotlinWhen(
+          [KotlinPair(playableCard=="null", (){gameModel.changePushValue(Pair(pushResult.CardDown, null));}),
+            KotlinPair(playableCard=="void", (){gameModel.changePushValue(Pair(pushResult.InvalidCard, null));}),
+            KotlinPair(resPair.first() as bool, (){gameModel.changePushValue(Pair(pushResult.ResearchNeeded, resPair.second()));})],
+          def).whenExeute();
     }
 
-    KotlinWhen(
-        [KotlinPair(playableCard=="null", (){gameModel.changePushValue(Pair(pushResult.CardDown, null));}),
-          KotlinPair(playableCard=="void", (){gameModel.changePushValue(Pair(pushResult.InvalidCard, null));}),
-          KotlinPair(resPair.first() as bool, (){gameModel.changePushValue(Pair(pushResult.ResearchNeeded, resPair.second()));})],
-        def).whenExeute();
+    else if(posOccupied) {
+      String cardCode = gameModel.playedCardsPerTeam[gameModel.team]![month]!;
+      onFocusCard = gameModel.gameLogic.findCard(cardCode);
+      context.push("/cardSelectionScreen/cardInfoScreen");
+    }
   }
 
   Widget clickableCard (GameModel gameModel){
@@ -91,7 +104,7 @@ class PageLayoutState extends State<PageLayout>{
     }
 
     return GestureDetector(
-        onTap: gameModel.playerTimer!=null ? () {onTap(gameModel);} : (){},
+        onTap: (){onTap(gameModel);},
         child:  Container(
         decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
         color: Colors.white,

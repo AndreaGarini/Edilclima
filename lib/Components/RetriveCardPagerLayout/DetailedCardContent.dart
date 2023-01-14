@@ -71,7 +71,11 @@ class DetailedCardContent extends StatelessWidget{
                                 Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.center, children: [
                                       const Spacer(),
-                                      Expanded(flex: 6, child: StylizedText(darkBluePalette, bodyText, screenHeight * 0.025, FontWeight.normal)),
+                                      Expanded(flex: 6, child: Text(bodyText, style: TextStyle(color: darkBluePalette,
+                                        fontSize: screenWidth * 0.03,
+                                        fontWeight: FontWeight.normal,
+                                        fontFamily: 'Roboto',),
+                                          textAlign: TextAlign.justify)),
                                       const Spacer()
                                     ])
                               ])

@@ -1,5 +1,6 @@
 import 'package:edilclima_app/Components/generalFeatures/AnimatedGradient.dart';
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
+import 'package:edilclima_app/Components/generalFeatures/OverlayerTutorialFeatures.dart';
 import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:edilclima_app/Components/generalFeatures/TutorialComponents.dart';
 import 'package:edilclima_app/DataClasses/DialogData.dart';
@@ -24,9 +25,21 @@ class MainScreenContent extends StatefulWidget {
 
 class MainScreenContentState extends State<MainScreenContent>{
 
-  bool tutorialOpened = false;
   DialogData? lastDialogData;
+  int tutorialPhase = 0;
   late TutorialComponents tutorialComponents;
+  bool firstOpening = true;
+
+  void buttonCallback(GameModel gameModel){
+    setState(() {
+      if(tutorialPhase <= 4){
+        tutorialPhase++;
+      }
+      else{
+        gameModel.setTutorialDone();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext parentContext) {
@@ -34,42 +47,50 @@ class MainScreenContentState extends State<MainScreenContent>{
     //todo: dialog ancora appaiono 2 volte
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
-      tutorialComponents = TutorialComponents(gameModel,
-              (){ Navigator.of(parentContext).pop();});
-
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
-        /*if(gameModel.playerLevelCounter == 1
-            && gameModel.playerLevelStatus == "preparing"
-            && gameModel.showDialog==null
-            && !tutorialOpened){
-            startTutorial(parentContext, gameModel, tutorialComponents);
-        }*/
+      WidgetsBinding.instance?.addPostFrameCallback((_){
+        if(firstOpening){
+           gameModel.checkTutorial();
+           firstOpening = false;
+        }
       });
+      /*tutorialComponents = TutorialComponents(gameModel,
+              (){ Navigator.of(parentContext).pop();});*/
 
       if(gameModel.showDialog!=null && gameModel.showDialog!=lastDialogData){
         setDialogAvailable(parentContext, gameModel.showDialog!, gameModel);
       }
 
-      return
-        Stack(children: [Scaffold(
-        body: Column(mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(height: screenHeight * 0.05, color: darkBluePalette),
-            Expanded(flex: 1, child: infoRow()),
-            Expanded(flex: 10, child: widget.child)
-          ],),
-      bottomNavigationBar:  SizedBox(width: screenWidth, height: screenHeight * 0.12, child: BottomNavBar(context))
-      ),
-          Positioned(top: screenHeight * 0.05, left: screenWidth * 0.07, width: screenWidth * 0.85, height: screenHeight * 0.1,
-          child: Container(
-            decoration: BoxDecoration(border: Border.all(
-              color: Colors.red,
-              width: screenWidth * 0.02,
-            ), color: Colors.transparent),
-          ),)
-        ]);
+      if(gameModel.playerLevelCounter == 1
+          && gameModel.playerLevelStatus == "preparing"
+          && gameModel.tutorialDone==false){
+          return
+            Stack(children: [Scaffold(
+                body: Column(mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(height: screenHeight * 0.05, color: darkBluePalette),
+                    Expanded(flex: 1, child: infoRow()),
+                    Expanded(flex: 10, child: widget.child)
+                  ],),
+                bottomNavigationBar:  SizedBox(width: screenWidth, height: screenHeight * 0.12, child: BottomNavBar(context))
+            ),
+              OverlayerTutorialFeatures(tutorialPhase, buttonCallback, gameModel)
+            ]);
+        }
+        else{
+          return Scaffold(
+              body: Column(mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(height: screenHeight * 0.05, color: darkBluePalette),
+                  Expanded(flex: 1, child: infoRow()),
+                  Expanded(flex: 10, child: widget.child)
+                ],),
+              bottomNavigationBar:  SizedBox(width: screenWidth, height: screenHeight * 0.12, child: BottomNavBar(context))
+          );
+        }
     });
   }
 
@@ -118,16 +139,6 @@ class MainScreenContentState extends State<MainScreenContent>{
       }
   });
   }
-
-  Future<void> startTutorial(BuildContext parentContext,
-      GameModel gameModel,
-      TutorialComponents tutorialComponents) async{
-    tutorialOpened = true;
-    return Future<void>.delayed(const Duration(milliseconds: 1),
-            () {
-              DialogData data = DialogData("Le carte", tutorialComponents, true);
-              gameModel.setDialogData(data);
-  });}
 
   Future<void> setDialogAvailable(BuildContext parentContext, DialogData data, GameModel gameModel) async{
     return Future<void>.delayed(const Duration(milliseconds: 1),
