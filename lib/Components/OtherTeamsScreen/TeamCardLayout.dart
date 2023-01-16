@@ -41,7 +41,7 @@ class TeamCardLayout extends StatelessWidget{
         children: [
           Expanded(flex: 1, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center, children: [
-              StylizedText(darkBluePalette, teamStat.key, screenHeight * 0.04, FontWeight.bold)
+              StylizedText(darkBluePalette, teamStat.key, screenWidth * 0.07, FontWeight.bold)
             ])),
           Expanded(flex: 3, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -57,9 +57,9 @@ class TeamCardLayout extends StatelessWidget{
                         Expanded(flex: 5, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center, children: [
                               Expanded(flex: 2, child: Icon(Elusive.leaf, color: lightOrangePalette)),
-                              Expanded(flex: 4, child: StylizedText(darkBluePalette, "Smog : ", screenHeight * 0.025, FontWeight.normal)),
+                              Expanded(flex: 4, child: StylizedText(darkBluePalette, "Smog :", screenWidth * 0.04, FontWeight.normal)),
                               Expanded(flex: 2, child: StylizedText(darkBluePalette, teamStat.value?.smog!=null ? teamStat.value!.smog.toString() : "" ,
-                                  screenHeight * 0.025, FontWeight.bold)),
+                                  screenWidth * 0.04, FontWeight.bold)),
                             ])),
                       ])),
                     Expanded(flex: 13, child:  Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
@@ -69,9 +69,9 @@ class TeamCardLayout extends StatelessWidget{
                         Expanded(flex: 5, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center, children: [
                               Expanded(flex: 2, child:  Icon(Elusive.lightbulb, color: darkBluePalette)),
-                              Expanded(flex: 4, child: StylizedText(darkBluePalette, "Energy : ", screenHeight * 0.025, FontWeight.normal)),
+                              Expanded(flex: 4, child: StylizedText(darkBluePalette, "Energy :", screenWidth * 0.04, FontWeight.normal)),
                               Expanded(flex: 2, child: StylizedText(darkBluePalette, teamStat.value?.energy!=null ? teamStat.value!.energy.toString() : "" ,
-                                  screenHeight * 0.025, FontWeight.bold)),
+                                  screenWidth * 0.04, FontWeight.bold)),
                             ]))
                       ])),
                     Expanded(flex: 13, child:  Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
@@ -81,9 +81,9 @@ class TeamCardLayout extends StatelessWidget{
                         Expanded(flex: 5, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center, children: [
                               Expanded(flex: 2, child:   Icon(Icons.home, color: lightBluePalette)),
-                              Expanded(flex: 4, child: StylizedText(darkBluePalette, "Comfort : ", screenHeight * 0.025, FontWeight.normal)),
+                              Expanded(flex: 4, child: StylizedText(darkBluePalette, "Comfort :", screenWidth * 0.04, FontWeight.normal)),
                               Expanded(flex: 2, child: StylizedText(darkBluePalette, teamStat.value?.comfort!=null ? teamStat.value!.comfort.toString() : "" ,
-                                  screenHeight * 0.025, FontWeight.bold)),
+                                  screenWidth * 0.04, FontWeight.bold)),
                             ]))
                       ])),
                   ])),
@@ -93,12 +93,12 @@ class TeamCardLayout extends StatelessWidget{
                   Expanded(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded( child: Center(child: StylizedText(darkBluePalette, "Punteggio", screenHeight * 0.025, FontWeight.normal))),
+                        Expanded( child: Center(child: StylizedText(darkBluePalette, "Punteggio", screenWidth * 0.04, FontWeight.normal))),
                       ])),
                   Expanded(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Expanded( child: Center(child: StylizedText(darkBluePalette, "${teamStat.value?.points}", screenHeight * 0.04, FontWeight.bold)))
+                        Expanded( child: Center(child: StylizedText(darkBluePalette, "${teamStat.value?.points}", screenWidth * 0.06, FontWeight.bold)))
                       ])),
                   const Spacer(flex: 4)
                 ],))
@@ -108,8 +108,8 @@ class TeamCardLayout extends StatelessWidget{
         height: screenWidth * 0.3,
         width: screenWidth * 0.5,
         child: Center(child: Lottie.asset('assets/animations/TeamWorking.json',
-            width: screenWidth * 0.2,
-            height: screenWidth * 0.2,
+            width: screenWidth * 0.25,
+            height: screenWidth * 0.25,
             animate: false)),
       )
     ])

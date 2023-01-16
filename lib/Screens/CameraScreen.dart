@@ -1,6 +1,8 @@
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
+import 'package:edilclima_app/Screens/WaitingScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +19,10 @@ class CameraScreenState extends State<CameraScreen> {
   @override
   void initState(){
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
   }
 
   @override
@@ -32,7 +38,7 @@ class CameraScreenState extends State<CameraScreen> {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         updateData(gameModel);
         if(gameModel.playerLevelCounter > 0 && !pushRoute){
-          if(!pushRoute){
+          if(!pushRoute && !routerCalled){
             pushRoute = true;
             Future.delayed(const Duration(milliseconds: 500),()
             {context.push("/initialScreen/cameraScreen/splashScreen");});
@@ -47,13 +53,13 @@ class CameraScreenState extends State<CameraScreen> {
             Expanded(child: Row(crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Spacer(),
+                const Spacer(),
                 Expanded(flex: 1,
                     child: FittedBox(
                         fit: BoxFit.fill, child: ElevatedButton(onPressed: () {
                           gameModel.joinMatch();
                     }, child: Text("join match")))),
-                Spacer()
+                const Spacer()
               ],
 
             )),

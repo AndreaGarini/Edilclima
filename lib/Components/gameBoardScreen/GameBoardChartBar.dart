@@ -84,8 +84,6 @@ with TickerProviderStateMixin{
 
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
-      //todo: dai alle barre del grafico dei colori che facciano capire cosa sono (stessi colori dei valori delle carte)
-
       return (playedCardsNum != gameModel.playedCardsPerTeam[widget.team]?.length) ?
              dynamicChartBar(gameModel, animCallback) : staticChartBar();
     });
@@ -133,8 +131,6 @@ with TickerProviderStateMixin{
             }
             break;
           }
-
-          print("calculate new bar ratio value: ${endChartBarRatio}");
   }
 
   double generateTeamInfoMap(TeamInfo teamInfo, GameModel gameModel){

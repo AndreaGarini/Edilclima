@@ -17,11 +17,30 @@ class GameBoard extends StatefulWidget{
 
 class GameBoardState extends State<GameBoard> {
 
+  late double shortDim;
+
+  @override
+  void initState() {
+    super.initState();
+    shortDim = 0;
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      var newDim = screenHeight > screenWidth ? screenWidth : screenHeight;
+
+      if(newDim!=shortDim){
+        setShortDim(newDim);
+      }
+    });
+
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
-      double cardHeight = screenHeight / (gameModel.teamsNum / 2).toInt();
+      print("shortDim in game board state : ${shortDim}");
+
+      double cardHeight = shortDim / (gameModel.teamsNum / 2).toInt();
       List<Widget> columnContent = [];
 
       for(double i = 0; i < gameModel.teamsNum / 2; i++) {
@@ -36,13 +55,20 @@ class GameBoardState extends State<GameBoard> {
         )));
       }
 
-
       return Stack(alignment: Alignment.center, children: [
           Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: columnContent,),
           GameBoardInfoCircle(screenHeight)
         ]);
+    });
+  }
+
+  Future<void> setShortDim(double newDim){
+    return Future<void>.delayed(const Duration(milliseconds: 50), () {
+      setState(() {
+        shortDim = newDim;
+      });
     });
   }
 }

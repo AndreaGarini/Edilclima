@@ -60,7 +60,8 @@ class InfoRowTimerIndicatorState extends State<InfoRowTimerIndicator>
               builder: (context, value, _) {
                 var colorAnim = ColorTween(begin: Colors.green, end: Colors.red).animate(indicatorController);
                 indicatorController.value = 1 - value;
-                return LinearProgressIndicator(value: value, valueColor:  colorAnim, minHeight: screenHeight * 0.03,);
+                return ClipRRect(borderRadius: const BorderRadius.all(Radius.circular(10)),
+                child: LinearProgressIndicator(value: value, valueColor:  colorAnim, minHeight: screenHeight * 0.03));
               });
         }
 

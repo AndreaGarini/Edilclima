@@ -37,7 +37,7 @@ class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
              children: [
                const Spacer(),
                Expanded(flex: 8, child: Card(color: backgroundGreen, child: Center(child:  StylizedText(darkOrangePalette, "Carta non valida",
-                   screenWidth * 0.05, FontWeight.normal)))),
+                   null, FontWeight.normal)))),
                const Spacer()
              ],
            );
@@ -50,7 +50,7 @@ class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
              children: [
                const Spacer(),
                Expanded(flex: 8, child: Card(color: backgroundGreen, child: Center(child:  StylizedText(darkOrangePalette, "Budget terminato",
-                   screenWidth * 0.05, FontWeight.normal)))),
+                   null, FontWeight.normal)))),
                const Spacer()
              ],
            );
@@ -63,7 +63,7 @@ class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
              children: [
                const Spacer(),
                Expanded(flex: 8, child: Card(color: backgroundGreen, child: Center(child:  StylizedText(darkOrangePalette, "Gioca prima: ${gameModel.push.second()}",
-                   screenWidth * 0.05, FontWeight.normal)))),
+                   null, FontWeight.normal)))),
                const Spacer()
              ],
            );
@@ -74,12 +74,12 @@ class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
                  mainAxisAlignment: MainAxisAlignment.center,
                  crossAxisAlignment: CrossAxisAlignment.end,
                  children: [
-                   Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, gameModel.team, screenWidth * 0.07, FontWeight.bold))),
+                   Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, gameModel.team, null, FontWeight.bold))),
                    Expanded(flex: 1, child: Center(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                        crossAxisAlignment: CrossAxisAlignment.center, children: [
                          Icon(ModernPictograms.dollar, color: darkOrangePalette),
                          SizedBox(width: screenWidth * 0.02),
-                         StylizedText(darkBluePalette, gameModel.teamStats[gameModel.team]?.budget.toString() ?? "", screenWidth * 0.07, FontWeight.bold)
+                         StylizedText(darkBluePalette, gameModel.teamStats[gameModel.team]?.budget.toString() ?? "", null, FontWeight.bold)
                        ]))),
                    Expanded(flex: 1, child: Center(child: Row(
                      mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +99,7 @@ class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
            children: [
              const Spacer(),
              Expanded(flex: 3, child: Card(color: backgroundGreen, child: Center(child: StylizedText(darkOrangePalette, "Tocca a te",
-                 screenWidth * 0.06, FontWeight.bold)))),
+                 null, FontWeight.bold)))),
              const Spacer()
            ],
          );

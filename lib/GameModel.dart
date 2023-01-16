@@ -49,7 +49,7 @@ class GameModel extends ChangeNotifier{
   Future? pushCoroutine;
   DialogData? showDialog;
   bool tutorialOngoing = false;
-  bool tutorialDone = false;
+  bool? tutorialDone;
 
   //variabili sia master che player per schermate di splash e error
   bool splash = false;
@@ -307,6 +307,33 @@ class GameModel extends ChangeNotifier{
         .child(count.toString()).set("").then((_) => count++);
   }
 
+  Future<bool?> matchJoinedYet() async{
+
+    //todo: fai in modo che ci sia il check sull' uid, e che in nessun modo il master
+    //todo:  possa venir mandato nel main screen
+    return await db.child("matches").child("test").child("players").get()
+        .then((value) async {
+          if(value.child("1").exists){
+            return await db.child("matches").child("test").child("players").child("1").get()
+                .then((value) {
+              if(value.child("ownedCards").exists
+                  && value.child("ownedCards").children.isNotEmpty
+                  && value.child("tutorialDone").exists
+                  && value.child("team").exists
+                  && value.child("team").value != ""){
+                  return true;
+              }
+              else{
+                return false;
+              }
+            });
+          }
+          else{
+            return false;
+          }
+    });
+  }
+
   //todo: listen to level change fa partire la partita anche se il player non si è mai connesso
 
   void listenToLevelChange() {
@@ -520,4 +547,8 @@ class GameModel extends ChangeNotifier{
     }
   }
 
+}
+
+enum pushResult{
+  Success, CardDown, InvalidCard, LowBudget, ResearchNeeded, //NoDraw
 }

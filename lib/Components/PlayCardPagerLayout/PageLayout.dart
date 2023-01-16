@@ -5,6 +5,7 @@ import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:edilclima_app/DataClasses/kotlinWhen.dart';
 import 'package:edilclima_app/GameModel.dart';
 import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
+//import 'package:edilclima_app/Screens/NewCardSelectionScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +18,7 @@ import '../../Screens/WaitingScreen.dart';
 
 class PageLayout extends StatefulWidget{
 
+  //todo: sistemare gli import per il giusto card selection screen
   CardData? crd;
   int index;
   PageLayout(this.crd, this.index);

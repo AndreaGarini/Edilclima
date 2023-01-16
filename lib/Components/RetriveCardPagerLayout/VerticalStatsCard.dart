@@ -72,8 +72,8 @@ class VerticalStatsCard extends StatelessWidget{
                      offset: const Offset(0, 0), // changes position of shadow
                    )]),
                child: icon)),
-           Expanded(flex: 4, child: StylizedText(darkBluePalette, text, screenWidth * 0.025, FontWeight.normal)),
-           Expanded(flex: 2, child: StylizedText(darkBluePalette, "${dataValue}", screenWidth * 0.025, FontWeight.bold)),
+           Expanded(flex: 4, child: StylizedText(darkBluePalette, text, null, FontWeight.normal)),
+           Expanded(flex: 2, child: StylizedText(darkBluePalette, "${dataValue}", null, FontWeight.bold)),
            const Spacer()
          ],)
    );

@@ -2,12 +2,15 @@
 import 'package:edilclima_app/Components/RetriveCardPagerLayout/DetailedCardLayout.dart';
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
+//import 'package:edilclima_app/Screens/NewCardSelectionScreen.dart';
 import 'package:edilclima_app/Screens/WaitingScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class CardInfoScreen extends StatelessWidget{
+
+  //todo: ricordati di inserire il card selection screen giusto negli import
 
   @override
   Widget build(BuildContext context) {
@@ -26,23 +29,18 @@ class CardInfoScreen extends StatelessWidget{
      Padding(padding: EdgeInsets.only(
        top: screenWidth * 0.03,
        right: screenWidth * 0.03),
-       child: Container(width: screenWidth * 0.2, height: screenWidth * 0.2,
+       child: InkWell(
+        onTap: (){
+        context.go("/cardSelectionScreen");
+        },
+        child:
+       Container(width: screenWidth * 0.18, height: screenWidth * 0.18,
          decoration: BoxDecoration(
              borderRadius: BorderRadius.all(Radius.circular(screenWidth * 0.2)),
              color: darkBluePalette),
-       )),
-      Padding(padding: EdgeInsets.only(
-          top: screenWidth * 0.03,
-          right: screenWidth * 0.03),
-          child: InkWell(
-          onTap: (){
-          context.go("/cardSelectionScreen");
-          },
-          child:
-          SizedBox(width: screenWidth * 0.2, height: screenWidth * 0.2,
-                        child: Icon(Icons.cancel_outlined, size: screenWidth * 0.15, color: Colors.white),
-                ))
-      )]);
+        child: Icon(Icons.cancel_outlined, size: screenWidth * 0.15, color: Colors.white),
+       ))),
+      ]);
   }
 
 

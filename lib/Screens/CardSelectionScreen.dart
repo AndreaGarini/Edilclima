@@ -653,7 +653,3 @@ class CardSelectionState extends State<CardSelectionScreen>
   }
 
 }
-
-enum pushResult{
-Success, CardDown, InvalidCard, LowBudget, ResearchNeeded, //NoDraw
-}

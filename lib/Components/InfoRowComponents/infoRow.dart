@@ -8,8 +8,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../Screens/CardSelectionScreen.dart';
-
 enum InfoRowLayout{
   Base, Turn, Invalid, Budget, Research
 }
@@ -27,31 +25,41 @@ class infoRow extends StatefulWidget{
 class infoRowState extends State<infoRow> with
     TickerProviderStateMixin{
 
-  late AnimationController slideInControllerBase = AnimationController(
-    duration: Duration(milliseconds: widget.animTime),
-    vsync: this,
-  )..forward(from: 0);
+  late AnimationController slideInControllerBase;
+  late Animation<Offset> offsetAnimationIn;
+  late AnimationController slideOutControllerBase;
+  late Animation<Offset> offsetAnimationOut;
 
-  late Animation<Offset> offsetAnimationIn = Tween<Offset>(
-    begin: const Offset(-1.1, 0.0),
-    end: Offset.zero,
-  ).animate(CurvedAnimation(
-    parent: slideInControllerBase,
-    curve: Curves.easeInQuad,
-  ));
+  @override
+  void initState() {
+    super.initState();
 
-  late final AnimationController slideOutControllerBase = AnimationController(
-    duration: Duration(milliseconds: widget.animTime),
-    vsync: this,
-  );
+    slideInControllerBase = AnimationController(
+      duration: Duration(milliseconds: widget.animTime),
+      vsync: this,
+    )..forward(from: 0);
 
-  late final Animation<Offset> offsetAnimationOut = Tween<Offset>(
-    begin: Offset.zero,
-    end: const Offset(1.1, 0.0),
-  ).animate(CurvedAnimation(
-    parent: slideOutControllerBase,
-    curve: Curves.easeOutQuad,
-  ));
+    offsetAnimationIn = Tween<Offset>(
+      begin: const Offset(-1.1, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: slideInControllerBase,
+      curve: Curves.easeInQuad,
+    ));
+
+    slideOutControllerBase = AnimationController(
+      duration: Duration(milliseconds: widget.animTime),
+      vsync: this,
+    );
+
+    offsetAnimationOut = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(1.1, 0.0),
+    ).animate(CurvedAnimation(
+      parent: slideOutControllerBase,
+      curve: Curves.easeOutQuad,
+    ));
+  }
 
   @override
   void dispose() {

@@ -4,11 +4,14 @@ import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:edilclima_app/Screens/GameBoardScreen.dart';
 import 'package:edilclima_app/Screens/SplashScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'Screens/CardInfoScreen.dart';
+import 'Screens/NewCardSelectionScreen.dart';
 import 'Screens/OtherTeamsScreen.dart';
 import 'Screens/RetriveCardScreen.dart';
 import 'firebase_options.dart';
@@ -38,6 +41,7 @@ Future<void> main() async {
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final shellNavigatorKey = GlobalKey<NavigatorState>();
+
 
 //todo: risistema le routes in modo che si possa tornare indietro con il tasto del device, ma togli lo splash dallo stack
 final router = GoRouter(
@@ -108,19 +112,19 @@ final router = GoRouter(
   ],
 )]);
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatelessWidget{
   const MainApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
 
-    return MaterialApp.router(
-      title: 'Edilclima',
-      theme: ThemeData(
-        fontFamily: 'Roboto'
-      ),
-      routerConfig: router,
-    );
+      return MaterialApp.router(
+        title: 'Edilclima',
+        theme: ThemeData(
+            fontFamily: 'Roboto'
+        ),
+        routerConfig: router,
+      );
   }
 }

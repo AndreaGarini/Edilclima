@@ -6,8 +6,8 @@ import 'package:edilclima_app/Components/generalFeatures/TutorialComponents.dart
 import 'package:edilclima_app/DataClasses/DialogData.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
 import '../GameModel.dart';
 import '../Screens/WaitingScreen.dart';
 import 'BottomNavBar.dart';
@@ -33,6 +33,17 @@ class MainScreenContentState extends State<MainScreenContent>{
   late TutorialComponents tutorialComponents;
   bool firstOpening = true;
 
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+
+
   void buttonCallback(GameModel gameModel){
     setState(() {
       if(tutorialPhase <= 4){
@@ -47,7 +58,6 @@ class MainScreenContentState extends State<MainScreenContent>{
   @override
   Widget build(BuildContext parentContext) {
 
-    //todo: sistemare le misure dai main screen in base alla main height
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
       WidgetsBinding.instance?.addPostFrameCallback((_){
