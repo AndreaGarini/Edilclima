@@ -31,15 +31,24 @@ class DetailedCardContent extends StatelessWidget{
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, cardData!.code, null, FontWeight.bold))),
+                    Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, cardData!.code, screenWidth * 0.3, FontWeight.bold))),
                     Divider(indent: screenWidth * 0.2, endIndent: screenWidth * 0.2, color: darkBluePalette, thickness: 1),
                     DetailedCardLottie(cardData.type),
-                    Expanded(flex: 2, child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max,
+                    Expanded(flex: 2, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center, children: [
+                          const Spacer(),
+                          Expanded(flex: 8, child: VerticalStatsCard("comfort", cardData!.comfort)),
+                          const Spacer(),
+                          Expanded(flex: 8, child: VerticalStatsCard("smog", cardData!.comfort)),
+                          const Spacer()
+                        ])),
+                    Expanded(flex: 2, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center, children: [
-                          Expanded(flex: 4, child: VerticalStatsCard("comfort", cardData!.comfort)),
-                          Expanded(flex: 4, child: VerticalStatsCard("smog", cardData!.comfort)),
-                          Expanded(flex: 4, child: VerticalStatsCard("energy", cardData!.comfort)),
-                          Expanded(flex: 4, child: VerticalStatsCard("money", cardData!.money)),
+                          const Spacer(),
+                          Expanded(flex: 8, child: VerticalStatsCard("energy", cardData!.comfort)),
+                          const Spacer(),
+                          Expanded(flex: 8, child: VerticalStatsCard("money", cardData!.money)),
+                          const Spacer()
                         ])),
                     Divider(indent: screenWidth * 0.2, endIndent: screenWidth * 0.2, color: darkBluePalette, thickness: 1),
                     Expanded(flex: 6, child:

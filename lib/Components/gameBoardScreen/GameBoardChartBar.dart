@@ -62,7 +62,7 @@ with TickerProviderStateMixin{
               var colorAnim = ColorTween(begin: barColorStart, end: barColorEnd).animate(indicatorController);
               indicatorController.value = value;
               return CircularProgressIndicator(value: value, valueColor: colorAnim,
-                strokeWidth: widget.usableHeight * 0.05,);
+                  strokeWidth: widget.usableHeight * 0.05);
             });
       }
       else{

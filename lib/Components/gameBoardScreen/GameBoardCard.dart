@@ -30,9 +30,9 @@ class GameBoardCardState extends State<GameBoardCard> {
               children: [
               Container(color: Colors.transparent, height: widget.usableHeight * 0.57, width: widget.usableHeight * 0.57,
                         child: GameBoardChartBar("smog", widget.team, widget.usableHeight),),
-                Container(color: Colors.transparent, height: widget.usableHeight * 0.45, width: widget.usableHeight * 0.47,
+                Container(color: Colors.transparent, height: widget.usableHeight * 0.45, width: widget.usableHeight * 0.45,
                   child: GameBoardChartBar("energy", widget.team, widget.usableHeight),),
-                Container(color: Colors.transparent, height: widget.usableHeight * 0.33, width: widget.usableHeight * 0.37,
+                Container(color: Colors.transparent, height: widget.usableHeight * 0.33, width: widget.usableHeight * 0.33,
                   child: GameBoardChartBar("comfort", widget.team, widget.usableHeight),)
             ],)),
             //qui la zona per le carte giocate

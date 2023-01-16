@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-
 import '../Components/generalFeatures/AnimatedGradient.dart';
 import '../GameModel.dart';
 

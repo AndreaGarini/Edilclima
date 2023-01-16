@@ -24,28 +24,28 @@ class VerticalStatsCard extends StatelessWidget{
       case "smog" : {
         icon = Icon(Elusive.leaf,
             color: lightOrangePalette,
-            size: screenWidth * 0.05);
+            size: screenWidth * 0.075);
         text = "Smog : ";
       }
       break;
       case "energy" : {
         icon = Icon(Elusive.lightbulb,
             color: darkBluePalette,
-            size: screenWidth * 0.05);
+            size: screenWidth * 0.075);
         text = "Energy : ";
       }
       break;
       case "comfort" : {
         icon = Icon(Icons.home,
             color: lightBluePalette,
-            size: screenWidth * 0.05);
+            size: screenWidth * 0.075);
         text = "Comfort : ";
       }
       break;
       case "money" : {
         icon = Icon(ModernPictograms.dollar,
           color: darkOrangePalette,
-          size: screenWidth * 0.05,);
+          size: screenWidth * 0.075);
         text = "Cost : ";
       }
     }
@@ -59,10 +59,10 @@ class VerticalStatsCard extends StatelessWidget{
            borderRadius: BorderRadius.circular(screenHeight * 0.02)),
        child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
        crossAxisAlignment: CrossAxisAlignment.center, children: [
-           const Spacer(),
-           Expanded(flex: 3, child:  Container(
-               width: screenWidth * 0.06,
-               height: screenWidth * 0.06,
+            const Spacer(flex: 3),
+           Expanded(flex: 10, child:  Container(
+               width: screenWidth * 0.1,
+               height: screenWidth * 0.1,
                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.1)),
                    color: backgroundGreen,
                    boxShadow: [ BoxShadow(
@@ -72,9 +72,19 @@ class VerticalStatsCard extends StatelessWidget{
                      offset: const Offset(0, 0), // changes position of shadow
                    )]),
                child: icon)),
-           Expanded(flex: 4, child: StylizedText(darkBluePalette, text, null, FontWeight.normal)),
-           Expanded(flex: 2, child: StylizedText(darkBluePalette, "${dataValue}", null, FontWeight.bold)),
-           const Spacer()
+           Expanded(flex: 10, child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max,
+           crossAxisAlignment: CrossAxisAlignment.center, children: [
+              Text(text, style: TextStyle(color: darkBluePalette,
+                 fontSize: screenWidth * 0.045,
+                 fontWeight: FontWeight.normal,
+                 fontFamily: 'Roboto',),
+                   textAlign: TextAlign.justify),
+               Text(dataValue.toString(), style: TextStyle(color: darkBluePalette,
+                 fontSize: screenWidth * 0.045,
+                 fontWeight: FontWeight.bold,
+                 fontFamily: 'Roboto',),
+                   textAlign: TextAlign.justify),
+             ],))
          ],)
    );
   }

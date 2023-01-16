@@ -46,15 +46,14 @@ class DetailedCardLayout extends StatelessWidget{
             elevation: 10,
             color: backgroundGreen,
             shadowColor: darkGreyPalette,
-            child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center, children: [
-                SizedBox(height: screenHeight * 0.57,
-                width: screenWidth * 0.8,
-                child: DetailedCardContent(cardData!, bodyText)),
-                SizedBox(height: screenHeight * 0.01,
-                width: screenWidth * 0.8,)
-              ],)
-        ),
+            child:
+                ClipRRect(borderRadius: const BorderRadius.all(Radius.circular(20)),
+                child:  Padding(padding: EdgeInsets.only(top: screenWidth * 0.02),
+                child: SizedBox(height: screenHeight * 0.57,
+                    width: screenWidth * 0.8,
+                    child: DetailedCardContent(cardData!, bodyText)))
+                )
+        )
       );
     }
     else{
