@@ -547,6 +547,27 @@ class GameModel extends ChangeNotifier{
     }
   }
 
+  Future<CardData> discardCardMech(int selectedCardPos) async{
+
+    String selectedCardCode = playerCards[selectedCardPos].code;
+
+    return await db.child("matches").child("test").child("teams").child("team").child("drawableCards")
+    .get().then((drawableCards) async{
+      return await db.child("matches").child("test").child("teams").child("team").child("drawableCards")
+          .child(selectedCardCode).set(true).then((value) async {
+            int extractedPos = Random().nextInt(drawableCards.children.length);
+            String extractedCardCode = drawableCards.children.toList()[extractedPos].key!;
+            return await db.child("matches").child("test").child("players").child("1").child("ownedCards")
+            .child(selectedCardCode).remove().then((value) async{
+              return await db.child("matches").child("test").child("players").child("1").child("ownedCards")
+                  .child(extractedCardCode).set(true).then((_) => gameLogic.findCard(extractedCardCode)!);
+            });
+      });
+    });
+
+
+  }
+
 }
 
 enum pushResult{

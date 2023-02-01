@@ -39,15 +39,15 @@ class DetailedCardContent extends StatelessWidget{
                           const Spacer(),
                           Expanded(flex: 8, child: VerticalStatsCard("comfort", cardData!.comfort)),
                           const Spacer(),
-                          Expanded(flex: 8, child: VerticalStatsCard("money", cardData!.money)),
+                          Expanded(flex: 8, child: VerticalStatsCard("smog", cardData!.comfort)),
                           const Spacer()
                         ])),
                     Expanded(flex: 2, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center, children: [
                           const Spacer(),
-                          Expanded(flex: 8, child: VerticalStatsCard("smog", cardData!.comfort)),
-                          const Spacer(),
                           Expanded(flex: 8, child: VerticalStatsCard("energy", cardData!.comfort)),
+                          const Spacer(),
+                          Expanded(flex: 8, child: VerticalStatsCard("money", cardData!.money)),
                           const Spacer()
                         ])),
                     Divider(indent: screenWidth * 0.2, endIndent: screenWidth * 0.2, color: darkBluePalette, thickness: 1),

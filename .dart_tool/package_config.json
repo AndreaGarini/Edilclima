@@ -128,12 +128,6 @@
       "languageVersion": "2.17"
     },
     {
-      "name": "flutter_plugin_android_lifecycle",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-2.0.7",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "flutter_shake_animated",
       "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_shake_animated-0.0.5",
       "packageUri": "lib/",
@@ -144,12 +138,6 @@
       "rootUri": "file:///Users/garonofsky/Documents/flutter/packages/flutter_test",
       "packageUri": "lib/",
       "languageVersion": "2.17"
-    },
-    {
-      "name": "flutter_unity_widget",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_unity_widget-2022.2.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.16"
     },
     {
       "name": "flutter_web_plugins",
@@ -308,12 +296,6 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "pointer_interceptor",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/pointer_interceptor-0.9.3+3",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "pointycastle",
       "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/pointycastle-3.6.2",
       "packageUri": "lib/",
@@ -356,12 +338,6 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "stream_transform",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/stream_transform-2.1.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.14"
-    },
-    {
       "name": "string_scanner",
       "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/string_scanner-1.1.1",
       "packageUri": "lib/",
@@ -386,46 +362,10 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "uuid",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/uuid-3.0.7",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "vector_math",
       "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/vector_math-2.1.2",
       "packageUri": "lib/",
       "languageVersion": "2.14"
-    },
-    {
-      "name": "webview_flutter",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter-2.8.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.14"
-    },
-    {
-      "name": "webview_flutter_android",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter_android-2.10.4",
-      "packageUri": "lib/",
-      "languageVersion": "2.14"
-    },
-    {
-      "name": "webview_flutter_platform_interface",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter_platform_interface-1.9.5",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "webview_flutter_wkwebview",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter_wkwebview-2.9.5",
-      "packageUri": "lib/",
-      "languageVersion": "2.17"
-    },
-    {
-      "name": "webviewx",
-      "rootUri": "file:///Users/garonofsky/Documents/flutter/.pub-cache/hosted/pub.dartlang.org/webviewx-0.2.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
     },
     {
       "name": "win32",
@@ -446,7 +386,7 @@
       "languageVersion": "2.18"
     }
   ],
-  "generated": "2023-02-01T08:51:26.075597Z",
+  "generated": "2023-02-01T11:52:31.401513Z",
   "generator": "pub",
   "generatorVersion": "2.18.5"
 }

@@ -33,6 +33,7 @@ class GameBoardScreenState extends State<GameBoardScreen> {
         Stack(alignment: Alignment.center,
           children: [
             GameBoard(),
+            //GameBoardInfoCircle(),
           ])
     ));
   }

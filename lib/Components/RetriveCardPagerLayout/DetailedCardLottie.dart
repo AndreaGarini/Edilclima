@@ -47,6 +47,6 @@ class DetailedCardLottieState extends State<DetailedCardLottie> {
     }
 
 
-      return  Expanded(flex: 3, child: lottieWidget);
+      return  Expanded(flex: 4, child: lottieWidget);
   }
 }
