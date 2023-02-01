@@ -5,6 +5,7 @@ import 'dart:core';
 import 'package:collection/collection.dart';
 import 'package:edilclima_app/DataClasses/Pair.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'DataClasses/CardData.dart';
 import 'DataClasses/TeamInfo.dart';
@@ -19,14 +20,25 @@ class GameLogic {
 
   var months = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dec"];
 
+  Map<int, List<String>> pngMapPerLevel = {
+     1 : [
+      'assets/gameBoardPng/MuriAlpha.png',
+       'assets/gameBoardPng/AccAlpha.png',
+       'assets/gameBoardPng/PompaAlpha.png',
+       'assets/gameBoardPng/TermoAlpha.png',
+       'assets/gameBoardPng/TettoAlpha.png',
+       'assets/gameBoardPng/Pan1Alpha.png'
+     ],
+  };
+
   Map<int, Zone> zoneMap = {1 : Zone(1, 50, 190, 280, 350, 200, 80, 50,
-  ["H01", "H02", "H04", "H06", "E10", "E11", "E13", "E07", "E12", "A08", "A09","A12" ],
+  ["H01", "H02", "H04", "H06", "E10", "E11", "E13", "E07", "E12", "A08", "A09","A12"],
   ["H01", "E04", "A04", "E07", "no Card"])};
 
   List<CardData> CardsList = [
-    CardData("A01", -80, 20, -30, 30, cardType.Pollution, researchSet.Needed, ["H13"], 2 ),
+    CardData("A01", -80, 20, -30, 30, cardType.Pollution, researchSet.Needed, ["H13"], 2),
     CardData("A02", -120, 0, -30, 0, cardType.Pollution, researchSet.None, null,2),
-    CardData("A03", -40, 0, -15, 25, cardType.Pollution, researchSet.Needed, ["H09"], 2  ),
+    CardData("A03", -40, 0, -15, 25, cardType.Pollution, researchSet.Needed, ["H09"], 2),
     CardData("A04", -50, 0, -20, 15, cardType.Pollution, researchSet.None, null,1  ),
     CardData("A05", -60, 0, -30, 25, cardType.Pollution, researchSet.None, null,2  ),
     CardData("A06", -30, 0, -25, 20, cardType.Pollution, researchSet.None, null,1   ),

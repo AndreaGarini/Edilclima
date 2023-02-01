@@ -196,7 +196,7 @@ class OverlayerTutorialFeatures extends StatelessWidget{
         ]);
       }
       case 4: {
-        //bottom nav bar (usa freccia easy)
+        //bottom nav bar
         return Stack(children: [
           Positioned(top: screenHeight * 0.08, left: 0, width: screenWidth, height: screenHeight * 0.33,
               child: Padding(padding: EdgeInsets.all(screenWidth * 0.02),

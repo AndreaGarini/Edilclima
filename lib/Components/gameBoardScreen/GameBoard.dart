@@ -38,7 +38,6 @@ class GameBoardState extends State<GameBoard> {
 
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
-      print("shortDim in game board state : ${shortDim}");
 
       double cardHeight = shortDim / (gameModel.teamsNum / 2).toInt();
       List<Widget> columnContent = [];

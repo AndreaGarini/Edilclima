@@ -56,7 +56,7 @@ final router = GoRouter(
         routes: [
           GoRoute(path: "/cardSelectionScreen",
               pageBuilder: (context, state) {
-                return NoTransitionPage(child: NewCardSelectionScreen());
+                return NoTransitionPage(child: CardSelectionScreen());
               },
               parentNavigatorKey: shellNavigatorKey,
               routes: [ GoRoute(path: "cardInfoScreen",

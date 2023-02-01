@@ -1,8 +1,8 @@
 
 import 'package:edilclima_app/Components/RetriveCardPagerLayout/DetailedCardLayout.dart';
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
-//import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
-import 'package:edilclima_app/Screens/NewCardSelectionScreen.dart';
+import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
+//import 'package:edilclima_app/Screens/NewCardSelectionScreen.dart';
 import 'package:edilclima_app/Screens/WaitingScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
