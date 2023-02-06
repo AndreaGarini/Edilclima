@@ -29,8 +29,8 @@ class RetriveCardLayoutState extends State<RetrivePageLayout>{
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
       String month = gameModel.gameLogic.months[widget.pos];
-      Map<String, String> playedCards = gameModel.playedCardsPerTeam[gameModel.team]!;
-      CardData? cardData = gameModel.gameLogic.findCard(playedCards[month] ?? "null");
+      Map<String, CardData> playedCards = gameModel.playedCardsPerTeam[gameModel.team]!;
+      CardData? cardData = playedCards.keys.contains(month) ? playedCards[month] : null;
       ableToRetrive = cardData!=null && gameModel.playerTimer!=null;
 
       return Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
@@ -42,6 +42,7 @@ class RetriveCardLayoutState extends State<RetrivePageLayout>{
             width: screenWidth * 0.8,
             child: Center(child: SizedButton(screenWidth * 0.6, "Prendi carta", ableToRetrive ? (){
               gameModel.retriveCardInPos(widget.pos);
+
               buttonCallback(gameModel);} : null)))
       ]);
     });

@@ -28,23 +28,20 @@ class UndetailedCardLayout extends StatelessWidget {
     //todo: sistemare l'animazione centrale che impazzisce
    if (cardData!= null && cardData!.code != "void"){
       switch (cardData!.type){
-        case cardType.Energy: {
+        case cardType.Imp: {
           lottieWidget = Lottie.asset('assets/animations/solarpanel.json', animate: false);
         }
         break;
-        case cardType.Pollution: {
+        case cardType.Inv: {
           lottieWidget = Lottie.asset('assets/animations/55131-grow-your-forest.json',animate: false);
         }
         break;
-        case cardType.Research: {
+        case cardType.Oth: {
           lottieWidget = Lottie.asset('assets/animations/100337-research-lottie-animation.json', animate: false);
         }
         break;
       }
 
-      if(angle==0){
-        print("ongoingAnim for card at angle 0: ${ongoingAnimation}");
-      }
       if(angle == 0 && !ongoingAnimation){
         return
                 Listener(
@@ -137,34 +134,78 @@ class UndetailedCardLayout extends StatelessWidget {
       }
     }
     else{
-      return Container(
-          width: screenWidth * 0.35,
-          height: screenHeight * 0.3,
-          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
-              color: Colors.white,
-              boxShadow: [ BoxShadow(
-                color: darkBluePalette.withOpacity(0.2),
-                spreadRadius: 0.5,
-                blurRadius: 1,
-                offset: const Offset(0, 0), // changes position of shadow
-              )]),
-          child:
-          Card(
-              color: backgroundGreen,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(screenHeight * 0.02)),
-              child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    const Spacer(),
-                    Expanded(flex: 1, child: Center(child: GradientText("No card",
-                        [darkBluePalette, lightBluePalette, lightOrangePalette],
-                        screenWidth * 0.15))),
-                    const Spacer(),
-                  ])
-          )
-      );
+      if(angle== 0){
+        return Listener(
+            onPointerMove: (moveEvent){
+              if(moveEvent.delta.dx > 5) {
+                rotationSense = rotVersus.Right;
+              }
+              if(moveEvent.delta.dx < -5) {
+                rotationSense = rotVersus.Left;
+              }
+            },
+            onPointerUp: (_){
+              if(!ongoingAnimation){
+                animCallback();
+              }
+            },
+            child: Container(
+                width: screenWidth * 0.35,
+                height: screenHeight * 0.3,
+                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
+                    color: Colors.white,
+                    boxShadow: [ BoxShadow(
+                      color: darkBluePalette.withOpacity(0.2),
+                      spreadRadius: 0.5,
+                      blurRadius: 1,
+                      offset: const Offset(0, 0), // changes position of shadow
+                    )]),
+                child:
+                Card(
+                    color: backgroundGreen,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(screenHeight * 0.02)),
+                    child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          const Spacer(),
+                          Expanded(flex: 1, child: Center(child: GradientText("No card",
+                              [darkBluePalette, lightBluePalette, lightOrangePalette],
+                              screenWidth * 0.15))),
+                          const Spacer(),
+                        ])
+                )
+            ));
+      }
+      else {
+        return Container(
+            width: screenWidth * 0.35,
+            height: screenHeight * 0.3,
+            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
+                color: Colors.white,
+                boxShadow: [ BoxShadow(
+                  color: darkBluePalette.withOpacity(0.2),
+                  spreadRadius: 0.5,
+                  blurRadius: 1,
+                  offset: const Offset(0, 0), // changes position of shadow
+                )]),
+            child:
+            Card(
+                color: backgroundGreen,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(screenHeight * 0.02)),
+                child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      const Spacer(),
+                      Expanded(flex: 1, child: Center(child: GradientText("No card",
+                          [darkBluePalette, lightBluePalette, lightOrangePalette],
+                          screenWidth * 0.15))),
+                      const Spacer(),
+                    ])
+            )
+        );
+      }
+      }
     }
   }
-
-}

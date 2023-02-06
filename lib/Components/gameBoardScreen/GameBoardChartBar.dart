@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../DataClasses/Context.dart';
 import '../../DataClasses/TeamInfo.dart';
 import '../../GameModel.dart';
 
@@ -138,21 +139,34 @@ with TickerProviderStateMixin{
     double ratio;
     switch(widget.barType){
       case "smog" : {
+        int baseTarget = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.TargetA;
+        Context context = gameModel.gameLogic.contextList.where((element) => element.code==gameModel.masterContextCode).single;
+        int contextModTarget = (baseTarget * context.startStatsInfluence["A"]!).round();
+
+
         ratio = ((teamInfo!.smog! - gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initSmog).abs() /
             (gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initSmog -
-            gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.TargetA)).abs();
+            contextModTarget)).abs();
       }
       break;
       case "energy" : {
+        int baseTarget = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.TargetE;
+        Context context = gameModel.gameLogic.contextList.where((element) => element.code==gameModel.masterContextCode).single;
+        int contextModTarget = (baseTarget * context.startStatsInfluence["E"]!).round();
+
         ratio = ((teamInfo!.energy! - gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initEnergy).abs() /
             (gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initEnergy -
-            gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.TargetE)).abs();
+            contextModTarget)).abs();
       }
       break;
       case "comfort" : {
+        int baseTarget = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.TargetC;
+        Context context = gameModel.gameLogic.contextList.where((element) => element.code==gameModel.masterContextCode).single;
+        int contextModTarget = (baseTarget * context.startStatsInfluence["C"]!).round();
+
         ratio = ((teamInfo!.comfort! - gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initComfort).abs() /
             (gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initComfort -
-            gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.TargetC)).abs();
+            contextModTarget)).abs();
       }
       break;
       default : {

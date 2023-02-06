@@ -13,7 +13,6 @@ class GameBoardScreen extends StatefulWidget{
 
 class GameBoardScreenState extends State<GameBoardScreen> {
 
-  //todo: devi fare in modo che si giri la game board anche qui (waiting screen la blocca)
   @override
   void initState(){
     super.initState();
@@ -33,7 +32,6 @@ class GameBoardScreenState extends State<GameBoardScreen> {
         Stack(alignment: Alignment.center,
           children: [
             GameBoard(),
-            //GameBoardInfoCircle(),
           ])
     ));
   }

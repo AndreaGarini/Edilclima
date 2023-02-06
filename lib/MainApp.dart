@@ -11,7 +11,6 @@ import 'package:go_router/go_router.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'Screens/CardInfoScreen.dart';
-import 'Screens/NewCardSelectionScreen.dart';
 import 'Screens/OtherTeamsScreen.dart';
 import 'Screens/RetriveCardScreen.dart';
 import 'firebase_options.dart';
@@ -56,7 +55,7 @@ final router = GoRouter(
         routes: [
           GoRoute(path: "/cardSelectionScreen",
               pageBuilder: (context, state) {
-                return NoTransitionPage(child: NewCardSelectionScreen());
+                return NoTransitionPage(child: CardSelectionScreen());
               },
               parentNavigatorKey: shellNavigatorKey,
               routes: [ GoRoute(path: "cardInfoScreen",

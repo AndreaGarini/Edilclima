@@ -4,8 +4,8 @@ import 'package:edilclima_app/Components/generalFeatures/ShinyContent.dart';
 import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
 import 'package:edilclima_app/DataClasses/kotlinWhen.dart';
 import 'package:edilclima_app/GameModel.dart';
-//import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
-import 'package:edilclima_app/Screens/NewCardSelectionScreen.dart';
+import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
+//import 'package:edilclima_app/Screens/NewCardSelectionScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -38,8 +38,8 @@ class PageLayoutState extends State<PageLayout>{
     wrongClick = false;
   }
 
-  Pair resNeededCheck(GameModel gameModel){
-    bool resNeeded = gameModel.gameLogic.findCard(playableCard)?.research == researchSet.Needed;
+  /*Pair resNeededCheck(GameModel gameModel){
+    bool resNeeded = gameModel.gameLogic.findCard(playableCard, gameModel.playerContextCode)?.research == researchSet.Needed;
 
     String res = "";
 
@@ -47,10 +47,10 @@ class PageLayoutState extends State<PageLayout>{
     //gameModel.gameLogic.findCard(playableCard)?.resCard?.forEach((element) { res = res + element;});
 
     //così prendo solo la prima
-    res = res + (gameModel.gameLogic.findCard(playableCard)?.resCard?.first ?? "");
+    res = res + (gameModel.gameLogic.findCard(playableCard, gameModel.playerContextCode)?.resCard?.first ?? "");
     bool allResPlayed = res == "" ? true : false;
     return Pair(!((resNeeded && allResPlayed) || !resNeeded), res);
-  }
+  }*/
 
   void onTap(GameModel gameModel){
     String month = gameModel.gameLogic.months[widget.index];
@@ -58,17 +58,23 @@ class PageLayoutState extends State<PageLayout>{
 
     if(!posOccupied){
       if(gameModel.playerTimer!=null){
-        var resPair = resNeededCheck(gameModel);
+        //var resPair = resNeededCheck(gameModel);
 
         def() {
           var budget = gameModel.getBudgetSnapshot(
-              gameModel.playedCardsPerTeam[gameModel.team]!.values.toList());
+              gameModel.playedCardsPerTeam[gameModel.team]!.values
+              .map((e) => e.code).toList());
 
-          if (gameModel.gameLogic.findCard(playableCard)!.money < budget) {
+          if (playableCard!="null" &&
+          gameModel.gameLogic.findCard(playableCard, gameModel.playerContextCode!)!.money.abs() <= budget) {
 
+            print("card cost in play card pager: ${gameModel.gameLogic.findCard(playableCard, gameModel.playerContextCode!)!.money}");
+            print("budget in play card pager: ${budget}");
             if(gameModel.playCardInPosCheck(widget.index, playableCard)){
               gameModel.changePushValue(Pair(pushResult.CardDown, null));
               gameModel.stopPlayerTimer();
+              gameModel.playCardInPos(widget.index, playableCard)
+                  .then((value) => discardMechCallback(gameModel));
               gameModel.setTimeOutTrue();
             }
 
@@ -81,7 +87,7 @@ class PageLayoutState extends State<PageLayout>{
         KotlinWhen(
             [KotlinPair(playableCard=="null", (){gameModel.changePushValue(Pair(pushResult.CardDown, null));}),
               KotlinPair(playableCard=="void", (){gameModel.changePushValue(Pair(pushResult.InvalidCard, null));}),
-              KotlinPair(resPair.first() as bool, (){gameModel.changePushValue(Pair(pushResult.ResearchNeeded, resPair.second()));})],
+              /*KotlinPair(resPair.first() as bool, (){gameModel.changePushValue(Pair(pushResult.ResearchNeeded, resPair.second()));})*/],
             def).whenExeute();
       }
       else{
@@ -93,8 +99,8 @@ class PageLayoutState extends State<PageLayout>{
     }
 
     else {
-      String cardCode = gameModel.playedCardsPerTeam[gameModel.team]![month]!;
-      onFocusCard = gameModel.gameLogic.findCard(cardCode);
+      String cardCode = gameModel.playedCardsPerTeam[gameModel.team]![month]!.code;
+      onFocusCard = gameModel.gameLogic.findCard(cardCode, gameModel.playerContextCode!);
       context.push("/cardSelectionScreen/cardInfoScreen");
     }
   }
@@ -105,15 +111,15 @@ class PageLayoutState extends State<PageLayout>{
 
     if(widget.crd?.type != null){
       switch (widget.crd!.type){
-        case cardType.Energy: {
+        case cardType.Imp: {
           lottieWidget = Lottie.asset('assets/animations/solarpanel.json', animate: false);
         }
         break;
-        case cardType.Pollution: {
+        case cardType.Inv: {
           lottieWidget = Lottie.asset('assets/animations/55131-grow-your-forest.json', animate: false);
         }
         break;
-        case cardType.Research: {
+        case cardType.Oth: {
           lottieWidget = Lottie.asset('assets/animations/100337-research-lottie-animation.json', animate: false);
         }
         break;

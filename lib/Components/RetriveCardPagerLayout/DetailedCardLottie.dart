@@ -29,17 +29,17 @@ class DetailedCardLottieState extends State<DetailedCardLottie> {
   Widget build(BuildContext context) {
 
     switch (widget.type){
-      case cardType.Energy: {
+      case cardType.Imp: {
         lottieWidget = Lottie.asset('assets/animations/solarpanel.json',
             animate: false);
       }
       break;
-      case cardType.Pollution: {
+      case cardType.Inv: {
         lottieWidget = Lottie.asset('assets/animations/55131-grow-your-forest.json',
             animate: false);
       }
       break;
-      case cardType.Research: {
+      case cardType.Oth: {
         lottieWidget = Lottie.asset('assets/animations/100337-research-lottie-animation.json',
             animate: false);
       }
@@ -47,6 +47,6 @@ class DetailedCardLottieState extends State<DetailedCardLottie> {
     }
 
 
-      return  Expanded(flex: 4, child: lottieWidget);
+      return  Expanded(flex: 3, child: lottieWidget);
   }
 }

@@ -26,15 +26,15 @@ class NewUndetailedCardLayoutState extends State<NewUndetailedCardLayout> {
   Widget build(BuildContext context) {
     if(widget.onFocus){
       switch (widget.cardData!.type){
-        case cardType.Energy: {
+        case cardType.Imp: {
           lottieWidget = Lottie.asset('assets/animations/solarpanel.json', animate: false);
         }
         break;
-        case cardType.Pollution: {
+        case cardType.Inv: {
           lottieWidget = Lottie.asset('assets/animations/55131-grow-your-forest.json',animate: false);
         }
         break;
-        case cardType.Research: {
+        case cardType.Oth: {
           lottieWidget = Lottie.asset('assets/animations/100337-research-lottie-animation.json', animate: false);
         }
         break;

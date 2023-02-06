@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 import 'DataClasses/CardData.dart';
+import 'DataClasses/Context.dart';
 import 'DataClasses/DialogData.dart';
 import 'DataClasses/Pair.dart';
 import 'DataClasses/TeamInfo.dart';
@@ -31,8 +32,9 @@ class GameModel extends ChangeNotifier{
   String masterLevelStatus = "preparing";
   bool ongoingLevel = false;
   int? levelTimerCountdown;
+  String? masterContextCode;
 
-  Map <String, Map<String, String>?> playedCardsPerTeam = {"team1" : {}, "team2" : {}, "team3" : {}, "team4" : {}};
+  Map <String, Map<String, CardData>?> playedCardsPerTeam = {"team1" : {}, "team2" : {}, "team3" : {}, "team4" : {}};
   Map<String, TeamInfo?> teamStats = {};
   Map<String, String> ableToPlayPerTeam = {"team1" : "", "team2" : "", "team3" : "", "team4" : "" };
 
@@ -44,6 +46,7 @@ class GameModel extends ChangeNotifier{
   int playerLevelCounter = 0;
   String? playerLevelStatus;
   int? playerTimerCountdown;
+  String? playerContextCode;
   Timer? playerTimer;
   var push = Pair(pushResult.CardDown, null);
   Future? pushCoroutine;
@@ -102,14 +105,14 @@ class GameModel extends ChangeNotifier{
         break;
       }
     });
-
+    Context context = gameLogic.contextList[Random().nextInt(gameLogic.contextList.length)];
+    masterContextCode = context.code;
       await dbPoint.get().then((value) =>
           db.child("matches").child("test").child("players").set(
               gameLogic.selectTeamForPlayers(value)
           )).
       then((_) { db.child("matches").child("test").child("teams").set(gameLogic.createTeamsOnDb());}).
       then((_) {
-        print("prepare match master level counter: ${gameLogic.masterLevelCounter}");
         giveCardsToPlayers(1);}).
     then((_) => gameLogic.masterLevelCounter = 1);
   }
@@ -204,22 +207,27 @@ class GameModel extends ChangeNotifier{
   }
 
   addPlayedCardsListener() {
-    Map<String, Map<String, String>?> avatarMap = {};
+    Map<String, Map<String, CardData>?> avatarMap = {};
 
     //todo: controlla che giocando una carta o perdendola il numero di moves salga di uno
-    for (final team in ["team1", "team2", "team3", "team4"]){
+    for (final team in playedCardsPerTeam.keys){
       db.child("matches").child("test").child("teams").child(team).child("playedCards").onValue.listen((event) {
         if(event.snapshot.children.length - 1 != playedCardsPerTeam[team]!.length){
           //questo if serve per fare in modo che i dati cambino solo se una carta è stata presa o posizionata,
           //e non solo se il listener è stato triggerato
-          Map<String, String> map = {};
+          Map<String, CardData> map = {};
           for (final playedCard in event.snapshot.children){
-            if (!(playedCard.value.toString() == "no Card")) map.putIfAbsent(playedCard.key.toString(), () => playedCard.value.toString());
+            if (playedCard.value.toString() != "no Card")
+              {
+                String? contextCode = masterContextCode ?? playerContextCode;
+                map.putIfAbsent(playedCard.key.toString(),
+                        () => gameLogic.findCard(playedCard.value.toString(), contextCode!)!);
+              }
           }
           newStatsPerTeam(team, map);
           avatarMap = playedCardsPerTeam;
           avatarMap.remove(team);
-          avatarMap.putIfAbsent(team, () => map);
+          avatarMap.putIfAbsent(team, () => gameLogic.obtainPlayedCardsStatsMap(map));
           playedCardsPerTeam = avatarMap;
           notifyListeners();
         }
@@ -227,12 +235,13 @@ class GameModel extends ChangeNotifier{
     }
   }
 
-  void newStatsPerTeam(String team, Map<String, String> map){
+  void newStatsPerTeam(String team, Map<String, CardData?> map){
     Map<String, TeamInfo?> avatarMap = teamStats;
+    String? contextCode = masterContextCode ?? playerContextCode;
     int moves = (avatarMap[team]!=null && avatarMap[team]!.nullCheck()) ? avatarMap[team]!.moves! : 0;
     int lv = (playerLevelCounter == 0) ? gameLogic.masterLevelCounter : playerLevelCounter;
     avatarMap.remove(team);
-    avatarMap.putIfAbsent(team, () => gameLogic.evaluatePoints(lv, map, moves +1));
+    avatarMap.putIfAbsent(team, () => gameLogic.evaluatePoints(lv, map, moves +1, contextCode!));
     teamStats = avatarMap;
     notifyListeners();
   }
@@ -255,14 +264,17 @@ class GameModel extends ChangeNotifier{
   }
 
   void prepareLevel(int level) async{
+
     if(gameLogic.masterLevelCounter == 1){
-      Map<String, Object> levelValue = {"status" : masterLevelStatus, "count" : level};
+      Map<String, Object> levelValue = {"status" : masterLevelStatus, "count" : level, "context" : masterContextCode!};
       await db.child("matches").child("test").child("level").set(levelValue).
     then((_) => masterLevelStatus = "play");
     }
     else {
-      //todo: controlla che se parte il secondo livello non esploda tutto (si dovrebbe anche bloccare il timer del player alla fine del timer di livello)
-      masterLevelStatus = "play";
+      String contextCode = gameLogic.contextList[Random().nextInt(gameLogic.contextList.length)].code;
+      masterContextCode = contextCode;
+
+      //todo: controlla che se parte il secondo livello non blocchi tutto (si dovrebbe anche bloccare il timer del player alla fine del timer di livello)
       giveCardsToPlayers(level);
       setStartingCardsPerLevel(level);
     }
@@ -276,11 +288,13 @@ class GameModel extends ChangeNotifier{
     }
 
     onFinish() async {
+      String contextCode = gameLogic.contextList[Random().nextInt(gameLogic.contextList.length)].code;
+      masterContextCode = contextCode;
       ongoingLevel = false;
       masterLevelStatus = "preparing";
       levelTimerCountdown = null;
       gameLogic.masterLevelCounter = gameLogic.nextLevel();
-      Map<String , Object> levelValue = {"status" : masterLevelStatus, "count" : gameLogic.masterLevelCounter};
+      Map<String , Object> levelValue = {"status" : masterLevelStatus, "count" : gameLogic.masterLevelCounter, "context" : masterContextCode!};
       await db.child("matches").child("test").child("level").set(levelValue);
       notifyListeners();
     }
@@ -344,6 +358,7 @@ class GameModel extends ChangeNotifier{
 
         if(playerLevelCounter != event.snapshot.child("count").value as int){
           playerLevelCounter = event.snapshot.child("count").value as int;
+          playerContextCode = event.snapshot.child("context").value as String;
         }
 
         if(playerLevelStatus != event.snapshot.child("status").value as String){
@@ -400,12 +415,13 @@ class GameModel extends ChangeNotifier{
     db.child("matches").child("test").child("players").child("1").child("ownedCards").onValue.listen((event) {
       List<CardData> list = [];
       for (final card in event.snapshot.children) {
-        CardData? crd = gameLogic.findCard(card.key!);
+        CardData? crd = gameLogic.findCard(card.key!, playerContextCode!);
         if (crd != null) {
           list.add(crd);
         }
       }
       playerCards = list;
+      forcingDataBinding(this);
       notifyListeners();
     });
   }
@@ -415,8 +431,8 @@ class GameModel extends ChangeNotifier{
         .child(team).child("drawableCards").onValue.listen((event) {
          event.snapshot.children.map((e) => e.key)
              .toList().forEach((element) {
-               if(gameLogic.findCard(element!)!=null && element!="void"){
-                 drawableCards.add(gameLogic.findCard(element)!);
+               if(gameLogic.findCard(element!, playerContextCode!)!=null && element!="void"){
+                 drawableCards.add(gameLogic.findCard(element, playerContextCode!)!);
                }
          });
     });
@@ -485,7 +501,6 @@ class GameModel extends ChangeNotifier{
     //todo: aggiungere un feedback se provi a giocare una carta in una pos occupata?
     String month = gameLogic.months[pos];
     if(!playedCardsPerTeam[team]!.keys.contains(month)){
-      playCardInPos(pos, cardCode);
       return true;
     }
     else{
@@ -493,12 +508,12 @@ class GameModel extends ChangeNotifier{
     }
   }
 
-  void playCardInPos(int pos, String cardCode) async{
+  Future<void> playCardInPos(int pos, String cardCode) async{
     await db.child("matches").child("test").child("teams").child(team)
         .child("playedCards").child(gameLogic.months[pos]).set(cardCode).
-    then((value) => {
-      db.child("matches").child("test").child("players").child("1")
-          .child("ownedCards").child(cardCode).remove()
+    then((value) async{
+       return await db.child("matches").child("test").child("players").child("1")
+          .child("ownedCards").child(cardCode).remove();
     });
   }
 
@@ -509,7 +524,6 @@ class GameModel extends ChangeNotifier{
     }while(randomCardPos >= drawableCards.length);
 
     String cardCode = drawableCards[randomCardPos].code;
-    print("draw card chosen card: ${drawableCards[randomCardPos].code}");
     await db.child("matches").child("test").child("teams").child(team)
         .child("drawableCards").child(drawableCards[randomCardPos].code)
         .remove().then((_) =>
@@ -520,47 +534,77 @@ class GameModel extends ChangeNotifier{
 
   void retriveCardInPos(int pos) async{
     String month = gameLogic.months[pos];
-    String cardCode = playedCardsPerTeam[team]![month]!;
+    String cardCode = playedCardsPerTeam[team]![month]!.code;
 
     db.child("matches").child("test").child("teams").child(team)
         .child("playedCards").child(month).remove().
     then((value) => {
       db.child("matches").child("test").child("players").child("1")
-          .child("ownedCards").child(cardCode).set(true)
+          .child("ownedCards").child(cardCode).set(true).then((_) {
+            int selectedCardPos = Random().nextInt(playerCards.length);
+            discardCardMech(selectedCardPos);
+      })
     });
 
   }
 
   int getBudgetSnapshot(List<String>? playedCards){
-
     int totalCost = 0;
     if(playedCards!=null){
       playedCards.map((e) => gameLogic.CardsMap[e]!.money).forEach((element) {
-        totalCost += element;
+        totalCost += element.abs();
       });
-    }
 
-    if(playedCards!=null && gameLogic.zoneMap[playerLevelCounter]?.budget!=null)
-    { return (gameLogic.zoneMap[playerLevelCounter]!.budget - totalCost);}
+      if(gameLogic.zoneMap[playerLevelCounter]?.budget!=null && playerContextCode!=null)
+      {
+        int budget = (gameLogic.zoneMap[playerLevelCounter]!.budget *
+            gameLogic.contextList.where((element) => element.code==playerContextCode)
+                .single.startStatsInfluence["B"]!).round();
+
+        return (budget - totalCost);
+      }
+      else {
+        return 0;
+      }
+    }
     else {
       return 0;
     }
   }
 
+  Future<bool> discardMechCheck() async{
+    return await db.child("matches").child("test").child("players").child("1").child("ownedCards")
+        .get().then((value) {
+          List<String> cardCodesOnDb = value.children.map((e) => e.key as String).toList();
+          if(cardCodesOnDb.length==1 && cardCodesOnDb.single=="void"){
+            return false;
+          }
+          else{
+            return true;
+          }
+    });
+  }
+
   Future<CardData> discardCardMech(int selectedCardPos) async{
 
+    print("player cards in game model discard: ${playerCards.map((e) => e.code).toList()}");
     String selectedCardCode = playerCards[selectedCardPos].code;
+    print("selected card code in discard game model: ${selectedCardCode}");
 
-    return await db.child("matches").child("test").child("teams").child("team").child("drawableCards")
+    return await db.child("matches").child("test").child("teams").child(team).child("drawableCards")
     .get().then((drawableCards) async{
-      return await db.child("matches").child("test").child("teams").child("team").child("drawableCards")
+      return await db.child("matches").child("test").child("teams").child(team).child("drawableCards")
           .child(selectedCardCode).set(true).then((value) async {
-            int extractedPos = Random().nextInt(drawableCards.children.length);
-            String extractedCardCode = drawableCards.children.toList()[extractedPos].key!;
+           String extractedCardCode;
+            do{
+              int extractedPos = Random().nextInt(drawableCards.children.length - 1);
+              extractedCardCode = drawableCards.children.toList()[extractedPos].key!;
+             }while(extractedCardCode=="void");
+            print("extractedCardCode in game model discard: ${extractedCardCode}");
             return await db.child("matches").child("test").child("players").child("1").child("ownedCards")
             .child(selectedCardCode).remove().then((value) async{
               return await db.child("matches").child("test").child("players").child("1").child("ownedCards")
-                  .child(extractedCardCode).set(true).then((_) => gameLogic.findCard(extractedCardCode)!);
+                  .child(extractedCardCode).set(true).then((_) => gameLogic.findCard(extractedCardCode, playerContextCode!)!);
             });
       });
     });

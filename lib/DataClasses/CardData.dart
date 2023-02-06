@@ -1,6 +1,8 @@
 
 import 'dart:core';
 
+import 'package:edilclima_app/DataClasses/Pair.dart';
+
 class CardData {
 
   String code;
@@ -9,10 +11,8 @@ class CardData {
   int smog;
   int comfort;
   cardType type;
-  researchSet research;
-  List<String>? resCard;
+  List<Pair> inf;
   int level;
-
 
 
   CardData(this.code,
@@ -21,15 +21,14 @@ class CardData {
       this.smog,
       this.comfort,
       this.type,
-      this.research,
-      this.resCard,
+      this.inf,
       this.level);
 
 }
 
 enum cardType{
-  Energy, Pollution, Research
+  Inv, Imp, Oth
 }
-enum researchSet{
-  None, Needed, Develop
+enum influence{
+  None, Card
 }
