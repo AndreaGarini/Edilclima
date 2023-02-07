@@ -1,6 +1,7 @@
 
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:edilclima_app/Components/generalFeatures/SizedButton.dart';
+import 'package:edilclima_app/Components/generalFeatures/TutorialAnimatedLine.dart';
 import 'package:edilclima_app/GameModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,7 @@ class OverlayerTutorialFeatures extends StatelessWidget{
   String tutorialText4 = "Durante ogni turno potrai giocare una carta dalla pagina Gioca carta, "
       "oppure prendere una carta già giocata dalla pagina Prendi carta, o ancora visualizzare i dati delle squadre dalla pagna Squadre. ";
 
+  TutorialAnimatedLine containerLine = TutorialAnimatedLine(screenWidth * 0.02);
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +39,7 @@ class OverlayerTutorialFeatures extends StatelessWidget{
         //info row
         return Stack(children: [
           Positioned(top: 0, left: screenWidth * 0.075, width: screenWidth * 0.85, height: screenHeight * 0.08,
-              child: Container(
-                decoration: BoxDecoration(border: Border.all(
-                  color: lightBluePalette,
-                  width: screenWidth * 0.02,
-                ), color: Colors.transparent),
-              )),
+              child: containerLine),
           Positioned(top: screenHeight * 0.1, left: 0, width: screenWidth, height: screenHeight * 0.4,
               child: Padding(padding: EdgeInsets.all(screenWidth * 0.02),
               child:
@@ -78,12 +75,7 @@ class OverlayerTutorialFeatures extends StatelessWidget{
         //swipable cards
         return Stack(children: [
           Positioned(top: screenHeight * 0.08, left: 0, width: screenWidth, height: screenHeight * 0.35,
-              child: Container(
-                decoration: BoxDecoration(border: Border.all(
-                  color: lightBluePalette,
-                  width: screenWidth * 0.02,
-                ), color: Colors.transparent),
-              )),
+              child: containerLine),
           Positioned(top: screenHeight * 0.45, left: 0, width: screenWidth, height: screenHeight * 0.35,
               child: Padding(padding: EdgeInsets.all(screenWidth * 0.02),
                 child:
@@ -119,12 +111,7 @@ class OverlayerTutorialFeatures extends StatelessWidget{
         //rosa carte 1
         return Stack(children: [
           Positioned(top: screenHeight * 0.4, left: 0, width: screenWidth, height: screenHeight * 0.48,
-              child: Container(
-                decoration: BoxDecoration(border: Border.all(
-                  color: lightBluePalette,
-                  width: screenWidth * 0.02,
-                ), color: Colors.transparent),
-              )),
+              child: containerLine),
           Positioned(top: screenHeight * 0.08, left: 0, width: screenWidth, height: screenHeight * 0.33,
               child: Padding(padding: EdgeInsets.all(screenWidth * 0.02),
                 child: Container(
@@ -159,12 +146,7 @@ class OverlayerTutorialFeatures extends StatelessWidget{
         //rosa carte 2
         return Stack(children: [
           Positioned(top: screenHeight * 0.4, left: 0, width: screenWidth, height: screenHeight * 0.48,
-              child: Container(
-                decoration: BoxDecoration(border: Border.all(
-                  color: lightBluePalette,
-                  width: screenWidth * 0.02,
-                ), color: Colors.transparent),
-              )),
+              child: containerLine),
           Positioned(top: screenHeight * 0.08, left: 0, width: screenWidth, height: screenHeight * 0.33,
               child: Padding(padding: EdgeInsets.all(screenWidth * 0.02),
                 child: Container(
@@ -187,7 +169,9 @@ class OverlayerTutorialFeatures extends StatelessWidget{
                                 fontFamily: 'Roboto',),
                                   textAlign: TextAlign.justify)),
                               const Spacer(),
-                              Expanded(flex: 3, child: SizedButton(screenWidth * 0.3, "Ok!", () {buttonCallback(gameModel);})),
+                              Expanded(flex: 3, child: SizedButton(screenWidth * 0.3, "Ok!", () {
+                                containerLine.lockController();
+                                buttonCallback(gameModel);})),
                               const Spacer()
                             ])),
                         const Spacer()
@@ -223,7 +207,6 @@ class OverlayerTutorialFeatures extends StatelessWidget{
                               Expanded(flex: 3, child: SizedButton(screenWidth * 0.3, "Avanti",
                                       () {
                                 buttonCallback(gameModel);
-                                gameModel.setTutorialDone();
                               })),
                               const Spacer()
                             ])),

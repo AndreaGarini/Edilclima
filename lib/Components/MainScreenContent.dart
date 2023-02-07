@@ -26,12 +26,14 @@ class MainScreenContent extends StatefulWidget {
 double mainHeight = 0;
 double mainWidth = 0;
 
+late Function triggerTutorialOpening;
+
 class MainScreenContentState extends State<MainScreenContent>{
 
   DialogData? lastDialogData;
   int tutorialPhase = 0;
-  late TutorialComponents tutorialComponents;
   bool firstOpening = true;
+  late bool openTutorial;
 
 
   @override
@@ -41,16 +43,22 @@ class MainScreenContentState extends State<MainScreenContent>{
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    triggerTutorialOpening = (bool value){
+      setOpenTutorial(value);
+    };
+    openTutorial = false;
   }
 
 
   void buttonCallback(GameModel gameModel){
     setState(() {
-      if(tutorialPhase <= 4){
+      if(tutorialPhase < 4){
         tutorialPhase++;
       }
       else{
         gameModel.setTutorialDone();
+        triggerTutorialOpening(false);
+        tutorialPhase = 0;
       }
     });
   }
@@ -65,15 +73,19 @@ class MainScreenContentState extends State<MainScreenContent>{
            gameModel.checkTutorial();
            firstOpening = false;
         }
+
+        if(gameModel.playerLevelCounter == 1
+            && gameModel.playerLevelStatus == "preparing"
+            && gameModel.tutorialDone==false){
+         setOpenTutorial(true);
+        }
       });
 
       if(gameModel.showDialog!=null && gameModel.showDialog!=lastDialogData){
         setDialogAvailable(parentContext, gameModel.showDialog!, gameModel);
       }
 
-      if(gameModel.playerLevelCounter == 1
-          && gameModel.playerLevelStatus == "preparing"
-          && gameModel.tutorialDone==false){
+      if(openTutorial){
           return
             SafeArea(child:
                 LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints){
@@ -121,7 +133,7 @@ class MainScreenContentState extends State<MainScreenContent>{
 
     return showDialog<void>(context: context, builder: (BuildContext context){
 
-      if(!data.buttonAdded)
+      if(data.autoExpire)
         {
           Future.delayed(const Duration(seconds: 2), () {
             if(gameModel.tutorialOngoing){
@@ -166,5 +178,14 @@ class MainScreenContentState extends State<MainScreenContent>{
             () {
       openDialog(parentContext, data, gameModel);
       lastDialogData = data;});
+  }
+
+  Future<void> setOpenTutorial(bool value) async{
+    return Future<void>.delayed(const Duration(milliseconds: 1), (){
+            setState((){
+               openTutorial = value;
+            });
+          }
+          );
   }
 }

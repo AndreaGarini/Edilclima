@@ -3,7 +3,10 @@ import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/elusive_icons.dart';
+import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:go_router/go_router.dart';
+
+import 'MainScreenContent.dart';
 
 class BottomNavBar extends StatefulWidget{
 
@@ -36,6 +39,9 @@ class BottomNavBarState extends  State<BottomNavBar>{
         label: "Squadre",
         route: "/otherTeamsScreen",
         color: darkBluePalette),
+    BottomNavigationBarItem(icon: const Icon(FontAwesome.graduation_cap),
+    label : "Tutorial",
+    backgroundColor: darkBluePalette)
   ];
 
 
@@ -66,7 +72,8 @@ class BottomNavBarState extends  State<BottomNavBar>{
   }
 
   onTapCallback (int index) {
-
+    final GoRouter route = GoRouter.of(context);
+    final String location = route.location;
        switch(index){
          case 0: context.go("/cardSelectionScreen");
           break;
@@ -74,6 +81,17 @@ class BottomNavBarState extends  State<BottomNavBar>{
          break;
          case 2: context.go("/otherTeamsScreen");
          break;
+         case 3:
+           {
+             if(location.startsWith('/cardSelectionScreen')){
+               triggerTutorialOpening(true);
+             }
+             else{
+               context.go("/cardSelectionScreen");
+               triggerTutorialOpening(true);
+             }
+           }
+           break;
          default: context.go("/cardSelectionScreen");
          break;
        }
@@ -81,7 +99,6 @@ class BottomNavBarState extends  State<BottomNavBar>{
 }
 
 class BottomNavBarItem extends BottomNavigationBarItem{
-
 
   BottomNavBarItem({required this.route, required String label, required Widget icon, required Color color})
    : super(icon: icon, label: label, backgroundColor: color);

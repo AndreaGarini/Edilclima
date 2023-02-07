@@ -1,4 +1,3 @@
-
 import 'dart:math';
 
 import 'package:edilclima_app/Components/DrawCardFab/DrawCardFab.dart';
@@ -25,7 +24,7 @@ class CardSelectionScreen extends StatefulWidget{
 }
 
 late Function discardMechCallback;
-late Function (GameModel gameModel) forcingDataBinding;
+Function? forcingDataBinding;
 
 double parentWidth = 0;
 double parentHeight = 0;
@@ -117,12 +116,12 @@ class CardSelectionState extends State<CardSelectionScreen>
     }
 
 
-    cardsControllerMap["firstCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150)); //150
-    cardsControllerMap["secondCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
-    cardsControllerMap["thirdCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
-    cardsControllerMap["fourthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
-    cardsControllerMap["fifthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
-    cardsControllerMap["sixthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
+    cardsControllerMap["firstCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 3000)); //150
+    cardsControllerMap["secondCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 3000));
+    cardsControllerMap["thirdCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 3000));
+    cardsControllerMap["fourthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 3000));
+    cardsControllerMap["fifthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 3000));
+    cardsControllerMap["sixthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 3000));
 
     cardsMatrixMap["firstCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["firstCard"]).animate(cardsControllerMap["firstCard"]!);
     cardsMatrixMap["secondCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["secondCard"]).animate(cardsControllerMap["secondCard"]!);
@@ -136,6 +135,8 @@ class CardSelectionState extends State<CardSelectionScreen>
         for (AnimationController controller in cardsControllerMap.values){
           controller.forward(from: 0);
         }
+        String upCardCode = cardsAngleMap.entries.where((element) => element.value==0).single.key;
+        playableCard = cardsDataMap[upCardCode]!.code;
       });
     }
 
@@ -199,7 +200,7 @@ class CardSelectionState extends State<CardSelectionScreen>
       }
 
       return
-        Stack(alignment: Alignment.centerRight,
+        Stack(alignment: Alignment.center,
             children: [
         Column(mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -268,7 +269,9 @@ class CardSelectionState extends State<CardSelectionScreen>
                       ),
                     ]
                 ),
-                InkWell(
+                  Positioned(top: screenHeight * 0.33, right: 0,
+                  child:
+                  InkWell(
                     onTap: (){
                       String cardPosition = cardsAngleMap.entries.where((element) => element.value == 0).single.key;
                       onFocusCard = cardsDataMap[cardPosition];
@@ -281,7 +284,7 @@ class CardSelectionState extends State<CardSelectionScreen>
                           width: screenWidth * 0.35,
                           height: screenWidth * 0.35,
                           animate: /*!gameModel.tutorialOngoing*/ false)),
-                    ))]);
+                    )))]);
     });
   }
 
@@ -325,9 +328,8 @@ class CardSelectionState extends State<CardSelectionScreen>
       }
     }
     String upCardKey = cardsAngleMap.entries.where((element) => element.value==0).single.key;
-    playableCard = cardsDataMap[upCardKey]!.code;
     playerCards = cardsList;
-    newCardsData(avatarMap);
+    newCardsData(avatarMap, upCardKey);
 
   }
 
@@ -599,6 +601,8 @@ class CardSelectionState extends State<CardSelectionScreen>
            }
          }
        }
+    String upCardCode = cardsAngleMap.entries.where((element) => element.value==0).single.key;
+    playableCard = cardsDataMap[upCardCode]!.code;
   }
 
   void discardSelection(GameModel gameModel){
@@ -611,7 +615,7 @@ class CardSelectionState extends State<CardSelectionScreen>
     int arrayLenght = gameModel.playerCards.length;
 
     int selectedCardPos = 0;
-    if(arrayLenght!=0){
+    if(arrayLenght>1){
       do{
         selectedCardPos = Random().nextInt(arrayLenght - 1);
       }while(selectedCardPos==cardPosInArray);
@@ -625,20 +629,20 @@ class CardSelectionState extends State<CardSelectionScreen>
           if(selectedCardPos>cardPosInArray){
             for(int i = 0; i< bias; i++){
               if(i == bias -1 || bias == 0){
-                autoRotate(i * 400, rotVersus.Right, true, extractedCardData, gameModel);
+                autoRotate(i * 3000, rotVersus.Right, true, extractedCardData, gameModel);
               }
               else{
-                autoRotate(i * 400, rotVersus.Right, false, extractedCardData, gameModel);
+                autoRotate(i * 3000, rotVersus.Right, false, extractedCardData, gameModel);
               }
             }
           }
           else{
             for(int i = 0; i< bias; i++){
               if(i == bias -1 || bias == 0){
-                autoRotate(i * 400, rotVersus.Left, true, extractedCardData, gameModel);
+                autoRotate(i * 3000, rotVersus.Left, true, extractedCardData, gameModel);
               }
               else{
-                autoRotate(i * 400, rotVersus.Left, false, extractedCardData, gameModel);
+                autoRotate(i * 30000, rotVersus.Left, false, extractedCardData, gameModel);
               }
             }
           }
@@ -647,80 +651,123 @@ class CardSelectionState extends State<CardSelectionScreen>
     } );
     }
 
-  void exitCardAnim(CardData extractedCardData){
-
-    String centralCard = cardsAngleMap.entries.where((element) => element.value == 0).single.key;
-    Matrix4 oldMatrix = cardsTransformMap[centralCard]!;
-    cardsAngleMap[centralCard] = 180;
-    cardsTransformMap[centralCard] = Matrix4.identity()..setRotationZ(findAngle(180))..scale(1.0, 1.0);
-    cardsMatrixMap[centralCard] = Tween<Matrix4>(begin: oldMatrix, end : cardsTransformMap[centralCard]).animate(cardsControllerMap[centralCard]!);
-    cardsControllerMap[centralCard]!.forward(from: 0);
-    extractCard(centralCard, extractedCardData);
-  }
-
-  void enterCardAnim(String downCard){
-    Matrix4 oldMatrix = cardsTransformMap[downCard]!;
-    cardsAngleMap[downCard] = 0;
-    cardsTransformMap[downCard] = Matrix4.identity()..setRotationZ(findAngle(0))..scale(1.2, 1.2);
-    cardsMatrixMap[downCard] = Tween<Matrix4>(begin: oldMatrix, end : cardsTransformMap[downCard]).animate(cardsControllerMap[downCard]!);
-    cardsControllerMap[downCard]!.forward(from: 0);
-    changeIndexing(AnimationStatus.completed);
-  }
-
-  Future<void> extractCard(String centralCard, CardData extractedCard) async{
-
-    String downCard = cardsAngleMap.entries.where((element) => element.value == 180).first.key;
-    cardsDataMap[downCard] = extractedCard;
-    return Future<void>.delayed(const Duration(milliseconds: 400),
-            () {
-              discardMechOn = false;
-              enterCardAnim(downCard);
-         });
-  }
-
-  Future<void> triggerDiscardProcess(GameModel gameModel) async{
-    return Future<void>.delayed(const Duration(milliseconds: 300),
-            () {
-          discardSelection(gameModel);
-        });
-  }
-
   Future<void> autoRotate(int delay, rotVersus sense, bool posReached, CardData extractedCardData, GameModel gameModel) async{
     return Future<void>.delayed(Duration(milliseconds: delay),
             () {
-             if(posReached){
-                discardMechFinalBinding(gameModel);
-                exitCardAnim(extractedCardData);
-             }
-             else{
-               triggerIndexing = true;
-               ongoingAnimation = true;
-               updateAnimation(sense, screenHeight, playerCards);
-             }
-          });
+          if(posReached){
+            discardMechFinalBinding(gameModel);
+            exitCardAnim(extractedCardData);
+          }
+          else{
+            triggerIndexing = true;
+            ongoingAnimation = true;
+            updateAnimation(sense, screenHeight, playerCards);
+          }
+        });
   }
 
   Future<void> discardMechFinalBinding(GameModel gameModel) async{
 
-    return Future<void>.delayed(const Duration(milliseconds: 600),
+    return Future<void>.delayed(const Duration(milliseconds: 4000),
             () {
           forceCardsBindingCallback(gameModel);
         });
   }
 
-  Future<void> triggerOpeningAnim() async{
-    return Future<void>.delayed(const Duration(milliseconds: 200),
-            () {
-      for (final animController in cardsControllerMap.values){
-        animController.forward();
-    }});
+  void exitCardAnim(CardData extractedCardData){
+
+    String centralCard = cardsAngleMap.entries.where((element) => element.value == 0).single.key;
+    Matrix4 oldMatrix = cardsTransformMap[centralCard]!;
+    cardsAngleMap[centralCard] = 180;
+    cardsTransformMap[centralCard] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[centralCard]!));
+    cardsMatrixMap[centralCard] = Tween<Matrix4>(begin: oldMatrix, end : cardsTransformMap[centralCard]).animate(cardsControllerMap[centralCard]!);
+    cardsControllerMap[centralCard]!.forward(from: 0);
+    closeCardWheel(centralCard);
   }
 
-  Future<void> newCardsData(Map<String, CardData?> avatarMap) async{
+  Future<void> closeCardWheel(String centralCard) async{
+    return Future<void>.delayed(const Duration(milliseconds: 3000),
+            () {
+          discardMechOn = false;
+          closeCardWheelAnim(centralCard);
+        });
+  }
+
+  void closeCardWheelAnim(String centralCard){
+    print("closing card wheel stats: ${cardsAngleMap}") ;
+    for(String key in cardsAngleMap.keys){
+      if(cardsAngleMap[key]!=180.0){
+        print("closing wheel modified card codes: ${key} ");
+        Matrix4 oldMatrix = cardsTransformMap[key]!;
+        cardsTransformMap[key] = Matrix4.identity();
+        cardsMatrixMap[key] = Tween<Matrix4>(begin: oldMatrix, end : cardsTransformMap[key]).animate(cardsControllerMap[key]!);
+        cardsControllerMap[key]!.value = 0;
+        cardsControllerMap[key]!.forward(from: 0);
+      }
+    }
+    //rimetto l'angolo della carta uscita a 0 cos' posso riaprire la ruota di carte correttamente
+    cardsAngleMap[centralCard] = 0;
+    print("central card in close card wheel: ${centralCard}");
+    openCardWheel(centralCard);
+  }
+
+  Future<void> openCardWheel(String centralCard) async{
+    return Future<void>.delayed(const Duration(milliseconds: 10000),
+            () {
+          //qui stiamo facendo il binding delle carte con discardMechFinalBinding chiamata in autoRotate
+          discardMechOn = false;
+          reopenCardWheelAnim();
+        });
+  }
+
+  void reopenCardWheelAnim(){
+    changeIndexing(AnimationStatus.completed);
+    for(String key in cardsAngleMap.keys) {
+      if (cardsAngleMap[key] != 180) {
+        Matrix4 oldMatrix = cardsTransformMap[key]!;
+        switch(cardsAngleMap[key]!.toInt()){
+          case 30: {
+            cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))
+              ..setTranslationRaw(50, 0, 0);
+          }
+          break;
+          case 60: {
+            cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))
+              ..setTranslationRaw(50, 0, 0);
+          }
+          break;
+          case -30: {
+            cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))
+              ..setTranslationRaw(-50, 0, 0);
+          }
+          break;
+          case -60: {
+            cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))
+              ..setTranslationRaw(-50, 0, 0);
+          }
+          break;
+          case 0: {
+            print("central card in reopening wheel: ${key}");
+            print("central card data in reopening wheel: ${cardsDataMap[key]}");
+            cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))..scale(1.2, 1.2)
+              ..setTranslationRaw(0, -screenHeight * 0.01, 0);
+          }
+          break;
+        }
+        cardsMatrixMap[key] = Tween<Matrix4>(begin: oldMatrix, end : cardsTransformMap[key]).animate(cardsControllerMap[key]!);
+        cardsControllerMap[key]!.forward(from: 0);
+      }
+    }
+    String upCardKey = cardsAngleMap.entries.where((element) => element.value==0).single.key;
+    playableCard = cardsDataMap[upCardKey]!.code;
+  }
+
+  Future<void> newCardsData(Map<String, CardData?> avatarMap, String upCardKey) async{
     return Future<void>.delayed(const Duration(milliseconds: 50),
             () {
               setState(() {
                 cardsDataMap = avatarMap;
+                playableCard = cardsDataMap[upCardKey]!.code;
               });
          });
   }

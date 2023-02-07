@@ -10,7 +10,7 @@ class GameBoardPngStack extends StatefulWidget{
   double imageHeight;
   double imageWidth;
 
-  GameBoardPngStack(this.imageHeight, this.imageWidth);
+   GameBoardPngStack(this.imageHeight, this.imageWidth);
 
   @override
   State<StatefulWidget> createState() => GameBoardPngStackState();
@@ -18,22 +18,33 @@ class GameBoardPngStack extends StatefulWidget{
 
 class GameBoardPngStackState extends State<GameBoardPngStack> {
 
-  //todo: aggiungi png in asset
   //todo: considera aggiungere animazioni di entrata
-  //todo: wrappa le images con dei container se serve per avere le dim giuste
   late List<Widget> pngList;
+  late bool stackBuilded;
+  late List<Widget> stackChildren;
+
+  @override
+  void initState() {
+    super.initState();
+    stackBuilded = false;
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    List<Widget> stackChildren = [];
-
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
-
-      for(final path in gameModel.gameLogic.pngMapPerLevel[gameModel.gameLogic.masterLevelCounter]!){
-       stackChildren.add(Image.asset(path, width: widget.imageWidth, height: widget.imageHeight));
-      }
+        if(!stackBuilded){
+          print("building stack");
+          print("master level counter: ${gameModel.gameLogic.masterLevelCounter}");
+          List<Widget> pngStack = [];
+          for(final path in gameModel.gameLogic.pngMapPerLevel[gameModel.gameLogic.masterLevelCounter]!){
+            print("creating stack children");
+            pngStack.add(Image.asset(path, width: widget.imageWidth, height: widget.imageHeight));
+          }
+          stackChildren = pngStack;
+          stackBuilded = true;
+        }
 
       // nella callback per evitare il setstate called during build
       //todo: cambia tutti i player level counter con quelli del master
@@ -41,7 +52,6 @@ class GameBoardPngStackState extends State<GameBoardPngStack> {
 
       WidgetsBinding.instance?.addPostFrameCallback((_){
         //null check
-
         /*if(gameModel.playedCardsPerTeam[gameModel.team]!=null){
           List<String> cardCodeListFromPng = [];
           for(final pngPath in gameModel.gameLogic.pngMapPerLevel[gameModel.playerLevelCounter]!){
@@ -76,5 +86,6 @@ class GameBoardPngStackState extends State<GameBoardPngStack> {
       );
     });
   }
+
 
 }

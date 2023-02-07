@@ -30,6 +30,7 @@ with TickerProviderStateMixin{
   int playedCardsNum = 0;
   double endChartBarRatio = 0;
   double startChartBarRatio = 0;
+  Widget chartContent = const Spacer();
 
   void initState() {
     super.initState();
@@ -42,13 +43,13 @@ with TickerProviderStateMixin{
     indicatorController.dispose();
   }
 
-  staticChartBar(){
+  Widget staticChartBar(){
     return CircularProgressIndicator(value: endChartBarRatio, color: Color.lerp(barColorStart, barColorEnd, endChartBarRatio)
         ,strokeWidth: widget.usableHeight * 0.05);
   }
 
 
-  dynamicChartBar(GameModel gameModel, Function animCallback) {
+  Widget dynamicChartBar(GameModel gameModel, Function animCallback) {
       calculateNewBarRatio(gameModel);
 
       if(endChartBarRatio!=startChartBarRatio){
@@ -85,8 +86,14 @@ with TickerProviderStateMixin{
 
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
-      return (playedCardsNum != gameModel.playedCardsPerTeam[widget.team]?.length) ?
-             dynamicChartBar(gameModel, animCallback) : staticChartBar();
+      if(playedCardsNum != gameModel.playedCardsPerTeam[widget.team]?.length){
+        chartContent = dynamicChartBar(gameModel, animCallback);
+      }
+      else{
+        chartContent = staticChartBar();
+      }
+
+      return chartContent;
     });
   }
 

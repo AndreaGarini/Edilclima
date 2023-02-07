@@ -11,7 +11,7 @@ import 'StylizedText.dart';
 
 class TutorialComponents extends StatefulWidget {
 
-  //todo: stile della dialog da sistemare e dialog da arrotondare
+  //todo: vecchio tutorial, da eliminare se non necessario
   GameModel gameModel;
   Function? closeTutorialCallback;
 

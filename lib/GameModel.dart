@@ -62,6 +62,7 @@ class GameModel extends ChangeNotifier{
     await db.set({
       "matches" : {
       "test" : {
+        "masterTutorialDone" : false,
         "level" : "",
         "players" : "",
         "teams" : ""
@@ -72,8 +73,10 @@ class GameModel extends ChangeNotifier{
   void setPlayerCounter(){
     db.child("matches").child("test").child("players").get().whenComplete(() =>
         db.child("matches").child("test").child("players").onValue.listen((event) {
-          playerCounter = event.snapshot.children.length;
-          notifyListeners();
+          if(event.snapshot.children.length!=playerCounter){
+            playerCounter = event.snapshot.children.length;
+            notifyListeners();
+          }
         })
     );
   }
@@ -311,6 +314,14 @@ class GameModel extends ChangeNotifier{
     gameLogic.setLevelTimer(onTick, onFinish);
   }
 
+  Future<bool> masterTutorialDoneCheck() async{
+    return await db.child("matches").child("test").child("masterTutorialDone").get().then((response) => response.value as bool);
+  }
+
+  void setMasterTutorialDone() async{
+    db.child("matches").child("test").child("masterTutorialDone").set(true);
+  }
+
   //logica lato player
 
   //todo : ovunque ci sia la chiave dell'utente (ad es. 1) devi inserire il suo uid
@@ -400,6 +411,7 @@ class GameModel extends ChangeNotifier{
   }
 
   void setTutorialDone(){
+    print("game model set tutorial done");
     db.child("matches").child("test").child("players")
         .child("1").child("tutorialDone").set(true);
   }
@@ -421,7 +433,9 @@ class GameModel extends ChangeNotifier{
         }
       }
       playerCards = list;
-      forcingDataBinding(this);
+      if(forcingDataBinding!=null){
+        forcingDataBinding!(this);
+      }
       notifyListeners();
     });
   }
@@ -577,7 +591,7 @@ class GameModel extends ChangeNotifier{
         .get().then((value) {
           List<String> cardCodesOnDb = value.children.map((e) => e.key as String).toList();
           if(cardCodesOnDb.length==1 && cardCodesOnDb.single=="void"){
-            return false;
+           return false;
           }
           else{
             return true;
@@ -587,9 +601,7 @@ class GameModel extends ChangeNotifier{
 
   Future<CardData> discardCardMech(int selectedCardPos) async{
 
-    print("player cards in game model discard: ${playerCards.map((e) => e.code).toList()}");
     String selectedCardCode = playerCards[selectedCardPos].code;
-    print("selected card code in discard game model: ${selectedCardCode}");
 
     return await db.child("matches").child("test").child("teams").child(team).child("drawableCards")
     .get().then((drawableCards) async{
@@ -600,7 +612,6 @@ class GameModel extends ChangeNotifier{
               int extractedPos = Random().nextInt(drawableCards.children.length - 1);
               extractedCardCode = drawableCards.children.toList()[extractedPos].key!;
              }while(extractedCardCode=="void");
-            print("extractedCardCode in game model discard: ${extractedCardCode}");
             return await db.child("matches").child("test").child("players").child("1").child("ownedCards")
             .child(selectedCardCode).remove().then((value) async{
               return await db.child("matches").child("test").child("players").child("1").child("ownedCards")
