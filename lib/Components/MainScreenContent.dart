@@ -32,8 +32,8 @@ class MainScreenContentState extends State<MainScreenContent>{
 
   DialogData? lastDialogData;
   int tutorialPhase = 0;
-  bool firstOpening = true;
   late bool openTutorial;
+  late bool firstOpening;
 
 
   @override
@@ -47,6 +47,7 @@ class MainScreenContentState extends State<MainScreenContent>{
       setOpenTutorial(value);
     };
     openTutorial = false;
+    firstOpening = true;
   }
 
 
@@ -69,16 +70,16 @@ class MainScreenContentState extends State<MainScreenContent>{
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
       WidgetsBinding.instance?.addPostFrameCallback((_){
-        if(firstOpening){
-           gameModel.checkTutorial();
-           firstOpening = false;
-        }
-
-        if(gameModel.playerLevelCounter == 1
-            && gameModel.playerLevelStatus == "preparing"
-            && gameModel.tutorialDone==false){
-         setOpenTutorial(true);
-        }
+          if(firstOpening){
+            firstOpening = false;
+            gameModel.checkTutorial().then((value)  {
+              if(gameModel.playerLevelCounter == 1
+                  && gameModel.playerLevelStatus == "preparing"
+                  && gameModel.tutorialDone==false){
+                setOpenTutorial(true);
+              }
+            });
+          }
       });
 
       if(gameModel.showDialog!=null && gameModel.showDialog!=lastDialogData){
@@ -181,6 +182,7 @@ class MainScreenContentState extends State<MainScreenContent>{
   }
 
   Future<void> setOpenTutorial(bool value) async{
+
     return Future<void>.delayed(const Duration(milliseconds: 1), (){
             setState((){
                openTutorial = value;

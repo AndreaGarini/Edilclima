@@ -42,7 +42,6 @@ class RetriveCardLayoutState extends State<RetrivePageLayout>{
             width: screenWidth * 0.8,
             child: Center(child: SizedButton(screenWidth * 0.6, "Prendi carta", ableToRetrive ? (){
               gameModel.retriveCardInPos(widget.pos);
-
               buttonCallback(gameModel);} : null)))
       ]);
     });

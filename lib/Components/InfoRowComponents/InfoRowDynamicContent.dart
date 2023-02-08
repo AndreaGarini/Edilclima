@@ -78,8 +78,8 @@ class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
                    Expanded(flex: 1, child: Center(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                        crossAxisAlignment: CrossAxisAlignment.center, children: [
                          Icon(ModernPictograms.dollar, color: darkOrangePalette),
-                         SizedBox(width: screenWidth * 0.02),
-                         StylizedText(darkBluePalette, gameModel.teamStats[gameModel.team]?.budget.toString() ?? "", null, FontWeight.bold)
+                         SizedBox(width: screenWidth * 0.02,),
+                         StylizedText(darkBluePalette, gameModel.teamStats[gameModel.team]?.budget.toString() ?? "", null, FontWeight.bold),
                        ]))),
                    Expanded(flex: 1, child: Center(child: Row(
                      mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,

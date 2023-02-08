@@ -280,7 +280,7 @@ class GameLogic {
 
 
 
-    TeamInfo evaluatePoints(int level, Map<String, CardData?> map, int moves, String contextCode) {
+    TeamInfo evaluatePoints(int level, Map<String, CardData?>? map, int moves, String contextCode) {
       int points = 0;
 
       int exactCardDataPoints = 100;
@@ -290,52 +290,55 @@ class GameLogic {
       int movesNegPoints = 5;
 
       Context context = contextList.where((element) => element.code==contextCode).single;
-      
-      //todo: qui potresti ottenere dei null (sulle playedCardDatas ma anche sulla zone), per cui se serve rendi le variabili nullable
 
       int budget = (zoneMap[level]!.budget * context.startStatsInfluence["B"]!).round();
-      for (final value in map.values) {
-        budget += value!.money;
-      }
-
       int energy = (zoneMap[level]!.initEnergy * context.startStatsInfluence["E"]!).round();
-      for (final value in map.values) {
-        energy += value!.energy;
-      }
-
       int smog = (zoneMap[level]!.initSmog * context.startStatsInfluence["A"]!).round();
-      for (final value in map.values) {
-        smog += value!.smog;
-      }
-
       int comfort = (zoneMap[level]!.initComfort * context.startStatsInfluence["C"]!).round();
-      for (final value in map.values) {
-        comfort += value!.comfort;
+
+
+      if(map!=null){
+
+        for (final value in map.values) {
+          budget += value!.money;
+        }
+
+        for (final value in map.values) {
+          energy += value!.energy;
+        }
+
+        for (final value in map.values) {
+          smog += value!.smog;
+        }
+
+        for (final value in map.values) {
+          comfort += value!.comfort;
+        }
+
+        map.entries.where((element) =>
+            zoneMap[level]!.optimalList.contains(element.value!.code)).forEach((
+            element) {
+          if (zoneMap[level]!.optimalList.indexOf(element.value!.code) ==
+              months.indexOf(element.key))
+            points += exactCardDataPoints;
+          else
+            points += nearlyExactCardDataPoints;
+        });
+
+        map.entries.where((element) =>
+        !zoneMap[level]!.optimalList.contains(element.value!.code)).forEach((element) {
+          points +=
+              wrongCardDataPoints; //todo: trovare un modo più intelligente per dire valutare i punti di un valore fisso per le carte sbagliate
+        });
       }
 
       if (energy > zoneMap[level]!.TargetE) points += targetReachedPoints;
       if (smog < zoneMap[level]!.TargetA) points += targetReachedPoints;
       if (comfort > zoneMap[level]!.TargetC) points += targetReachedPoints;
 
-      map.entries.where((element) =>
-          zoneMap[level]!.optimalList.contains(element.value!.code)).forEach((
-          element) {
-        if (zoneMap[level]!.optimalList.indexOf(element.value!.code) ==
-            months.indexOf(element.key))
-          points += exactCardDataPoints;
-        else
-          points += nearlyExactCardDataPoints;
-      });
-
-      map.entries.where((element) =>
-      !zoneMap[level]!.optimalList.contains(element.value!.code)).forEach((element) {
-        points +=
-            wrongCardDataPoints; //todo: trovare un modo più intelligente per dire valutare i punti di un valore fisso per le carte sbagliate
-      });
-
       points -= (moves * movesNegPoints);
 
-      return TeamInfo(budget, smog, energy, comfort, points, moves);
+      return TeamInfo(budget, smog, energy, comfort, points >= 0 ? points : 0, moves);
     }
 
   }

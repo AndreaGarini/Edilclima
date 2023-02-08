@@ -40,12 +40,13 @@ enum rotVersus {
 rotVersus rotationSense = rotVersus.None;
 String playableCard = "null";
 CardData? onFocusCard;
-bool ongoingAnimation = false;
+late bool ongoingAnimation;
 bool firstOpening = true;
 List<CardData?> playerCards = List.generate(6, (index) => CardData("void", 0, 0, 0, 0,
     cardType.Imp,
     [Pair(influence.None, null)],
     1));
+List<String> lastDrawnCards = [];
 
 class CardSelectionState extends State<CardSelectionScreen>
     with TickerProviderStateMixin {
@@ -55,6 +56,7 @@ class CardSelectionState extends State<CardSelectionScreen>
   late bool openingAnimDone;
   late bool buildEnded;
   late bool discardMechOn;
+  List<String> newCards = [];
 
   Map<String, Matrix4> cardsTransformMap = {};
   Map<String, AnimationController> cardsControllerMap = {};
@@ -115,7 +117,6 @@ class CardSelectionState extends State<CardSelectionScreen>
       cardsTransformMap["sixthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["sixthCard"]!));
     }
 
-
     cardsControllerMap["firstCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 3000)); //150
     cardsControllerMap["secondCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 3000));
     cardsControllerMap["thirdCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 3000));
@@ -135,8 +136,6 @@ class CardSelectionState extends State<CardSelectionScreen>
         for (AnimationController controller in cardsControllerMap.values){
           controller.forward(from: 0);
         }
-        String upCardCode = cardsAngleMap.entries.where((element) => element.value==0).single.key;
-        playableCard = cardsDataMap[upCardCode]!.code;
       });
     }
 
@@ -194,7 +193,6 @@ class CardSelectionState extends State<CardSelectionScreen>
       });
 
       //se ho giocato o preso una carta faccio il rebinding
-
       if(!gameModel.tutorialOngoing && !openingAnimDone){
         openingAnimDone = true;
       }
@@ -218,7 +216,8 @@ class CardSelectionState extends State<CardSelectionScreen>
                                       origin: Offset(pivotPointX, pivotPointY),
                                       child: UndetailedCardLayout(cardsDataMap["sixthCard"],
                                           cardsAngleMap["sixthCard"]!,
-                                          !gameModel.tutorialOngoing, animCallback)),
+                                          !gameModel.tutorialOngoing, animCallback, newCardCallback,
+                                       newCards.contains("sixthCard") ? true : false)),
                                 animation: cardsMatrixMap["sixthCard"]!,)),
                               Indexed(index: indexingList["firstCard"]!, child:
                               AnimatedBuilder(builder: (context, child) =>
@@ -226,7 +225,8 @@ class CardSelectionState extends State<CardSelectionScreen>
                                       origin: Offset(pivotPointX, pivotPointY),
                                       child: UndetailedCardLayout(cardsDataMap["firstCard"],
                                           cardsAngleMap["firstCard"]!,
-                                          !gameModel.tutorialOngoing, animCallback)),
+                                          !gameModel.tutorialOngoing, animCallback, newCardCallback,
+                                          newCards.contains("firstCard") ? true : false)),
                                 animation: cardsMatrixMap["firstCard"]!,)),
                               Indexed(index: indexingList["secondCard"]!, child:
                               AnimatedBuilder(builder: (context, child) =>
@@ -236,7 +236,8 @@ class CardSelectionState extends State<CardSelectionScreen>
                                       child:
                                UndetailedCardLayout(cardsDataMap["secondCard"],
                                             cardsAngleMap["secondCard"]!,
-                                            !gameModel.tutorialOngoing, animCallback)),
+                                            !gameModel.tutorialOngoing, animCallback, newCardCallback,
+                                   newCards.contains("secondCard") ? true : false)),
                                 animation: cardsMatrixMap["secondCard"]!,)),
                               Indexed(index: indexingList["thirdCard"]!, child:
                               AnimatedBuilder(builder: (context, child) =>
@@ -245,7 +246,8 @@ class CardSelectionState extends State<CardSelectionScreen>
                                       child:
                                       UndetailedCardLayout(cardsDataMap["thirdCard"],
                                           cardsAngleMap["thirdCard"]!,
-                                          !gameModel.tutorialOngoing, animCallback)),
+                                          !gameModel.tutorialOngoing, animCallback, newCardCallback,
+                                          newCards.contains("thirdCard") ? true : false)),
                                 animation: cardsMatrixMap["thirdCard"]!)),
                               Indexed(index: indexingList["fourthCard"]!, child:
                               AnimatedBuilder(builder: (context, child) =>
@@ -254,7 +256,8 @@ class CardSelectionState extends State<CardSelectionScreen>
                                       origin: Offset(pivotPointX, pivotPointY),
                                       child: UndetailedCardLayout(cardsDataMap["fourthCard"],
                                           cardsAngleMap["fourthCard"]!,
-                                          !gameModel.tutorialOngoing, animCallback)),
+                                          !gameModel.tutorialOngoing, animCallback, newCardCallback,
+                                          newCards.contains("fourthCard") ? true : false)),
                                 animation: cardsMatrixMap["fourthCard"]!,)),
                               Indexed(index: indexingList["fifthCard"]!, child:
                               AnimatedBuilder(builder: (context, child) =>
@@ -262,7 +265,8 @@ class CardSelectionState extends State<CardSelectionScreen>
                                       origin: Offset(pivotPointX, pivotPointY),
                                       child: UndetailedCardLayout(cardsDataMap["fifthCard"],
                                           cardsAngleMap["fifthCard"]!,
-                                          !gameModel.tutorialOngoing, animCallback)),
+                                          !gameModel.tutorialOngoing, animCallback, newCardCallback,
+                                          newCards.contains("fifthCard") ? true : false)),
                                 animation: cardsMatrixMap["fifthCard"]!,)),
                             ],
                           )
@@ -294,23 +298,34 @@ class CardSelectionState extends State<CardSelectionScreen>
     updateAnimation(rotationSense, screenHeight, playerCards);
   }
 
+  void newCardCallback(String cardCode){
+    lastDrawnCards.remove(cardCode);
+    String cardCodePos = cardsDataMap.entries.where((element) =>
+    element.value!=null && element.value!.code==cardCode).single.key;
+    setState((){
+      newCards.remove(cardCodePos);
+    });
+  }
+
   void forceCardsBindingCallback(GameModel gameModel){
-    if(buildEnded && !discardMechOn){
-      List<CardData?> cardsList = [];
-      gameModel.playerCards.forEach((element) {
-        cardsList.add(CardData(element.code, element.money,
-            element.energy, element.smog, element.comfort,
-            element.type, element.inf, element.level));
-      });
-      if(cardsList.length < 6){
-        for(int i = cardsList.length; i<6; i++){
-          cardsList.add(CardData("void", 0, 0, 0, 0,
-              cardType.Imp,
-              [Pair(influence.None, null)],
-              gameModel.playerLevelCounter));
+    if(mounted){
+      if(buildEnded && !discardMechOn){
+        List<CardData?> cardsList = [];
+        gameModel.playerCards.forEach((element) {
+          cardsList.add(CardData(element.code, element.money,
+              element.energy, element.smog, element.comfort,
+              element.type, element.inf, element.level));
+        });
+        if(cardsList.length < 6){
+          for(int i = cardsList.length; i<6; i++){
+            cardsList.add(CardData("void", 0, 0, 0, 0,
+                cardType.Imp,
+                [Pair(influence.None, null)],
+                gameModel.playerLevelCounter));
+          }
         }
+        cardsDataBinding(cardsList!);
       }
-      cardsDataBinding(cardsList!);
     }
   }
 
@@ -327,10 +342,10 @@ class CardSelectionState extends State<CardSelectionScreen>
         avatarMap[entry.key] = null;
       }
     }
+
     String upCardKey = cardsAngleMap.entries.where((element) => element.value==0).single.key;
     playerCards = cardsList;
     newCardsData(avatarMap, upCardKey);
-
   }
 
   void updateCardsData(List<CardData?> playerCards){
@@ -348,6 +363,11 @@ class CardSelectionState extends State<CardSelectionScreen>
           index = index -1;
         }
         cardsDataMap[cardsDownKey] = playerCards[index];
+        if(lastDrawnCards.isNotEmpty && lastDrawnCards.contains(playerCards[index]!.code)){
+          if(!newCards.contains(cardsDownKey)){
+            newCards.add(cardsDownKey);
+          }
+        }
       }
       break;
       case rotVersus.Left: {
@@ -360,6 +380,11 @@ class CardSelectionState extends State<CardSelectionScreen>
           index = index + 1;
         }
         cardsDataMap[cardsDownKey] = playerCards[index];
+        if(lastDrawnCards.isNotEmpty && lastDrawnCards.contains(playerCards[index]!.code)){
+          if(!newCards.contains(cardsDownKey)){
+            newCards.add(cardsDownKey);
+          }
+        }
       }
       break;
       default: {
@@ -410,6 +435,12 @@ class CardSelectionState extends State<CardSelectionScreen>
 
     if(playerCards!=null){
       updateCardsData(playerCards);
+    }
+
+
+    if(versus == rotVersus.None){
+      versus = rotVersus.Right;
+      rotationSense = rotVersus.Right;
     }
 
        switch (versus){
@@ -602,7 +633,9 @@ class CardSelectionState extends State<CardSelectionScreen>
          }
        }
     String upCardCode = cardsAngleMap.entries.where((element) => element.value==0).single.key;
-    playableCard = cardsDataMap[upCardCode]!.code;
+    if(cardsDataMap[upCardCode]!=null){
+      playableCard = cardsDataMap[upCardCode]!.code;
+    }
   }
 
   void discardSelection(GameModel gameModel){
@@ -619,6 +652,11 @@ class CardSelectionState extends State<CardSelectionScreen>
       do{
         selectedCardPos = Random().nextInt(arrayLenght - 1);
       }while(selectedCardPos==cardPosInArray);
+    }
+
+
+    if(lastDrawnCards.contains(cardCode) && cardCode!="void"){
+      lastDrawnCards.remove(cardCode);
     }
 
     gameModel.discardMechCheck().then((value) {
@@ -667,7 +705,6 @@ class CardSelectionState extends State<CardSelectionScreen>
   }
 
   Future<void> discardMechFinalBinding(GameModel gameModel) async{
-
     return Future<void>.delayed(const Duration(milliseconds: 4000),
             () {
           forceCardsBindingCallback(gameModel);
@@ -694,10 +731,8 @@ class CardSelectionState extends State<CardSelectionScreen>
   }
 
   void closeCardWheelAnim(String centralCard){
-    print("closing card wheel stats: ${cardsAngleMap}") ;
     for(String key in cardsAngleMap.keys){
       if(cardsAngleMap[key]!=180.0){
-        print("closing wheel modified card codes: ${key} ");
         Matrix4 oldMatrix = cardsTransformMap[key]!;
         cardsTransformMap[key] = Matrix4.identity();
         cardsMatrixMap[key] = Tween<Matrix4>(begin: oldMatrix, end : cardsTransformMap[key]).animate(cardsControllerMap[key]!);
@@ -707,7 +742,6 @@ class CardSelectionState extends State<CardSelectionScreen>
     }
     //rimetto l'angolo della carta uscita a 0 cos' posso riaprire la ruota di carte correttamente
     cardsAngleMap[centralCard] = 0;
-    print("central card in close card wheel: ${centralCard}");
     openCardWheel(centralCard);
   }
 
@@ -747,8 +781,6 @@ class CardSelectionState extends State<CardSelectionScreen>
           }
           break;
           case 0: {
-            print("central card in reopening wheel: ${key}");
-            print("central card data in reopening wheel: ${cardsDataMap[key]}");
             cardsTransformMap[key] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap[key]!))..scale(1.2, 1.2)
               ..setTranslationRaw(0, -screenHeight * 0.01, 0);
           }
@@ -765,6 +797,10 @@ class CardSelectionState extends State<CardSelectionScreen>
   Future<void> newCardsData(Map<String, CardData?> avatarMap, String upCardKey) async{
     return Future<void>.delayed(const Duration(milliseconds: 50),
             () {
+              if(lastDrawnCards.isNotEmpty){
+                newCards = avatarMap.entries.where((element) => element.value!=null &&
+                    lastDrawnCards.contains(element.value!.code)).map((e) => e.key).toList();
+              }
               setState(() {
                 cardsDataMap = avatarMap;
                 playableCard = cardsDataMap[upCardKey]!.code;

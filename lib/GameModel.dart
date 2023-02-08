@@ -2,14 +2,13 @@
 import 'dart:async';
 import 'dart:ffi';
 import 'dart:math';
-
-import 'package:edilclima_app/Components/generalFeatures/TutorialComponents.dart';
 import 'package:edilclima_app/GameLogic.dart';
 import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:go_router/go_router.dart';
 
 import 'DataClasses/CardData.dart';
 import 'DataClasses/Context.dart';
@@ -234,6 +233,16 @@ class GameModel extends ChangeNotifier{
           playedCardsPerTeam = avatarMap;
           notifyListeners();
         }
+        else if(event.snapshot.children.length == 1
+            && event.snapshot.children.single.key=="void"){
+          Map<String, CardData> map = {};
+          newStatsPerTeam(team, map);
+          avatarMap = playedCardsPerTeam;
+          avatarMap.remove(team);
+          avatarMap.putIfAbsent(team, () => gameLogic.obtainPlayedCardsStatsMap(map));
+          playedCardsPerTeam = avatarMap;
+          notifyListeners();
+        }
       });
     }
   }
@@ -244,7 +253,7 @@ class GameModel extends ChangeNotifier{
     int moves = (avatarMap[team]!=null && avatarMap[team]!.nullCheck()) ? avatarMap[team]!.moves! : 0;
     int lv = (playerLevelCounter == 0) ? gameLogic.masterLevelCounter : playerLevelCounter;
     avatarMap.remove(team);
-    avatarMap.putIfAbsent(team, () => gameLogic.evaluatePoints(lv, map, moves +1, contextCode!));
+    avatarMap.putIfAbsent(team, () => gameLogic.evaluatePoints(lv, map.isNotEmpty ? map : null, moves +1, contextCode!));
     teamStats = avatarMap;
     notifyListeners();
   }
@@ -383,7 +392,7 @@ class GameModel extends ChangeNotifier{
             }
             break;
             case"play" : {
-              setDialogData(DialogData("level $playerLevelCounter", null, false));
+              setDialogData(DialogData("level $playerLevelCounter", null, true));
             }
             break;
           }
@@ -416,8 +425,8 @@ class GameModel extends ChangeNotifier{
         .child("1").child("tutorialDone").set(true);
   }
 
-  void checkTutorial(){
-    db.child("matches").child("test").child("players")
+  Future<void> checkTutorial() async{
+    return await db.child("matches").child("test").child("players")
         .child("1").child("tutorialDone").get().then((value) => {
           tutorialDone = value.value as bool
     });
@@ -550,16 +559,20 @@ class GameModel extends ChangeNotifier{
     String month = gameLogic.months[pos];
     String cardCode = playedCardsPerTeam[team]![month]!.code;
 
+    lastDrawnCards.add(cardCode);
     db.child("matches").child("test").child("teams").child(team)
         .child("playedCards").child(month).remove().
     then((value) => {
       db.child("matches").child("test").child("players").child("1")
           .child("ownedCards").child(cardCode).set(true).then((_) {
             int selectedCardPos = Random().nextInt(playerCards.length);
-            discardCardMech(selectedCardPos);
+            discardMechCheck().then((value) {
+              if(value){
+                discardCardMech(selectedCardPos);
+              }
+            });
       })
     });
-
   }
 
   int getBudgetSnapshot(List<String>? playedCards){
@@ -603,6 +616,10 @@ class GameModel extends ChangeNotifier{
 
     String selectedCardCode = playerCards[selectedCardPos].code;
 
+    if(lastDrawnCards.contains(selectedCardCode)){
+      lastDrawnCards.remove(selectedCardCode);
+    }
+
     return await db.child("matches").child("test").child("teams").child(team).child("drawableCards")
     .get().then((drawableCards) async{
       return await db.child("matches").child("test").child("teams").child(team).child("drawableCards")
@@ -611,7 +628,9 @@ class GameModel extends ChangeNotifier{
             do{
               int extractedPos = Random().nextInt(drawableCards.children.length - 1);
               extractedCardCode = drawableCards.children.toList()[extractedPos].key!;
-             }while(extractedCardCode=="void");
+             } while(extractedCardCode=="void");
+            lastDrawnCards.add(extractedCardCode);
+            print("extracted card in discard mech: ${extractedCardCode}");
             return await db.child("matches").child("test").child("players").child("1").child("ownedCards")
             .child(selectedCardCode).remove().then((value) async{
               return await db.child("matches").child("test").child("players").child("1").child("ownedCards")
@@ -619,8 +638,6 @@ class GameModel extends ChangeNotifier{
             });
       });
     });
-
-
   }
 
 }
