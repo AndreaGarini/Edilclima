@@ -6,19 +6,23 @@ import 'package:fluttericon/modern_pictograms_icons.dart';
 
 import '../../Screens/WaitingScreen.dart';
 import '../generalFeatures/ColorPalette.dart';
+import '../generalFeatures/ShinyContent.dart';
 import '../generalFeatures/StylizedText.dart';
 
 class VerticalStatsCard extends StatelessWidget{
 
   String dataType;
   int dataValue;
+  int baseDataValue;
   late Widget icon;
   late String text;
-
-  VerticalStatsCard(this.dataType, this.dataValue);
+  late bool statUp;
+  VerticalStatsCard(this.dataType, this.dataValue, this.baseDataValue);
 
   @override
   Widget build(BuildContext context) {
+
+      statUp = dataValue > baseDataValue;
 
     switch(dataType){
       case "smog" : {
@@ -50,6 +54,12 @@ class VerticalStatsCard extends StatelessWidget{
       }
     }
 
+    if(baseDataValue > dataValue){
+      //todo: qui tooltip
+    }
+    else{
+      //todo: qui tooltip
+    }
 
    return Card(
        color: Colors.white,
@@ -79,6 +89,12 @@ class VerticalStatsCard extends StatelessWidget{
                  fontWeight: FontWeight.normal,
                  fontFamily: 'Roboto',),
                    textAlign: TextAlign.justify),
+               dataValue != baseDataValue ? ShinyContent(Text(dataValue.toString(), style:
+               TextStyle(fontSize: screenWidth * 0.045,
+                 color: Colors.white,
+                 fontWeight: FontWeight.bold,
+                 fontFamily: 'Roboto',),
+                   textAlign: TextAlign.justify), dataValue > baseDataValue ? Colors.green : Colors.red, true) :
                Text(dataValue.toString(), style: TextStyle(color: darkBluePalette,
                  fontSize: screenWidth * 0.045,
                  fontWeight: FontWeight.bold,

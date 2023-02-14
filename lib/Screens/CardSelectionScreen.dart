@@ -43,7 +43,7 @@ CardData? onFocusCard;
 late bool ongoingAnimation;
 bool firstOpening = true;
 List<CardData?> playerCards = List.generate(6, (index) => CardData("void", 0, 0, 0, 0,
-    cardType.Imp,
+    cardType.Imp, mulType.Int,
     [Pair(influence.None, null)],
     1));
 List<String> lastDrawnCards = [];
@@ -117,12 +117,12 @@ class CardSelectionState extends State<CardSelectionScreen>
       cardsTransformMap["sixthCard"] = Matrix4.identity()..setRotationZ(findAngle(cardsAngleMap["sixthCard"]!));
     }
 
-    cardsControllerMap["firstCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 3000)); //150
-    cardsControllerMap["secondCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 3000));
-    cardsControllerMap["thirdCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 3000));
-    cardsControllerMap["fourthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 3000));
-    cardsControllerMap["fifthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 3000));
-    cardsControllerMap["sixthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 3000));
+    cardsControllerMap["firstCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150)); //150
+    cardsControllerMap["secondCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
+    cardsControllerMap["thirdCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
+    cardsControllerMap["fourthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
+    cardsControllerMap["fifthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
+    cardsControllerMap["sixthCard"] = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
 
     cardsMatrixMap["firstCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["firstCard"]).animate(cardsControllerMap["firstCard"]!);
     cardsMatrixMap["secondCard"] = Tween<Matrix4>(begin: Matrix4.identity(), end : cardsTransformMap["secondCard"]).animate(cardsControllerMap["secondCard"]!);
@@ -178,12 +178,12 @@ class CardSelectionState extends State<CardSelectionScreen>
           gameModel.playerCards.forEach((element) {
             cardsList.add(CardData(element.code, element.money,
                 element.energy, element.smog, element.comfort,
-                element.type, element.inf, element.level));
+                element.type, element.mul, element.inf, element.level));
           });
           if(cardsList.length < 6){
             for(int i = cardsList.length; i<6; i++){
               cardsList.add(CardData("void", 0, 0, 0, 0,
-                  cardType.Imp,
+                  cardType.Imp, mulType.Int,
                   [Pair(influence.None, null)],
                   gameModel.playerLevelCounter));
             }
@@ -314,12 +314,12 @@ class CardSelectionState extends State<CardSelectionScreen>
         gameModel.playerCards.forEach((element) {
           cardsList.add(CardData(element.code, element.money,
               element.energy, element.smog, element.comfort,
-              element.type, element.inf, element.level));
+              element.type, element.mul, element.inf, element.level));
         });
         if(cardsList.length < 6){
           for(int i = cardsList.length; i<6; i++){
             cardsList.add(CardData("void", 0, 0, 0, 0,
-                cardType.Imp,
+                cardType.Imp, mulType.Int,
                 [Pair(influence.None, null)],
                 gameModel.playerLevelCounter));
           }
@@ -644,7 +644,7 @@ class CardSelectionState extends State<CardSelectionScreen>
     String centralCardCode = cardsAngleMap.entries.where((element) => element.value==0).single.key;
     String cardCode = cardsDataMap[centralCardCode]!.code;
     int cardPosInArray = cardCode == "void" ? 0 :
-    gameModel.playerCards.indexOf(gameModel.gameLogic.findCard(cardCode, gameModel.playerContextCode!)!);
+    gameModel.playerCards.indexOf(gameModel.gameLogic.findCard(cardCode, gameModel.playerContextCode!, gameModel.playerLevelCounter)!);
     int arrayLenght = gameModel.playerCards.length;
 
     int selectedCardPos = 0;
@@ -667,20 +667,20 @@ class CardSelectionState extends State<CardSelectionScreen>
           if(selectedCardPos>cardPosInArray){
             for(int i = 0; i< bias; i++){
               if(i == bias -1 || bias == 0){
-                autoRotate(i * 3000, rotVersus.Right, true, extractedCardData, gameModel);
+                autoRotate(i * 400, rotVersus.Right, true, extractedCardData, gameModel);
               }
               else{
-                autoRotate(i * 3000, rotVersus.Right, false, extractedCardData, gameModel);
+                autoRotate(i * 400, rotVersus.Right, false, extractedCardData, gameModel);
               }
             }
           }
           else{
             for(int i = 0; i< bias; i++){
               if(i == bias -1 || bias == 0){
-                autoRotate(i * 3000, rotVersus.Left, true, extractedCardData, gameModel);
+                autoRotate(i * 400, rotVersus.Left, true, extractedCardData, gameModel);
               }
               else{
-                autoRotate(i * 30000, rotVersus.Left, false, extractedCardData, gameModel);
+                autoRotate(i * 400, rotVersus.Left, false, extractedCardData, gameModel);
               }
             }
           }
@@ -705,7 +705,7 @@ class CardSelectionState extends State<CardSelectionScreen>
   }
 
   Future<void> discardMechFinalBinding(GameModel gameModel) async{
-    return Future<void>.delayed(const Duration(milliseconds: 4000),
+    return Future<void>.delayed(const Duration(milliseconds: 700),
             () {
           forceCardsBindingCallback(gameModel);
         });
@@ -723,7 +723,7 @@ class CardSelectionState extends State<CardSelectionScreen>
   }
 
   Future<void> closeCardWheel(String centralCard) async{
-    return Future<void>.delayed(const Duration(milliseconds: 3000),
+    return Future<void>.delayed(const Duration(milliseconds: 400),
             () {
           discardMechOn = false;
           closeCardWheelAnim(centralCard);
@@ -746,7 +746,7 @@ class CardSelectionState extends State<CardSelectionScreen>
   }
 
   Future<void> openCardWheel(String centralCard) async{
-    return Future<void>.delayed(const Duration(milliseconds: 10000),
+    return Future<void>.delayed(const Duration(milliseconds: 300),
             () {
           //qui stiamo facendo il binding delle carte con discardMechFinalBinding chiamata in autoRotate
           discardMechOn = false;

@@ -5,6 +5,7 @@ import 'dart:core';
 import 'package:collection/collection.dart';
 import 'package:edilclima_app/DataClasses/CardInfluence.dart';
 import 'package:edilclima_app/DataClasses/Pair.dart';
+import 'package:edilclima_app/DataClasses/kotlinWhen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -40,51 +41,50 @@ class GameLogic {
   List<Context> contextList = [
     Context("C01", null, ["inv03", "inv06"], {"A" : 1, "E" : 1, "C" : 0.7, "B" : 1.2}),
     Context("C02", ["imp07", "imp09", "imp10", "imp11"], null,  {"A" : 1.2, "E" : 1, "C" : 1.2, "B": 0.8}),
-    Context("C03", null, ["imp09", "imp10", "imp11", "Oth05"], {"A" : 1, "E" : 1, "C" : 0.7, "B" : 0.8})];
+    Context("C03", null, ["imp09", "imp10", "imp11", "oth05"], {"A" : 1, "E" : 1, "C" : 0.7, "B" : 0.8})];
 
-  //todo: sistema il budget di starting per effetto dell context
   //todo: rimetti il budget della prima zona a 350
-  Map<int, Zone> zoneMap = {1 : Zone(1, 50, 190, 280, 1000, 200, 80, 50,
+  Map<int, Zone> zoneMap = {1 : Zone(1, 50, 190, 280, 1000, 200, 80, 50, 10, 1,
   ["inv01", "inv02", "oth04", "inv06", "imp10", "imp11", "oth03", "imp07", "inv08", "imp08", "oth04","oth01"],
   ["inv01", "inv02", "imp04", "oth03", "no Card"])};
 
   List<CardData> CardsList = [
     //inv
-    CardData("inv01", -80, 20, -30, 30, cardType.Inv, [Pair(influence.None, null)], 2),
-    CardData("inv02", -120, 0, -30, 0, cardType.Inv, [Pair(influence.None, null)], 2),
-    CardData("inv03", -40, 0, -15, 25, cardType.Inv, [Pair(influence.None, null)],  2),
-    CardData("inv04", -50, 0, -20, 15, cardType.Inv, [Pair(influence.None, null)], 1 ),
-    CardData("inv05", -60, 0, -30, 25, cardType.Inv, [Pair(influence.None, null)], 2 ),
-    CardData("inv06", -30, 0, -25, 20, cardType.Inv, [Pair(influence.None, null)] ,1 ),
-    CardData("inv07", -50, 0, -25, 20, cardType.Inv, [Pair(influence.None, null)] ,2 ),
-    CardData("inv08", 0, 0, -20, 20, cardType.Inv, [Pair(influence.None, null)], 1 ),
-    CardData("inv09", -40, -20, -30, 15, cardType.Inv, [Pair(influence.None, null)], 1),
-    CardData("inv10", -30, 0, -20, 0, cardType.Inv, [Pair(influence.None, null)], 1,),
+    CardData("inv01", -80, 20, -30, 30, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 2),
+    CardData("inv02", -120, 0, -30, 0, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 2),
+    CardData("inv03", -40, 0, -15, 25, cardType.Inv, mulType.Fac, [Pair(influence.None, null)],  2),
+    CardData("inv04", -50, 0, -20, 15, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 1 ),
+    CardData("inv05", -60, 0, -30, 25, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 2 ),
+    CardData("inv06", -30, 0, -25, 20, cardType.Inv, mulType.Fac, [Pair(influence.None, null)] ,1 ),
+    CardData("inv07", -50, 0, -25, 20, cardType.Inv, mulType.Int, [Pair(influence.None, null)] ,2 ),
+    CardData("inv08", 0, 0, -20, 20, cardType.Inv, mulType.Int, [Pair(influence.None, null)], 1 ),
+    CardData("inv09", -40, -20, -30, 15, cardType.Inv, mulType.Int, [Pair(influence.None, null)], 1),
+    CardData("inv10", -30, 0, -20, 0, cardType.Inv, mulType.Int, [Pair(influence.None, null)], 1,),
 
     //imp
-    CardData("imp01", -20, 30, 40, -20, cardType.Imp, [Pair(influence.Card,
+    CardData("imp01", -20, 30, 40, -20, cardType.Imp, mulType.Int, [Pair(influence.Card,
         CardInfluence("inv", {"A": 1.3, "E" : 1.3, "C" : 1.3}, true, 3))], 2),
-    CardData("imp02", -40, 50, 30, -10, cardType.Imp,[Pair(influence.None, null)], 2),
-    CardData("imp03", -70, 70, 10, -20, cardType.Imp, [Pair(influence.None, null)], 2),
-    CardData("imp04", -15, 10, 0, 10, cardType.Imp, [Pair(influence.None, null)],  1),
-    CardData("imp05", -10, 10, 0, 10, cardType.Imp, [Pair(influence.None, null)], 2),
-    CardData("imp06", -20, 10, 10, 10, cardType.Imp, [Pair(influence.None, null)], 1),
-    CardData("imp07", -30, 20, 10, 20, cardType.Imp,
+    CardData("imp02", -40, 50, 30, -10, cardType.Imp, mulType.Int,[Pair(influence.None, null)], 2),
+    CardData("imp03", -70, 70, 10, -20, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 2),
+    CardData("imp04", -15, 10, 0, 10, cardType.Imp, mulType.Fac, [Pair(influence.None, null)],  1),
+    CardData("imp05", -10, 10, 0, 10, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 2),
+    CardData("imp06", -20, 10, 10, 10, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 1),
+    CardData("imp07", -30, 20, 10, 20, cardType.Imp, mulType.Fac,
         [Pair(influence.Card,
               CardInfluence("imp01", {"A": 1.2, "E" : 1.2, "C" : 1.2}, false, null)),
           Pair(influence.Card,
               CardInfluence("imp02", {"A": 1.2, "E" : 1.2, "C" : 1.2}, false, null))], 1),
-    CardData("imp08", -20, 10, -20, -20, cardType.Imp, [Pair(influence.None, null)], 2),
-    CardData("imp09", -10, 10, 0, 10, cardType.Imp, [Pair(influence.None, null)],1),
-    CardData("imp10", 0, 15, 10, 20, cardType.Imp, [Pair(influence.None, null)],1),
-    CardData("imp11", 0, 15, 0, 20, cardType.Imp, [Pair(influence.None, null)],1),
+    CardData("imp08", -20, 10, -20, -20, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 2),
+    CardData("imp09", -10, 10, 0, 10, cardType.Imp, mulType.Fac, [Pair(influence.None, null)],1),
+    CardData("imp10", 0, 15, 10, 20, cardType.Imp, mulType.Fac, [Pair(influence.None, null)],1),
+    CardData("imp11", 0, 15, 0, 20, cardType.Imp, mulType.Fac, [Pair(influence.None, null)],1),
 
     //oth
-    CardData("oth01", -40, 10, 0, 20, cardType.Oth, [Pair(influence.None, null)], 1),
-    CardData("oth02", -80, 0, 0, 10, cardType.Oth, [Pair(influence.None, null)], 1),
-    CardData("oth03", -20, 0, 0, 0, cardType.Oth, [Pair(influence.None, null)], 1),
-    CardData("oth04", -50, 10, -10, 20, cardType.Oth,[Pair(influence.None, null)],  1),
-    CardData("oth05", -60, 0, 0, 20, cardType.Oth, [Pair(influence.None, null)], 1),
+    CardData("oth01", -40, 10, 0, 20, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
+    CardData("oth02", -80, 0, 0, 10, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
+    CardData("oth03", -20, 0, 0, 0, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
+    CardData("oth04", -50, 10, -10, 20, cardType.Oth, mulType.Fac, [Pair(influence.None, null)],  1),
+    CardData("oth05", -60, 0, 0, 20, cardType.Oth, mulType.Int, [Pair(influence.None, null)], 1), //todo: mulType.Fac
   ];
   Map<String, CardData> CardsMap = {};
 
@@ -203,51 +203,55 @@ class GameLogic {
     return masterLevelCounter;
     }
 
-    CardData? findCard(String CardDataCode, String contextCode){
+    CardData? findCard(String CardDataCode, String contextCode, int playerLevelCounter){
 
-      //todo: testa che i dati siano giusti con il context e le inf fra cards
       CardData? cardBaseData = CardsMap[CardDataCode];
       Context context = contextList.where((element) => element.code==contextCode).single;
 
-      if(cardBaseData!=null){
-        if(context.nerfList!=null && context.nerfList!.contains(cardBaseData.code)){
-          int newSmog = (cardBaseData.smog * 0.8).round();
-          int newEnergy = (cardBaseData.energy * 0.8).round();
-          int newComfort = (cardBaseData.comfort * 0.8).round();
+      if(cardBaseData!=null) {
+        int newSmog = cardBaseData.smog;
+        int newEnergy = cardBaseData.energy;
+        int newComfort = cardBaseData.comfort;
+        int newMoney = cardBaseData.money;
 
-          return CardData(cardBaseData.code, cardBaseData.money, newEnergy, newSmog,
-              newComfort, cardBaseData.type, cardBaseData.inf, cardBaseData.level);
-        }
+        KotlinWhen([
+            KotlinPair((context.nerfList!=null && context.nerfList!.contains(cardBaseData.code)), (){
+              newSmog = (newSmog * 0.8).round();
+              newEnergy = (newEnergy * 0.8).round();
+              newComfort = (newComfort * 0.8).round();
+              }),
+            KotlinPair((context.PUList!=null && context.PUList!.contains(cardBaseData.code)), () {
+              newSmog = (cardBaseData.smog * 1.2).round();
+              newEnergy = (cardBaseData.energy * 1.2).round();
+              newComfort = (cardBaseData.comfort * 1.2).round();
+             }),
+            KotlinPair(cardBaseData.mul==mulType.Int, () {
+              newMoney = (cardBaseData.money * zoneMap[playerLevelCounter]!.mulFactorInt).round();
+            }),
+            KotlinPair(cardBaseData.mul==mulType.Fac, () {
+              newMoney = (cardBaseData.money * zoneMap[playerLevelCounter]!.mulFactorFac).round();
+            })
+          ], () => null).whenExeute();
 
-        else if(context.PUList!=null && context.PUList!.contains(cardBaseData.code)){
-
-          int newSmog = (cardBaseData.smog * 1.2).round();
-          int newEnergy = (cardBaseData.energy * 1.2).round();
-          int newComfort = (cardBaseData.comfort * 1.2).round();
-
-          return CardData(cardBaseData.code, cardBaseData.money, newEnergy, newSmog,
-              newComfort, cardBaseData.type, cardBaseData.inf, cardBaseData.level);
-        }
-
+        return CardData(cardBaseData.code, newMoney, newEnergy, newSmog,
+            newComfort, cardBaseData.type, cardBaseData.mul, cardBaseData.inf, cardBaseData.level);
+      }
         else{
-          return cardBaseData;
+          return null;
         }
-
       }
-      else{
-        return null;
-      }
-    }
 
     Map<String, CardData> obtainPlayedCardsStatsMap(Map<String, CardData> map){
 
+    double winterNerfCoeff = 0.7;
+
     for(final entry in map.entries){
+
+      int finalSmog = entry.value.smog;
+      int finalComfort = entry.value.comfort;
+      int finalEnergy = entry.value.energy;
+
       if(entry.value.inf.first.first()!=influence.None){
-
-        int finalSmog = entry.value.smog;
-        int finalComfort = entry.value.comfort;
-        int finalEnergy = entry.value.energy;
-
         for(Pair pair in entry.value.inf){
           CardInfluence infData = pair.second() as CardInfluence;
 
@@ -268,11 +272,17 @@ class GameLogic {
             }
           }
         }
+        }
+
+        List<String> winterMonths = ["ott", "nov", "dec", "gen", "feb", "mar"];
+        if(entry.value.code.contains("imp") && winterMonths.contains(entry.key)){
+          finalComfort = (finalComfort * winterNerfCoeff).round();
+        }
 
         map.update(entry.key, (value) =>
             CardData(value.code, value.money, finalEnergy, finalSmog,
-                finalComfort, value.type, value.inf, value.level));
-        }
+                finalComfort, value.type, value.mul, value.inf, value.level));
+
       }
 
     return map;
@@ -339,6 +349,21 @@ class GameLogic {
       points -= (moves * movesNegPoints);
 
       return TeamInfo(budget, smog, energy, comfort, points >= 0 ? points : 0, moves);
+    }
+
+    int evaluateSingleCardPoints(int level, String month, String cardCode) {
+
+        if(zoneMap[level]!.optimalList.contains(cardCode)) {
+          if (zoneMap[level]!.optimalList.indexOf(cardCode) == months.indexOf(month)) {
+            return 100;
+          }
+          else{
+            return 75;
+          }
+        }
+        else{
+          return 50;
+        }
     }
 
   }

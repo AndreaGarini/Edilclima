@@ -1,5 +1,6 @@
 
 import 'package:edilclima_app/Components/RetriveCardPagerLayout/DetailedCardLottie.dart';
+import 'package:edilclima_app/Components/RetriveCardPagerLayout/DetailedCardStatsGroup.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../DataClasses/CardData.dart';
@@ -11,10 +12,11 @@ import 'VerticalStatsCard.dart';
 class DetailedCardContent extends StatelessWidget{
 
   CardData cardData;
+  CardData baseCardData;
   String bodyText;
   late Widget lottieWidget;
-
-  DetailedCardContent(this.cardData, this.bodyText);
+  Map<String, Map<String, String>> cardInfData;
+  DetailedCardContent(this.cardData, this.bodyText, this.baseCardData, this.cardInfData);
 
   @override
   Widget build(BuildContext context) {
@@ -31,25 +33,10 @@ class DetailedCardContent extends StatelessWidget{
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, cardData!.code, screenWidth * 0.3, FontWeight.bold))),
+                    Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, cardData.code, screenWidth * 0.3, FontWeight.bold))),
                     Divider(indent: screenWidth * 0.2, endIndent: screenWidth * 0.2, color: darkBluePalette, thickness: 1),
                     DetailedCardLottie(cardData.type),
-                    Expanded(flex: 2, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center, children: [
-                          const Spacer(),
-                          Expanded(flex: 8, child: VerticalStatsCard("comfort", cardData!.comfort)),
-                          const Spacer(),
-                          Expanded(flex: 8, child: VerticalStatsCard("money", cardData!.money)),
-                          const Spacer()
-                        ])),
-                    Expanded(flex: 2, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center, children: [
-                          const Spacer(),
-                          Expanded(flex: 8, child: VerticalStatsCard("smog", cardData!.smog)),
-                          const Spacer(),
-                          Expanded(flex: 8, child: VerticalStatsCard("energy", cardData!.energy)),
-                          const Spacer()
-                        ])),
+                    Expanded(flex: 4, child: DetailedCardStatsGroup(cardData, baseCardData, cardInfData)),
                     Divider(indent: screenWidth * 0.2, endIndent: screenWidth * 0.2, color: darkBluePalette, thickness: 1),
                     Expanded(flex: 6, child:
                     Card(color: Colors.white,

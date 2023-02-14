@@ -6,7 +6,8 @@ class ShinyContent extends StatefulWidget{
 
   Widget content;
   Color baseColor;
-  ShinyContent(this.content, this.baseColor);
+  bool repeat;
+  ShinyContent(this.content, this.baseColor, this.repeat);
 
   @override
   State<StatefulWidget> createState() => ShinyTextState();
@@ -29,7 +30,7 @@ class ShinyTextState extends State<ShinyContent>
 
       });
     });
-    controller.forward();
+    widget.repeat ? controller.repeat(min: 0.0, max: 1.0, reverse: true) : controller.forward(from: 0);
     super.initState();
   }
 

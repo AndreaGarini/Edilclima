@@ -21,14 +21,15 @@ class PageLayout extends StatefulWidget{
   //todo: sistemare gli import per il giusto card selection screen
   CardData? crd;
   int index;
-  PageLayout(this.crd, this.index);
+  Function playedCardCallback;
+  PageLayout(this.crd, this.index, this.playedCardCallback);
 
   @override
   State<StatefulWidget> createState() => PageLayoutState();
 
 }
 
-class PageLayoutState extends State<PageLayout>{
+class PageLayoutState extends State<PageLayout> with SingleTickerProviderStateMixin{
 
   late bool wrongClick;
 
@@ -66,16 +67,14 @@ class PageLayoutState extends State<PageLayout>{
               .map((e) => e.code).toList());
 
           if (playableCard!="null" &&
-          gameModel.gameLogic.findCard(playableCard, gameModel.playerContextCode!)!.money.abs() <= budget) {
-
-            print("card cost in play card pager: ${gameModel.gameLogic.findCard(playableCard, gameModel.playerContextCode!)!.money}");
-            print("budget in play card pager: ${budget}");
+          gameModel.gameLogic.findCard(playableCard, gameModel.playerContextCode!, gameModel.playerLevelCounter)!.money.abs() <= budget) {
             if(gameModel.playCardInPosCheck(widget.index, playableCard)){
               gameModel.changePushValue(Pair(pushResult.CardDown, null));
               gameModel.stopPlayerTimer();
               gameModel.playCardInPos(widget.index, playableCard)
                   .then((value) => discardMechCallback(gameModel));
               gameModel.setTimeOutTrue();
+              widget.playedCardCallback(playableCard, month);
             }
 
           }
@@ -99,8 +98,7 @@ class PageLayoutState extends State<PageLayout>{
     }
 
     else {
-      String cardCode = gameModel.playedCardsPerTeam[gameModel.team]![month]!.code;
-      onFocusCard = gameModel.gameLogic.findCard(cardCode, gameModel.playerContextCode!);
+      onFocusCard = gameModel.playedCardsPerTeam[gameModel.team]![month]!;
       context.push("/cardSelectionScreen/cardInfoScreen");
     }
   }
@@ -148,15 +146,14 @@ class PageLayoutState extends State<PageLayout>{
             ShinyContent(
                 Text( wrongClick ? "Attendi il tuo turno" : "Clicca per giocare la carta",
                 style: TextStyle(fontSize: screenWidth * 0.04, fontWeight: FontWeight.bold, color: Colors.white)),
-                darkBluePalette)))
+                darkBluePalette, false)))
     ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<GameModel>(builder: (context, gameModel, child) {
-
-      return
+        return
           Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

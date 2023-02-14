@@ -14,9 +14,11 @@ import '../generalFeatures/ColorPalette.dart';
 class DetailedCardLayout extends StatelessWidget{
 
   CardData? cardData;
+  CardData? baseCardData;
   double? height;
-  DetailedCardLayout(this.cardData);
-  DetailedCardLayout.fromHeight(this.cardData, this.height);
+  Map<String, Map<String, String>>? cardInfData;
+  DetailedCardLayout(this.cardData, this.baseCardData, this.cardInfData);
+  DetailedCardLayout.fromHeight(this.cardData, this.baseCardData, this.cardInfData, this.height);
 
   String bodyText = "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed do eiusmod tempor incidunt ut labore et dolore magna aliqua. "
       "Ut enim ad minim veniam, quis nostrum exercitationem ullamco laboriosam, nisi ut aliquid ex ea "
@@ -29,7 +31,6 @@ class DetailedCardLayout extends StatelessWidget{
     late Widget lottieWidget;
 
     if(cardData!=null){
-
       return Container(
           width: screenWidth * 0.8,
           height: height ?? screenHeight * 0.6,
@@ -51,7 +52,7 @@ class DetailedCardLayout extends StatelessWidget{
                 child:  Padding(padding: EdgeInsets.only(top: screenWidth * 0.02),
                 child: SizedBox(height: screenHeight * 0.57,
                     width: screenWidth * 0.8,
-                    child: DetailedCardContent(cardData!, bodyText)))
+                    child: DetailedCardContent(cardData!, bodyText, baseCardData!, cardInfData!)))
                 )
         )
       );

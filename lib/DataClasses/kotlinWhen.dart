@@ -20,7 +20,7 @@ class KotlinPair {
   KotlinPair(this.left, this.right);
 
   final bool  left;
-  final void Function() right;
+  final Function() right;
 
   Function() second(){
     return right;

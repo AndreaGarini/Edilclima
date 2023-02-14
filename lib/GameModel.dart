@@ -223,7 +223,7 @@ class GameModel extends ChangeNotifier{
               {
                 String? contextCode = masterContextCode ?? playerContextCode;
                 map.putIfAbsent(playedCard.key.toString(),
-                        () => gameLogic.findCard(playedCard.value.toString(), contextCode!)!);
+                        () => gameLogic.findCard(playedCard.value.toString(), contextCode!, playerLevelCounter)!);
               }
           }
           newStatsPerTeam(team, map);
@@ -436,7 +436,7 @@ class GameModel extends ChangeNotifier{
     db.child("matches").child("test").child("players").child("1").child("ownedCards").onValue.listen((event) {
       List<CardData> list = [];
       for (final card in event.snapshot.children) {
-        CardData? crd = gameLogic.findCard(card.key!, playerContextCode!);
+        CardData? crd = gameLogic.findCard(card.key!, playerContextCode!, playerLevelCounter);
         if (crd != null) {
           list.add(crd);
         }
@@ -454,8 +454,8 @@ class GameModel extends ChangeNotifier{
         .child(team).child("drawableCards").onValue.listen((event) {
          event.snapshot.children.map((e) => e.key)
              .toList().forEach((element) {
-               if(gameLogic.findCard(element!, playerContextCode!)!=null && element!="void"){
-                 drawableCards.add(gameLogic.findCard(element, playerContextCode!)!);
+               if(gameLogic.findCard(element!, playerContextCode!, playerLevelCounter)!=null && element!="void"){
+                 drawableCards.add(gameLogic.findCard(element, playerContextCode!, playerLevelCounter)!);
                }
          });
     });
@@ -634,7 +634,8 @@ class GameModel extends ChangeNotifier{
             return await db.child("matches").child("test").child("players").child("1").child("ownedCards")
             .child(selectedCardCode).remove().then((value) async{
               return await db.child("matches").child("test").child("players").child("1").child("ownedCards")
-                  .child(extractedCardCode).set(true).then((_) => gameLogic.findCard(extractedCardCode, playerContextCode!)!);
+                  .child(extractedCardCode).set(true).then((_) =>
+              gameLogic.findCard(extractedCardCode, playerContextCode!, playerLevelCounter)!);
             });
       });
     });

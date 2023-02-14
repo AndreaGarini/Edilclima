@@ -11,6 +11,7 @@ class CardData {
   int smog;
   int comfort;
   cardType type;
+  mulType mul;
   List<Pair> inf;
   int level;
 
@@ -21,6 +22,7 @@ class CardData {
       this.smog,
       this.comfort,
       this.type,
+      this.mul,
       this.inf,
       this.level);
 
@@ -28,6 +30,9 @@ class CardData {
 
 enum cardType{
   Inv, Imp, Oth
+}
+enum mulType{
+  Int, Fac
 }
 enum influence{
   None, Card
