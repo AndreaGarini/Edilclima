@@ -355,14 +355,14 @@ class GameLogic {
 
         if(zoneMap[level]!.optimalList.contains(cardCode)) {
           if (zoneMap[level]!.optimalList.indexOf(cardCode) == months.indexOf(month)) {
-            return 100;
+            return 95;
           }
           else{
-            return 75;
+            return 70;
           }
         }
         else{
-          return 50;
+          return 45;
         }
     }
 

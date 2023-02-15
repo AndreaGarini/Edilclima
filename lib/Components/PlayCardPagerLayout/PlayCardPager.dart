@@ -37,9 +37,8 @@ class PlayCardPagerState extends State<PlayCardPager>
     triggerPtsAnim = true;
     animText = "+50pts";
     animColor = Colors.red;
-    ptsAnimController = AnimationController(vsync: this, duration: const Duration(milliseconds: 10000))..addStatusListener((status) {
+    ptsAnimController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000))..addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        print("anim completed");
         setState((){
           triggerPtsAnim = false;
         });
@@ -49,7 +48,6 @@ class PlayCardPagerState extends State<PlayCardPager>
 
       });
     });
-
     ptsAnimController.forward(from: 0);
   }
 
@@ -68,21 +66,21 @@ class PlayCardPagerState extends State<PlayCardPager>
 
       WidgetsBinding.instance?.addPostFrameCallback((_){
         if(playedCardCallback==null){
-          print("played card callback is null");
           playedCardCallback = (String cardCode, String month) {
+            print("played card callback executed");
             int pts = gameModel.gameLogic.evaluateSingleCardPoints(gameModel.playerLevelCounter, month, cardCode);
             setState(() {
               switch(pts){
-                case 50: {
-                  animText = "+50pts";
+                case 45: {
+                  animText = "+45pts";
                   animColor = Colors.red;
                 } break;
-                case 75: {
-                  animText = "+75pts";
+                case 70: {
+                  animText = "+70pts";
                   animColor = Colors.amber;
                 } break;
-                case 100: {
-                  animText = "+100pts";
+                case 95: {
+                  animText = "+95pts";
                   animColor = Colors.green;
                 } break;
               }
@@ -112,9 +110,11 @@ class PlayCardPagerState extends State<PlayCardPager>
                Stack(alignment: Alignment.center, children: [
                  TabBarView(controller: tabController,
                  children: generateBarChildren(gameModel)),
-                 Positioned(top: screenHeight * 0.1 + screenHeight * 0.1 * ptsAnimController.value, right: screenWidth * 0.1,
-                 child: Text(animText!= null ? animText! : "", style: TextStyle(fontSize: screenWidth * 0.04, fontWeight: FontWeight.bold, color: animColor)))
-                ]) :
+                 Positioned(top: screenHeight * 0.2 * (1 - (ptsAnimController.value * 0.8)), right: screenWidth * 0.05,
+                 child: Text(animText!= null ? animText! : "",
+                     style: TextStyle(fontSize: screenWidth * 0.06,
+                          fontWeight: FontWeight.bold,
+                          color: animColor!.withOpacity(1 - (ptsAnimController.value * 0.5)))))]) :
                TabBarView(controller: tabController,
                  children: generateBarChildren(gameModel))
            )]);

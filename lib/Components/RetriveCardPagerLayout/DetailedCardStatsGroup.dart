@@ -115,7 +115,7 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
                   fontFamily: 'Roboto',),
                     textAlign: TextAlign.justify)]),
           ))),
-          (animCompleted && statInfoRows!=null) ? Positioned( top: screenHeight * 0.1, left: screenWidth * 0.11,
+          (animCompleted && statInfoRows!=null) ? Positioned(top: screenHeight * 0.1, left: screenWidth * 0.11,
               child: Container( width: screenWidth * 0.6, height: screenHeight * 0.15, color: Colors.white,
               child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center, children: statInfoRows!))) : const SizedBox(),
@@ -319,6 +319,7 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
 
   List<Widget> generateStatInfoRows(String statCode, bool statsUp) {
 
+    double containerWidth = screenWidth * 0.6;
     List<Widget> avatarNerfList = [const Spacer()];
     List<Widget> avatarUpList = [const Spacer()];
 
@@ -359,27 +360,26 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
       if(message!="" && infType!=""){
         avatarNerfList.add(Expanded(flex: 8, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center, children: [
-              Expanded(flex: 1, child:
               Container(
                   width: screenWidth * 0.1,
                   height: screenWidth * 0.1,
                   decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.1)),
                       color: backgroundGreen,
                       boxShadow: [ BoxShadow(
-                        color: Colors.red.withOpacity(0.5),
+                        color: Colors.redAccent.withOpacity(0.5),
                         spreadRadius: 1,
                         blurRadius: 1,
                         offset: const Offset(0, 0), // changes position of shadow
                       )]),
-                  child: const Icon(Icons.remove, color: Colors.red,))), //todo: icona meno
-              Expanded(flex: 4, child:
-              Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                  child: const Icon(Icons.arrow_downward, color: Colors.redAccent,)),
+              SizedBox(width: containerWidth * 0.05),
+              SizedBox(width: containerWidth * 0.7, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.end, children: [Text(message, style: TextStyle(color: darkBluePalette,
                     fontSize: screenWidth * 0.05,
                     fontWeight: FontWeight.normal,
                     fontFamily: 'Roboto',),
                       textAlign: TextAlign.justify),
-                    Text(infType, style: TextStyle(color: Colors.red,
+                    Text(infType, style: TextStyle(color: Colors.redAccent,
                       fontSize: screenWidth * 0.05,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Roboto',),
@@ -417,7 +417,6 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
       if(message!="" && infType!=""){
         avatarUpList.add(Expanded(flex: 8, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center, children: [
-              Expanded(flex: 1, child:
               Container(
                   width: screenWidth * 0.1,
                   height: screenWidth * 0.1,
@@ -429,9 +428,9 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
                         blurRadius: 1,
                         offset: const Offset(0, 0), // changes position of shadow
                       )]),
-                  child: const Icon(Icons.add, color: Colors.green))),
-              Expanded(flex: 4, child:
-              Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                  child: const Icon(Icons.arrow_upward, color: Colors.green)),
+              SizedBox(width: containerWidth * 0.05),
+              SizedBox(width: containerWidth * 0.7, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end, children: [Text(message, style: TextStyle(color: darkBluePalette,
                     fontSize: screenWidth * 0.05,
                     fontWeight: FontWeight.normal,
@@ -442,8 +441,7 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Roboto',),
                         textAlign: TextAlign.justify)])),
-              const Spacer()
-            ])));
+              const Spacer()])));
         avatarUpList.add(const Spacer());
       }
     }
