@@ -32,6 +32,7 @@ class GameModel extends ChangeNotifier{
   bool ongoingLevel = false;
   int? levelTimerCountdown;
   String? masterContextCode;
+  Function? gameBoardPngCallback;
 
   Map <String, Map<String, CardData>?> playedCardsPerTeam = {"team1" : {}, "team2" : {}, "team3" : {}, "team4" : {}};
   Map<String, TeamInfo?> teamStats = {};
@@ -208,7 +209,7 @@ class GameModel extends ChangeNotifier{
     }
   }
 
-  addPlayedCardsListener() {
+  void addPlayedCardsListener() {
     Map<String, Map<String, CardData>?> avatarMap = {};
 
     //todo: controlla che giocando una carta o perdendola il numero di moves salga di uno
@@ -217,13 +218,17 @@ class GameModel extends ChangeNotifier{
         if(event.snapshot.children.length - 1 != playedCardsPerTeam[team]!.length){
           //questo if serve per fare in modo che i dati cambino solo se una carta è stata presa o posizionata,
           //e non solo se il listener è stato triggerato
+          if(gameBoardPngCallback!=null){
+            triggerGameBoardCallback(team, event.snapshot);
+          }
           Map<String, CardData> map = {};
           for (final playedCard in event.snapshot.children){
             if (playedCard.value.toString() != "no Card")
               {
                 String? contextCode = masterContextCode ?? playerContextCode;
+                int playerCounter = playerLevelCounter!=0 ? playerLevelCounter : gameLogic.masterLevelCounter;
                 map.putIfAbsent(playedCard.key.toString(),
-                        () => gameLogic.findCard(playedCard.value.toString(), contextCode!, playerLevelCounter)!);
+                        () => gameLogic.findCard(playedCard.value.toString(), contextCode!, playerCounter)!);
               }
           }
           newStatsPerTeam(team, map);
@@ -245,6 +250,23 @@ class GameModel extends ChangeNotifier{
         }
       });
     }
+  }
+
+  void triggerGameBoardCallback(String team, DataSnapshot snapshot){
+
+    //todo: controlla che funzioni il trigger del gameboardcallback
+    //todo: considera che questa parte anche quando stiamo popolahndo il gameBoardPngStack di partenza
+
+    if(snapshot.children.length > playedCardsPerTeam[team]!.length){
+      String newCard = snapshot.children.map((e) => e.value as String).where((element) =>
+      !playedCardsPerTeam[team]!.values.map((e) => e.code).contains(element)).single;
+      gameBoardPngCallback!(newCard, true, team);
+    }
+    else if(snapshot.children.length < playedCardsPerTeam[team]!.length){
+      String goneCard = playedCardsPerTeam[team]!.values.map((e) => e.code).where((element) => !snapshot.children.map((e) => e.value as String).contains(element)).single;
+      gameBoardPngCallback!(goneCard, false, team);
+    }
+
   }
 
   void newStatsPerTeam(String team, Map<String, CardData?> map){

@@ -84,7 +84,6 @@ class GameBoardState extends State<GameBoard> {
       if(cardHeight != usableCardHeight){
         setUsableCardHeight(cardHeight);
       }
-      print("card height in game board: ${cardHeight}");
       if(!boardCardsCreated && usableCardHeight!=0){
         List<Widget> cardsWidgets = [];
         for(double i = 0; i < gameModel.teamsNum / 2; i++) {

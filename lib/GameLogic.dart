@@ -46,7 +46,7 @@ class GameLogic {
   //todo: rimetti il budget della prima zona a 350
   Map<int, Zone> zoneMap = {1 : Zone(1, 50, 190, 280, 1000, 200, 80, 50, 10, 1,
   ["inv01", "inv02", "oth04", "inv06", "imp10", "imp11", "oth03", "imp07", "inv08", "imp08", "oth04","oth01"],
-  ["inv01", "inv02", "imp04", "oth03", "no Card"])};
+  ["inv01", "inv02", "imp03", "oth01", "no Card"])};
 
   List<CardData> CardsList = [
     //inv

@@ -28,7 +28,7 @@ class GameBoardCard extends StatelessWidget{
                     TextStyle(color: darkBluePalette,
                         fontSize: screenHeight * 0.04,
                         fontWeight: FontWeight.bold)))),
-                    Expanded(flex: 4, child: GameBoardPngStack(usableHeight * 0.65, screenWidth * 0.4))]),
+                    Expanded(flex: 4, child: GameBoardPngStack(usableHeight * 0.65, screenWidth * 0.4, team))]),
               Padding(padding: EdgeInsets.only(top: usableHeight * 0.15, left: usableHeight * 0.05),
                   child:
                   SizedBox(width: usableHeight * 0.45, height: usableHeight * 0.45,

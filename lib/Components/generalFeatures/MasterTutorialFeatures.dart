@@ -74,7 +74,7 @@ class MasterTutorialFeaturesState extends State<MasterTutorialFeatures> {
                       TextStyle(color: darkBluePalette,
                           fontSize: screenHeight * 0.04,
                           fontWeight: FontWeight.bold)))),
-                      Expanded(flex: 4, child: GameBoardPngStack(screenHeight * 0.65, screenWidth * 0.4))]),
+                      Expanded(flex: 4, child: GameBoardPngStack(screenHeight * 0.65, screenWidth * 0.4, "team1"))]),
                 Padding(padding: EdgeInsets.only(top: screenHeight * 0.05, left: screenHeight * 0.01),
                     child:
                     SizedBox(width: screenHeight * 0.3, height: screenHeight * 0.3,
