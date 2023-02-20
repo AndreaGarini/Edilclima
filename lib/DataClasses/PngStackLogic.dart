@@ -17,6 +17,7 @@ class PngStackLogic {
       'assets/gameBoardPng/Lampadina.png',
       'assets/gameBoardPng/Caldaia.png',
       'assets/gameBoardPng/TettoBase.png',
+      'assets/gameBoardPng/TettoRivestimento.png',
       'assets/gameBoardPng/Tegole.png',
        ],
     2 : [],
@@ -90,25 +91,38 @@ class PngStackLogic {
   };
 
   //todo: completare stack per ogni livello (metti anche le carte che non staranno mai assieme, tipo lampadine e neon)
+  //todo: mettere le action giuste per ogni carta
 
   Map<int,List<String>> fullPngStackPerLevel = {
     1 : [
       'assets/gameBoardPng/MuriEsterno.png',
       'assets/gameBoardPng/MuriCappotto.png',
+      'assets/gameBoardPng/MuriCappottoEPS.png',
+      'assets/gameBoardPng/MuriCappottoFibraLegno.png',
       'assets/gameBoardPng/MuriInterno.png',
       'assets/gameBoardPng/PavimentoBase.png',
       'assets/gameBoardPng/SondinePavimento.png',
       'assets/gameBoardPng/PavimentoRivestimento.png',
       'assets/gameBoardPng/Split.png',
       'assets/gameBoardPng/Lampadina.png',
+      'assets/gameBoardPng/LuciLED.png',
+      'assets/gameBoardPng/LuciNeon.png',
       'assets/gameBoardPng/Caldaia.png',
+      'assets/gameBoardPng/CaldaiaCondensazione.png',
+      'assets/gameBoardPng/CaldaiaPellet.png',
+      'assets/gameBoardPng/CaldaiaIbrido.png',
       'assets/gameBoardPng/TettoBase.png',
       'assets/gameBoardPng/TettoRivestimento.png',
+      'assets/gameBoardPng/TettoRivestimentoPoliuretano.png',
+      'assets/gameBoardPng/TettoRivestimentoFibraLegno.png',
       'assets/gameBoardPng/Tegole.png',
-      'assets/gameBoardPng/PannelliFotovoltaici.png',
-      'assets/gameBoardPng/PannelliSolari.png',
-      'assets/gameBoardPng/VetriFinestra.png',
-      'assets/gameBoardPng/Finestra.png',
+      'assets/gameBoardPng/PannelloFotovoltaico.png',
+      'assets/gameBoardPng/PannelloSolare.png',
+      'assets/gameBoardPng/FinestraVetri.png',
+      'assets/gameBoardPng/FinestraVecchia.png',
+      'assets/gameBoardPng/FinestraLegno.png',
+      'assets/gameBoardPng/FinestraPVC2.png',
+      'assets/gameBoardPng/FinestraPVC3.png',
       'assets/gameBoardPng/Accumulo.png',
       'assets/gameBoardPng/Termosifoni.png',
       'assets/gameBoardPng/PompaCalore.png',
@@ -136,16 +150,16 @@ class PngStackLogic {
       //play card
       for (var action in pngActionPerCard[cardCode]!) {
         if(action.second()){
-          List<String> newPngStack = fullPngStackPerLevel[level]!;
-          newPngStack.where((element) => pngStack.contains(element) || element == action.first()).toList()
-              .sort((a, b) => fullPngStackPerLevel[level]!.indexOf(a).compareTo(fullPngStackPerLevel[level]!.indexOf(b)));
+          List<String> newPngStack = fullPngStackPerLevel[level]!.
+          where((element) => pngStack.contains(element) || element == action.first()).toList();
+           newPngStack.sort((a, b) => fullPngStackPerLevel[level]!.indexOf(a).compareTo(fullPngStackPerLevel[level]!.indexOf(b)));
+           pngStack = newPngStack;
           finalPngStackList.add(newPngStack);
         }
         else {
           //path generico per ogni elemento che sostituisce un altro non definito (es. cappotto), e poi controlli che il path sia presente in fullPngStackPerLevel,
-          //se non è presente allora cerchi fra i png già presenti nel pngStck assets/gameBoardPng/pathGenerico (e non consideri cosa viene dopo il path generico) (es. cappotto vecchio)
-
-          if(fullPngStackPerLevel[level]!.any((element) => element==action.first())){
+          //se non è presente allora cerchi fra i png già presenti nel pngStack assets/gameBoardPng/pathGenerico (e non consideri cosa viene dopo il path generico) (es. cappotto vecchio)
+            if(fullPngStackPerLevel[level]!.any((element) => element==action.first())){
               //not generic path
               pngStack.remove(action.first());
             }
@@ -153,29 +167,32 @@ class PngStackLogic {
               //generic path
               pngStack.remove(pngStack.where((element) => element.contains(action.first())).single);
             }
-            finalPngStackList.add(pngStack);
+            List<String> newPngStack = pngStack.map((e) => e).toList();
+            finalPngStackList.add(newPngStack);
         }
       }
     }
     //retrieve card
-    else{
-      for (var action in pngActionPerCard[cardCode]!.reversed) {
+    else {
+      for (var action in pngActionPerCard[cardCode]!.reversed){
         if(action.second()){
-          List<String> newPngStack = fullPngStackPerLevel[level]!;
-          newPngStack.where((element) => pngStack.contains(element) || element == action.first()).toList()
-              .sort((a, b) => fullPngStackPerLevel[level]!.indexOf(a).compareTo(fullPngStackPerLevel[level]!.indexOf(b)));
-          pngStack = newPngStack;
+          if(fullPngStackPerLevel[level]!.any((element) => element==action.first())){
+            //not generic path
+            pngStack.remove(action.first());
+          }
+          else{
+            //generic path
+            pngStack.remove(pngStack.where((element) => element.contains(action.first())).single);
+          }
+          List<String> newPngStack = pngStack.map((e) => e).toList();
           finalPngStackList.add(newPngStack);
         }
-        if(fullPngStackPerLevel[level]!.any((element) => element==action.first())){
-          //not generic path
-          pngStack.remove(action.first());
-        }
-        else{
-          //generic path
-          pngStack.remove(pngStack.where((element) => element.contains(action.first())).single);
-        }
-        finalPngStackList.add(pngStack);
+        else {
+          List<String> newPngStack = fullPngStackPerLevel[level]!.where((element) => pngStack.contains(element) || element == action.first()).toList();
+          newPngStack.sort((a, b) => fullPngStackPerLevel[level]!.indexOf(a).compareTo(fullPngStackPerLevel[level]!.indexOf(b)));
+          pngStack = newPngStack;
+          finalPngStackList.add(newPngStack);
+          }
       }
     }
     return finalPngStackList;

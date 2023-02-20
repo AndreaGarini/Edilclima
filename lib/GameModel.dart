@@ -257,14 +257,14 @@ class GameModel extends ChangeNotifier{
     //todo: controlla che funzioni il trigger del gameboardcallback
     //todo: considera che questa parte anche quando stiamo popolahndo il gameBoardPngStack di partenza
 
-    if(snapshot.children.length > playedCardsPerTeam[team]!.length){
+    if((snapshot.children.length - 1) > playedCardsPerTeam[team]!.length){
       String newCard = snapshot.children.map((e) => e.value as String).where((element) =>
-      !playedCardsPerTeam[team]!.values.map((e) => e.code).contains(element)).single;
-      gameBoardPngCallback!(newCard, true, team);
+      !playedCardsPerTeam[team]!.values.map((e) => e.code).contains(element) && element!="no Card").single;
+      gameBoardPngCallback!(newCard, true, gameLogic.masterLevelCounter,  team);
     }
-    else if(snapshot.children.length < playedCardsPerTeam[team]!.length){
+    else if((snapshot.children.length - 1) < playedCardsPerTeam[team]!.length){
       String goneCard = playedCardsPerTeam[team]!.values.map((e) => e.code).where((element) => !snapshot.children.map((e) => e.value as String).contains(element)).single;
-      gameBoardPngCallback!(goneCard, false, team);
+      gameBoardPngCallback!(goneCard, false, gameLogic.masterLevelCounter, team);
     }
 
   }

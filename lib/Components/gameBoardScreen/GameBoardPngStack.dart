@@ -86,6 +86,7 @@ class GameBoardPngStackState extends State<GameBoardPngStack> {
   }
 
   void setPngList(int delay, List<Widget> newPngList) {
+    print("set png called with delay: $delay");
     Future.delayed(Duration(milliseconds: delay), () {
       setState(() {
         stackChildren = newPngList;
