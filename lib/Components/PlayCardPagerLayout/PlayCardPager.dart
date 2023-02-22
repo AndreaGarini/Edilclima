@@ -35,7 +35,7 @@ class PlayCardPagerState extends State<PlayCardPager>
     super.initState();
     tabController = TabController(length: widget.cardListLength, vsync: this);
     triggerPtsAnim = true;
-    animText = "+50pts";
+    animText = "";
     animColor = Colors.red;
     ptsAnimController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000))..addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -48,7 +48,6 @@ class PlayCardPagerState extends State<PlayCardPager>
 
       });
     });
-    ptsAnimController.forward(from: 0);
   }
 
   @override
@@ -67,20 +66,17 @@ class PlayCardPagerState extends State<PlayCardPager>
       WidgetsBinding.instance?.addPostFrameCallback((_){
         if(playedCardCallback==null){
           playedCardCallback = (String cardCode, String month) {
-            print("played card callback executed");
-            int pts = gameModel.gameLogic.evaluateSingleCardPoints(gameModel.playerLevelCounter, month, cardCode);
+            String response = gameModel.gameLogic.evaluateSingleCard(gameModel.playerLevelCounter, month, cardCode);
             setState(() {
-              switch(pts){
-                case 45: {
-                  animText = "+45pts";
+              animText = response;
+              switch(response){
+                case "Not bad": {
                   animColor = Colors.red;
                 } break;
-                case 70: {
-                  animText = "+70pts";
+                case "Ok": {
                   animColor = Colors.amber;
                 } break;
-                case 95: {
-                  animText = "+95pts";
+                case "Good": {
                   animColor = Colors.green;
                 } break;
               }

@@ -86,29 +86,32 @@ class CardInfoScreen extends StatelessWidget{
     }
     avatarMap["Nerf"]!.putIfAbsent("Zone", () => zoneString);
 
-    //Winter effect
-    String month = gameModel.playedCardsPerTeam[gameModel.team]!.entries.where(
-            (element) => element.value.code == baseCardData.code).single.key;
-    if(["ott", "nov", "dec", "gen", "feb", "mar"].contains(month) && baseCardData.code.contains("imp")){
-      avatarMap["Nerf"]!.putIfAbsent("Win", () => "");
-    }
+    if(gameModel.playedCardsPerTeam[gameModel.team]!.values.map((e) => e.code).contains(baseCardData.code)){
 
-    //Other cards effect
-    List<String> playedCardsCodes = gameModel.playedCardsPerTeam[gameModel.team]!.values.map((e) => e.code).toList();
-    for(Pair pair in baseCardData.inf){
-      if(pair.first()!=influence.None){
-        CardInfluence infData = pair.second() as CardInfluence;
+      //Winter effect
+      String month = gameModel.playedCardsPerTeam[gameModel.team]!.entries.where(
+              (element) => element.value.code == baseCardData.code).single.key;
+      if(["ott", "nov", "dec", "gen", "feb", "mar"].contains(month) && baseCardData.code.contains("imp")){
+        avatarMap["Nerf"]!.putIfAbsent("Win", () => "");
+      }
 
-        if(infData.multiInfluence){
-          int playedCardsWithRequirements = playedCardsCodes.where((element) =>
-              element.contains(infData.resNeeded)).length;
-          if(playedCardsWithRequirements >= infData.multiObjThreshold!){
-            avatarMap["Up"]!.putIfAbsent("Card", () => "");
+      //Other cards effect
+      List<String> playedCardsCodes = gameModel.playedCardsPerTeam[gameModel.team]!.values.map((e) => e.code).toList();
+      for(Pair pair in baseCardData.inf){
+        if(pair.first()!=influence.None){
+          CardInfluence infData = pair.second() as CardInfluence;
+
+          if(infData.multiInfluence){
+            int playedCardsWithRequirements = playedCardsCodes.where((element) =>
+                element.contains(infData.resNeeded)).length;
+            if(playedCardsWithRequirements >= infData.multiObjThreshold!){
+              avatarMap["Up"]!.putIfAbsent("Card", () => "");
+            }
           }
-        }
-        else{
-          if(playedCardsCodes.contains(infData.resNeeded)){
-            avatarMap["Up"]!.putIfAbsent("Card", () => "");
+          else{
+            if(playedCardsCodes.contains(infData.resNeeded)){
+              avatarMap["Up"]!.putIfAbsent("Card", () => "");
+            }
           }
         }
       }

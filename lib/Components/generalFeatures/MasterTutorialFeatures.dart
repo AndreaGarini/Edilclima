@@ -86,16 +86,12 @@ class MasterTutorialFeaturesState extends State<MasterTutorialFeatures> {
                             shadowColor: darkGreyPalette,
                             child: Stack(alignment: Alignment.center,
                                 children: [
-                                  Container(color: Colors.transparent, height: screenHeight * 0.25, width:  screenHeight * 0.25,
-                                    child: GameBoardChartBar("smog", "team1", screenHeight),),
-                                  Container(color: Colors.transparent, height: screenHeight * 0.15, width: screenHeight * 0.15,
-                                    child: GameBoardChartBar("energy", "team1", screenHeight),),
-                                  Container(color: Colors.transparent, height: screenHeight * 0.05, width: screenHeight * 0.05,
-                                    child: GameBoardChartBar("comfort", "team1", screenHeight),)
+                                  Container(color: Colors.transparent, height: screenHeight * 0.2, width:  screenHeight * 0.2,
+                                    child: GameBoardChartBar("smog", "team1", screenHeight)),
                                 ]))))
               ]))),
     const Spacer()
-    ],);
+    ]);
   
 
   @override

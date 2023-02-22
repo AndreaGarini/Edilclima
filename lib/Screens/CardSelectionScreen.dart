@@ -42,7 +42,7 @@ String playableCard = "null";
 CardData? onFocusCard;
 late bool ongoingAnimation;
 bool firstOpening = true;
-List<CardData?> playerCards = List.generate(6, (index) => CardData("void", 0, 0, 0, 0,
+List<CardData?> playerCards = List.generate(6, (index) => CardData("void", "", 0, 0, 0, 0,
     cardType.Imp, mulType.Int,
     [Pair(influence.None, null)],
     1));
@@ -176,13 +176,13 @@ class CardSelectionState extends State<CardSelectionScreen>
           firstBinding = true;
           List<CardData?> cardsList = [];
           gameModel.playerCards.forEach((element) {
-            cardsList.add(CardData(element.code, element.money,
+            cardsList.add(CardData(element.code, element.title, element.money,
                 element.energy, element.smog, element.comfort,
                 element.type, element.mul, element.inf, element.level));
           });
           if(cardsList.length < 6){
             for(int i = cardsList.length; i<6; i++){
-              cardsList.add(CardData("void", 0, 0, 0, 0,
+              cardsList.add(CardData("void", "", 0, 0, 0, 0,
                   cardType.Imp, mulType.Int,
                   [Pair(influence.None, null)],
                   gameModel.playerLevelCounter));
@@ -312,13 +312,13 @@ class CardSelectionState extends State<CardSelectionScreen>
       if(buildEnded && !discardMechOn){
         List<CardData?> cardsList = [];
         gameModel.playerCards.forEach((element) {
-          cardsList.add(CardData(element.code, element.money,
+          cardsList.add(CardData(element.code, element.title, element.money,
               element.energy, element.smog, element.comfort,
               element.type, element.mul, element.inf, element.level));
         });
         if(cardsList.length < 6){
           for(int i = cardsList.length; i<6; i++){
-            cardsList.add(CardData("void", 0, 0, 0, 0,
+            cardsList.add(CardData("void", "", 0, 0, 0, 0,
                 cardType.Imp, mulType.Int,
                 [Pair(influence.None, null)],
                 gameModel.playerLevelCounter));

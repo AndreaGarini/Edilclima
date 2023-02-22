@@ -154,10 +154,14 @@ class PageLayoutState extends State<PageLayout> with SingleTickerProviderStateMi
   Widget build(BuildContext context) {
     return Consumer<GameModel>(builder: (context, gameModel, child) {
         return
-          Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+          Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center, /*widget.crd?.code ?? "no card"*/
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, widget.crd?.code ?? "no card", null, FontWeight.bold))),
+            Expanded(flex: 1, child: Center(child:  Text(widget.crd?.title ?? "nessuna carta", style: TextStyle(color: darkBluePalette,
+                fontSize: screenWidth * 0.04,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Roboto',),
+                  textAlign: TextAlign.justify))),
               Expanded(flex: 4, child: SizedBox(width: screenWidth * 0.45 * 1.3, child: clickableCard(gameModel))),
               const Spacer(flex: 2)
             ],);

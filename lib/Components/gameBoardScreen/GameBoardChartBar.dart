@@ -30,6 +30,7 @@ with TickerProviderStateMixin{
   int playedCardsNum = 0;
   double endChartBarRatio = 0;
   double startChartBarRatio = 0;
+  String? barTypology;
   Widget chartContent = const Spacer();
 
   void initState() {
@@ -45,7 +46,7 @@ with TickerProviderStateMixin{
 
   Widget staticChartBar(){
     return CircularProgressIndicator(value: endChartBarRatio, color: Color.lerp(barColorStart, barColorEnd, endChartBarRatio)
-        ,strokeWidth: widget.usableHeight * 0.05);
+        ,strokeWidth: widget.usableHeight * 0.075);
   }
 
 
@@ -64,7 +65,7 @@ with TickerProviderStateMixin{
               var colorAnim = ColorTween(begin: barColorStart, end: barColorEnd).animate(indicatorController);
               indicatorController.value = value;
               return CircularProgressIndicator(value: value, valueColor: colorAnim,
-                  strokeWidth: widget.usableHeight * 0.05);
+                  strokeWidth: widget.usableHeight * 0.075);
             });
       }
       else{
@@ -84,6 +85,7 @@ with TickerProviderStateMixin{
   @override
   Widget build(BuildContext context) {
 
+
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
       if(playedCardsNum != gameModel.playedCardsPerTeam[widget.team]?.length){
@@ -98,7 +100,10 @@ with TickerProviderStateMixin{
   }
 
   void calculateNewBarRatio(GameModel gameModel){
-          switch (widget.barType){
+
+          String objType = gameModel.objectivePerTeam[widget.team]!;
+
+          switch (objType){
             case "smog": {
               barColorStart = lightOrangePalette.withAlpha(200);
               barColorEnd = lightOrangePalette;
@@ -144,36 +149,60 @@ with TickerProviderStateMixin{
   double generateTeamInfoMap(TeamInfo teamInfo, GameModel gameModel){
 
     double ratio;
-    switch(widget.barType){
+    String objType = gameModel.objectivePerTeam[widget.team]!;
+
+    switch(objType){
       case "smog" : {
-        int baseTarget = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.TargetA;
+        int target = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.TargetA;
         Context context = gameModel.gameLogic.contextList.where((element) => element.code==gameModel.masterContextCode).single;
-        int contextModTarget = (baseTarget * context.startStatsInfluence["A"]!).round();
+        int baseInitStat = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initSmog;
+        int contextModInitStat = (baseInitStat * context.startStatsInfluence["A"]!).round();
 
+        int  maxRange = (contextModInitStat - target).abs();
+        int actualRange = (teamInfo!.smog! - contextModInitStat);
 
-        ratio = ((teamInfo!.smog! - gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initSmog).abs() /
-            (gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initSmog -
-            contextModTarget)).abs();
+        if(actualRange < 0){
+          ratio = (actualRange.abs() / maxRange).abs();
+        }
+        else{
+          ratio = 0.03;
+        }
+
       }
       break;
       case "energy" : {
-        int baseTarget = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.TargetE;
+        int target = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.TargetE;
         Context context = gameModel.gameLogic.contextList.where((element) => element.code==gameModel.masterContextCode).single;
-        int contextModTarget = (baseTarget * context.startStatsInfluence["E"]!).round();
+        int baseInitStat = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initEnergy;
+        int contextModInitStat = (baseInitStat * context.startStatsInfluence["E"]!).round();
 
-        ratio = ((teamInfo!.energy! - gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initEnergy).abs() /
-            (gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initEnergy -
-            contextModTarget)).abs();
+        int  maxRange = (contextModInitStat - target).abs();
+        int actualRange = (teamInfo!.energy! - contextModInitStat);
+
+        if(actualRange > 0){
+          ratio = (actualRange.abs() / maxRange).abs();
+        }
+        else{
+          ratio = 0.03;
+        }
       }
       break;
       case "comfort" : {
-        int baseTarget = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.TargetC;
+        int target = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.TargetC;
         Context context = gameModel.gameLogic.contextList.where((element) => element.code==gameModel.masterContextCode).single;
-        int contextModTarget = (baseTarget * context.startStatsInfluence["C"]!).round();
+        int baseInitStat = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initComfort;
+        int contextModInitStat = (baseInitStat * context.startStatsInfluence["C"]!).round();
 
-        ratio = ((teamInfo!.comfort! - gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initComfort).abs() /
-            (gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initComfort -
-            contextModTarget)).abs();
+        int  maxRange = (contextModInitStat - target).abs();
+        int actualRange = (teamInfo!.comfort! - contextModInitStat);
+
+        if(actualRange > 0){
+          ratio = (actualRange.abs() / maxRange).abs();
+        }
+        else{
+          ratio = 0.03;
+        }
+
       }
       break;
       default : {
@@ -184,7 +213,6 @@ with TickerProviderStateMixin{
     }
 
     if(ratio > 1) return 1;
-    else if(ratio <= 0) return 0.02;
     else return ratio;
   }
 

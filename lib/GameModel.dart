@@ -32,11 +32,12 @@ class GameModel extends ChangeNotifier{
   bool ongoingLevel = false;
   int? levelTimerCountdown;
   String? masterContextCode;
-  Function? gameBoardPngCallback;
+  Map<String, Function?> gameBoardPngCallback = {"team1" : null, "team2" : null, "team3" : null, "team4" : null};
 
   Map <String, Map<String, CardData>?> playedCardsPerTeam = {"team1" : {}, "team2" : {}, "team3" : {}, "team4" : {}};
   Map<String, TeamInfo?> teamStats = {};
   Map<String, String> ableToPlayPerTeam = {"team1" : "", "team2" : "", "team3" : "", "team4" : "" };
+  Map<String, String> objectivePerTeam = {"team1" : "", "team2" : "", "team3" : "", "team4" : "" };
 
 
   //variabili lato player
@@ -218,7 +219,7 @@ class GameModel extends ChangeNotifier{
         if(event.snapshot.children.length - 1 != playedCardsPerTeam[team]!.length){
           //questo if serve per fare in modo che i dati cambino solo se una carta è stata presa o posizionata,
           //e non solo se il listener è stato triggerato
-          if(gameBoardPngCallback!=null){
+          if(gameBoardPngCallback[team]!=null){
             triggerGameBoardCallback(team, event.snapshot);
           }
           Map<String, CardData> map = {};
@@ -260,11 +261,11 @@ class GameModel extends ChangeNotifier{
     if((snapshot.children.length - 1) > playedCardsPerTeam[team]!.length){
       String newCard = snapshot.children.map((e) => e.value as String).where((element) =>
       !playedCardsPerTeam[team]!.values.map((e) => e.code).contains(element) && element!="no Card").single;
-      gameBoardPngCallback!(newCard, true, gameLogic.masterLevelCounter,  team);
+      gameBoardPngCallback[team]!(newCard, true, gameLogic.masterLevelCounter,  team);
     }
     else if((snapshot.children.length - 1) < playedCardsPerTeam[team]!.length){
       String goneCard = playedCardsPerTeam[team]!.values.map((e) => e.code).where((element) => !snapshot.children.map((e) => e.value as String).contains(element)).single;
-      gameBoardPngCallback!(goneCard, false, gameLogic.masterLevelCounter, team);
+      gameBoardPngCallback[team]!(goneCard, false, gameLogic.masterLevelCounter, team);
     }
 
   }
@@ -275,7 +276,7 @@ class GameModel extends ChangeNotifier{
     int moves = (avatarMap[team]!=null && avatarMap[team]!.nullCheck()) ? avatarMap[team]!.moves! : 0;
     int lv = (playerLevelCounter == 0) ? gameLogic.masterLevelCounter : playerLevelCounter;
     avatarMap.remove(team);
-    avatarMap.putIfAbsent(team, () => gameLogic.evaluatePoints(lv, map.isNotEmpty ? map : null, moves +1, contextCode!));
+    avatarMap.putIfAbsent(team, () => gameLogic.evaluatePoints(lv, map.isNotEmpty ? map : null, moves +1, contextCode!, objectivePerTeam[team]!));
     teamStats = avatarMap;
     notifyListeners();
   }
@@ -302,16 +303,22 @@ class GameModel extends ChangeNotifier{
     if(gameLogic.masterLevelCounter == 1){
       Map<String, Object> levelValue = {"status" : masterLevelStatus, "count" : level, "context" : masterContextCode!};
       await db.child("matches").child("test").child("level").set(levelValue).
-    then((_) => masterLevelStatus = "play");
+      then((_) => masterLevelStatus = "play").
+      then((_) => setObjectivePerTeam());
     }
     else {
       String contextCode = gameLogic.contextList[Random().nextInt(gameLogic.contextList.length)].code;
       masterContextCode = contextCode;
-
+      setObjectivePerTeam();
       //todo: controlla che se parte il secondo livello non blocchi tutto (si dovrebbe anche bloccare il timer del player alla fine del timer di livello)
       giveCardsToPlayers(level);
       setStartingCardsPerLevel(level);
     }
+    notifyListeners();
+  }
+
+  void setObjectivePerTeam(){
+    objectivePerTeam = gameLogic.objectivePerTeam();
     notifyListeners();
   }
 
@@ -442,7 +449,6 @@ class GameModel extends ChangeNotifier{
   }
 
   void setTutorialDone(){
-    print("game model set tutorial done");
     db.child("matches").child("test").child("players")
         .child("1").child("tutorialDone").set(true);
   }
@@ -652,7 +658,6 @@ class GameModel extends ChangeNotifier{
               extractedCardCode = drawableCards.children.toList()[extractedPos].key!;
              } while(extractedCardCode=="void");
             lastDrawnCards.add(extractedCardCode);
-            print("extracted card in discard mech: ${extractedCardCode}");
             return await db.child("matches").child("test").child("players").child("1").child("ownedCards")
             .child(selectedCardCode).remove().then((value) async{
               return await db.child("matches").child("test").child("players").child("1").child("ownedCards")

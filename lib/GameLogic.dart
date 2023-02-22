@@ -1,6 +1,7 @@
 
 import 'dart:async';
 import 'dart:core';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:edilclima_app/DataClasses/CardInfluence.dart';
@@ -23,17 +24,6 @@ class GameLogic {
 
   var months = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dec"];
 
-  Map<int, List<String>> pngMapPerLevel = {
-     1 : [
-      'assets/gameBoardPng/MuriAlpha.png',
-       'assets/gameBoardPng/AccAlpha.png',
-       'assets/gameBoardPng/PompaAlpha.png',
-       'assets/gameBoardPng/TermoAlpha.png',
-       'assets/gameBoardPng/TettoAlpha.png',
-       'assets/gameBoardPng/Pan1Alpha.png'
-     ],
-  };
-
   //contexts:
   // C01: città
   // C02: montagna
@@ -44,52 +34,53 @@ class GameLogic {
     Context("C03", null, ["imp09", "imp10", "imp11", "oth05"], {"A" : 1, "E" : 1, "C" : 0.7, "B" : 0.8})];
 
   //todo: rimetti il budget della prima zona a 350
-  Map<int, Zone> zoneMap = {1 : Zone(1, 50, 190, 280, 1000, 200, 80, 50, 10, 1,
-  ["inv01", "inv02", "oth04", "inv06", "imp10", "imp11", "oth03", "imp07", "inv08", "imp08", "oth04","oth01"],
+  Map<int, Zone> zoneMap = {1 : Zone(1, 120, 135, 250, 2330, 150, 100, 50, 10, 1,
+  ["inv03", "inv06", "inv08", "imp01", "imp02", "imp04", "imp08", "imp09", "imp11", "oth02", "oth05"],
   ["inv01", "inv02", "imp03", "oth01", "no Card"])};
 
   List<CardData> CardsList = [
     //inv
-    CardData("inv01", -80, 20, -30, 30, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 2),
-    CardData("inv02", -120, 0, -30, 0, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 2),
-    CardData("inv03", -40, 0, -15, 25, cardType.Inv, mulType.Fac, [Pair(influence.None, null)],  2),
-    CardData("inv04", -50, 0, -20, 15, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 1 ),
-    CardData("inv05", -60, 0, -30, 25, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 2 ),
-    CardData("inv06", -30, 0, -25, 20, cardType.Inv, mulType.Fac, [Pair(influence.None, null)] ,1 ),
-    CardData("inv07", -50, 0, -25, 20, cardType.Inv, mulType.Int, [Pair(influence.None, null)] ,2 ),
-    CardData("inv08", 0, 0, -20, 20, cardType.Inv, mulType.Int, [Pair(influence.None, null)], 1 ),
-    CardData("inv09", -40, -20, -30, 15, cardType.Inv, mulType.Int, [Pair(influence.None, null)], 1),
-    CardData("inv10", -30, 0, -20, 0, cardType.Inv, mulType.Int, [Pair(influence.None, null)], 1,),
+    CardData("inv01", "Muro base",  0, 0, -10, -10, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 2),
+    CardData("inv02", "Cappotto EPS", -7, -10, 10, 10, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 2),
+    CardData("inv03", "Cappotto Fibra di Legno", -10, -15, 15, 10, cardType.Inv, mulType.Fac, [Pair(influence.None, null)],  2),
+    CardData("inv04", "Tetto base", 0, 0, -10, -10, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 1 ),
+    CardData("inv05", "Isolamento tetto in poliuretano",  -12, -10, 10, 15, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 2 ),
+    CardData("inv06", "Isolamento tetto in fibra di legno",  -17, -15, 15, 20, cardType.Inv, mulType.Fac, [Pair(influence.None, null)] ,1 ),
+    CardData("inv07", "Serramenti a vetro singolo", -2, 0, 5, 5, cardType.Inv, mulType.Int, [Pair(influence.None, null)] ,2 ),
+    CardData("inv08", "Serramenti in legno doppio vetro", -5, -5, 15, 10, cardType.Inv, mulType.Int, [Pair(influence.None, null)], 1 ),
+    CardData("inv09", "Serramenti in PVC doppio vetro",  -4, -5, 10, 10, cardType.Inv, mulType.Int, [Pair(influence.None, null)], 1),
+    CardData("inv10", "Serramenti in PVC triplo vetro", -6, -7, 15, 10, cardType.Inv, mulType.Int, [Pair(influence.None, null)], 1,),
 
     //imp
-    CardData("imp01", -20, 30, 40, -20, cardType.Imp, mulType.Int, [Pair(influence.Card,
+    CardData("imp01", "Radiatori", -5, 7, -5, 20, cardType.Imp, mulType.Int, [Pair(influence.Card,
         CardInfluence("inv", {"A": 1.3, "E" : 1.3, "C" : 1.3}, true, 3))], 2),
-    CardData("imp02", -40, 50, 30, -10, cardType.Imp, mulType.Int,[Pair(influence.None, null)], 2),
-    CardData("imp03", -70, 70, 10, -20, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 2),
-    CardData("imp04", -15, 10, 0, 10, cardType.Imp, mulType.Fac, [Pair(influence.None, null)],  1),
-    CardData("imp05", -10, 10, 0, 10, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 2),
-    CardData("imp06", -20, 10, 10, 10, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 1),
-    CardData("imp07", -30, 20, 10, 20, cardType.Imp, mulType.Fac,
+    CardData("imp02", "Pannelli a pavimento", -9, 5, 5, 20, cardType.Imp, mulType.Int,[Pair(influence.None, null)], 2),
+    CardData("imp03", "Caldaia tradizionale", -100, -5, -15, 35, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 2),
+    CardData("imp04", "Caldaia a condensazione", -150, -5, -10, 35, cardType.Imp, mulType.Fac, [Pair(influence.None, null)],  1),
+    CardData("imp05", "Caldaia a pellet", -300, -10, -5, 40, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 2),
+    CardData("imp06", "Sistema ibrido", -550, -15, 0, 40, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 1),
+    CardData("imp07", "Pompa di calore geotermica",  -1400, -20, -20, 40, cardType.Imp, mulType.Fac,
         [Pair(influence.Card,
               CardInfluence("imp01", {"A": 1.2, "E" : 1.2, "C" : 1.2}, false, null)),
           Pair(influence.Card,
               CardInfluence("imp02", {"A": 1.2, "E" : 1.2, "C" : 1.2}, false, null))], 1),
-    CardData("imp08", -20, 10, -20, -20, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 2),
-    CardData("imp09", -10, 10, 0, 10, cardType.Imp, mulType.Fac, [Pair(influence.None, null)],1),
-    CardData("imp10", 0, 15, 10, 20, cardType.Imp, mulType.Fac, [Pair(influence.None, null)],1),
-    CardData("imp11", 0, 15, 0, 20, cardType.Imp, mulType.Fac, [Pair(influence.None, null)],1),
+    CardData("imp08", "Pompa di calore tradizionale", -900, -15, -20, -35, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 2),
+    CardData("imp09", "Solare termico",  -200, -5, 20, 20, cardType.Imp, mulType.Fac, [Pair(influence.None, null)],1),
+    CardData("imp10", "Fotovoltaico",  -600, -10, 25, 25, cardType.Imp, mulType.Fac, [Pair(influence.None, null)],1),
+    CardData("imp11", "Batteria di accumulo", -600, 0, 10, 5, cardType.Imp, mulType.Fac, [Pair(influence.None, null)],1),
 
     //oth
-    CardData("oth01", -40, 10, 0, 20, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
-    CardData("oth02", -80, 0, 0, 10, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
-    CardData("oth03", -20, 0, 0, 0, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
-    CardData("oth04", -50, 10, -10, 20, cardType.Oth, mulType.Fac, [Pair(influence.None, null)],  1),
-    CardData("oth05", -60, 0, 0, 20, cardType.Oth, mulType.Int, [Pair(influence.None, null)], 1), //todo: mulType.Fac
+    CardData("oth01", "Lampade a incandescenza", -8, 5, -10, 5, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
+    CardData("oth02", "Lampade a neon", -10, 5, -5, 5, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
+    CardData("oth03", "lampade a led", -14, 10, -5, 10, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
+    CardData("oth04", "Ventilazione meccanica controllata", -250, 15, -5, 30, cardType.Oth, mulType.Fac, [Pair(influence.None, null)],  1),
+    CardData("oth05", "Split e PDC",  -250, 10, -5, 25, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
   ];
+
   Map<String, CardData> CardsMap = {};
 
   GameLogic(){
-    CardsMap = { for (var e in CardsList) e.code : e };
+    CardsMap = { for (var e in CardsList) e.code : e};
   }
 
   void setLevelTimer(Function onTick, Function onFinish){
@@ -183,6 +174,20 @@ class GameLogic {
     return avatarMap;
   }
 
+  Map<String, String> objectivePerTeam(){
+
+     Map<String, String> resultingMap = {};
+     List<String> zoneObj = ["smog", "energy", "comfort"];
+     List<String> teamList = ["team1", "team2", "team3", "team4"];
+
+     for (int i = 0; i < teamList.length; i++){
+      var obj = zoneObj[ (i + masterLevelCounter) % 3];
+      resultingMap.putIfAbsent(teamList[i], () => obj);
+     }
+
+     return resultingMap;
+  }
+
   String findNextPlayer(String team, String lastPlayer){
     int oldIndex;
 
@@ -233,7 +238,7 @@ class GameLogic {
             })
           ], () => null).whenExeute();
 
-        return CardData(cardBaseData.code, newMoney, newEnergy, newSmog,
+        return CardData(cardBaseData.code, cardBaseData.title,  newMoney, newSmog, newEnergy,
             newComfort, cardBaseData.type, cardBaseData.mul, cardBaseData.inf, cardBaseData.level);
       }
         else{
@@ -280,7 +285,7 @@ class GameLogic {
         }
 
         map.update(entry.key, (value) =>
-            CardData(value.code, value.money, finalEnergy, finalSmog,
+            CardData(value.code, value.title, value.money, finalSmog, finalEnergy,
                 finalComfort, value.type, value.mul, value.inf, value.level));
 
       }
@@ -290,7 +295,7 @@ class GameLogic {
 
 
 
-    TeamInfo evaluatePoints(int level, Map<String, CardData?>? map, int moves, String contextCode) {
+    TeamInfo evaluatePoints(int level, Map<String, CardData?>? map, int moves, String contextCode, String objective) {
       int points = 0;
 
       int exactCardDataPoints = 100;
@@ -342,27 +347,61 @@ class GameLogic {
         });
       }
 
-      if (energy > zoneMap[level]!.TargetE) points += targetReachedPoints;
-      if (smog < zoneMap[level]!.TargetA) points += targetReachedPoints;
-      if (comfort > zoneMap[level]!.TargetC) points += targetReachedPoints;
+      if(objective!=""){
+        switch(objective){
+          case "smog" : {
+            if (smog < zoneMap[level]!.TargetA){
+              points += 2 * targetReachedPoints;
+            }
+            else{
+              int maxRange = (zoneMap[level]!.TargetA - zoneMap[level]!.initSmog).abs();
+              int actualRange =  (zoneMap[level]!.TargetA - smog).abs();
+              points += (targetReachedPoints * (actualRange/maxRange)).toInt();
+            }
+          }
+          break;
+          case "energy" : {
+            if (energy > zoneMap[level]!.TargetE){
+              points += 2 * targetReachedPoints;
+            }
+            else{
+              int maxRange = (zoneMap[level]!.TargetE - zoneMap[level]!.initEnergy).abs();
+              int actualRange =  (zoneMap[level]!.TargetE - energy).abs();
+              points += (targetReachedPoints * (actualRange/maxRange)).toInt();
+            }
+          }
+          break;
+          case "comfort" : {
+            if (comfort > zoneMap[level]!.TargetC){
+              points += 2 * targetReachedPoints;
+            }
+            else{
+              int maxRange = (zoneMap[level]!.TargetC - zoneMap[level]!.initComfort).abs();
+              int actualRange =  (zoneMap[level]!.TargetC - comfort).abs();
+              points += (targetReachedPoints * (actualRange/maxRange)).toInt();
+            }
+          }
+          break;
+        }
+      }
 
       points -= (moves * movesNegPoints);
 
       return TeamInfo(budget, smog, energy, comfort, points >= 0 ? points : 0, moves);
     }
 
-    int evaluateSingleCardPoints(int level, String month, String cardCode) {
+    String evaluateSingleCard(int level, String month, String cardCode) {
 
         if(zoneMap[level]!.optimalList.contains(cardCode)) {
           if (zoneMap[level]!.optimalList.indexOf(cardCode) == months.indexOf(month)) {
-            return 95;
+            return "Good";
           }
           else{
-            return 70;
+            return "OK";
           }
         }
         else{
-          return 45;
+          return "Not bad";
         }
     }
 

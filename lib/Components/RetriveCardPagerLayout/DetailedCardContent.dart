@@ -33,7 +33,12 @@ class DetailedCardContent extends StatelessWidget{
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(flex: 1, child: Center(child: StylizedText(darkBluePalette, cardData.code, screenWidth * 0.3, FontWeight.bold))),
+                    Expanded(flex: 1, child: Center(child: Text(cardData.title,
+                      style: TextStyle(color: darkBluePalette,
+                      fontSize: screenWidth * 0.05,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Roboto',),
+                        textAlign: TextAlign.justify))),
                     Divider(indent: screenWidth * 0.2, endIndent: screenWidth * 0.2, color: darkBluePalette, thickness: 1),
                     DetailedCardLottie(cardData.type),
                     Expanded(flex: 4, child: DetailedCardStatsGroup(cardData, baseCardData, cardInfData)),

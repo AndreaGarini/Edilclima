@@ -29,6 +29,7 @@ class GameBoardState extends State<GameBoard> {
   late List<Widget> columnContent;
   late double usableCardHeight;
   late bool boardCardsCreated;
+  late double cardHeight;
 
   //todo: scopri come creare una dialog più stretta e riordina lo spazio di conseguenza (se no crea stack e positioned)
 
@@ -37,6 +38,7 @@ class GameBoardState extends State<GameBoard> {
     super.initState();
     shortDim = 0;
     tutorialOpened = false;
+    cardHeight = 0;
     usableCardHeight = 0;
     columnContent = [];
     boardCardsCreated = false;
@@ -53,14 +55,7 @@ class GameBoardState extends State<GameBoard> {
         if(newDim!=shortDim){
           setShortDim(newDim);
         }
-      });
 
-      closeMasterTutorialDialog = (){
-          gameModel.setMasterTutorialDone();
-          gameModel.setDialogData(null);
-      };
-
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
         if(!tutorialOpened){
           gameModel.masterTutorialDoneCheck().then((value) {
             if(!value){
@@ -71,6 +66,11 @@ class GameBoardState extends State<GameBoard> {
         }
       });
 
+      closeMasterTutorialDialog = (){
+          gameModel.setMasterTutorialDone();
+          gameModel.setDialogData(null);
+      };
+
       if(gameModel.showDialog==null && lastDialogData!=null){
         lastDialogData = null;
         Navigator.of(context).pop();
@@ -80,7 +80,7 @@ class GameBoardState extends State<GameBoard> {
         setDialogAvailable(parentContext, gameModel.showDialog!, gameModel);
       }
 
-      double cardHeight = shortDim / (gameModel.teamsNum / 2).toInt();
+      cardHeight = shortDim / (gameModel.teamsNum / 2).toInt();
       if(cardHeight != usableCardHeight){
         setUsableCardHeight(cardHeight);
       }
@@ -91,10 +91,13 @@ class GameBoardState extends State<GameBoard> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: (gameModel.teamsNum % 2 == 0) ?
 
-              [Expanded(child: GameBoardCard(gameModel.teamsNames[i.toInt() * 2],  cardHeight)),
-                Expanded(child: GameBoardCard(gameModel.teamsNames[i.toInt() * 2 + 1],  cardHeight))] :
+              [Expanded(child: GameBoardCard(gameModel.teamsNames[i.toInt() * 2],
+                  gameModel.objectivePerTeam[gameModel.teamsNames[i.toInt() * 2]]!,  cardHeight)),
+                Expanded(child: GameBoardCard(gameModel.teamsNames[i.toInt() * 2 + 1],
+                    gameModel.objectivePerTeam[gameModel.teamsNames[i.toInt() * 2 + 1]]!, cardHeight))] :
 
-              [Expanded(child: GameBoardCard(gameModel.teamsNames[i.toInt() * 2],  cardHeight))]
+              [Expanded(child: GameBoardCard(gameModel.teamsNames[i.toInt() * 2],
+                  gameModel.objectivePerTeam[gameModel.teamsNames[i.toInt() * 2]]!, cardHeight))]
           )));
         }
         setColumnContent(cardsWidgets);
@@ -163,6 +166,7 @@ class GameBoardState extends State<GameBoard> {
     return Future<void>.delayed(const Duration(milliseconds: 50), () {
       setState(() {
         usableCardHeight = cardHeight;
+        boardCardsCreated = false;
       });
     });
   }
@@ -171,6 +175,7 @@ class GameBoardState extends State<GameBoard> {
     return Future<void>.delayed(const Duration(milliseconds: 50), () {
       setState(() {
         columnContent = cardsWidget;
+        boardCardsCreated = true;
       });
     });
   }

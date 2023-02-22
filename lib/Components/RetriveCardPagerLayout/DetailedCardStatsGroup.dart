@@ -201,6 +201,10 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
                   Expanded(flex: 8, child:
                   InkWell(
                       onTap: (widget.cardData.energy != widget.baseCardData.energy) ? (){
+                        if(widget.cardData.code== "inv01"){
+                          print("card data energy: ${widget.cardData.energy}");
+                          print("card data base energy: ${widget.baseCardData.energy}");
+                        }
                         setState((){
                           triggerAnim = true;
                           animMap = generateMatrix4Anim("energy");
@@ -395,8 +399,10 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
       String message = "";
       String infType = "";
       if(statCode!="money"){
+        print("statCode: $statCode");
         switch(rowEntry.key){
           case "Ctx" : {
+            print("ctx ");
             infType = ctxInfMsg.entries.where((element) => element.key==rowEntry.value).single.value;
             if(infType=="Città"){
               message = "Perchè in ";
@@ -415,6 +421,7 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
       }
 
       if(message!="" && infType!=""){
+        print("avatarUpList.add");
         avatarUpList.add(Expanded(flex: 8, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center, children: [
               Container(

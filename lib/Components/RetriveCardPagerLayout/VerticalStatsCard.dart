@@ -54,13 +54,6 @@ class VerticalStatsCard extends StatelessWidget{
       }
     }
 
-    if(baseDataValue > dataValue){
-      //todo: qui tooltip
-    }
-    else{
-      //todo: qui tooltip
-    }
-
    return Card(
        color: Colors.white,
        shadowColor: lightOrangePalette,

@@ -29,7 +29,12 @@ class NonNullCardContentLayout extends StatelessWidget{
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   const Spacer(flex: 1),
-                  Expanded(flex: 2, child: StylizedText(darkBluePalette, cardData!.code, null, FontWeight.bold)),
+                  Expanded(flex: 2, child:  Text(cardData.title,
+                    style: TextStyle(color: darkBluePalette,
+                    fontSize: screenHeight * 0.015,
+                    fontWeight: FontWeight.normal,
+                    fontFamily: 'Roboto',),
+                      textAlign: TextAlign.justify)),
                   Divider(indent: screenWidth * 0.1, endIndent: screenWidth * 0.1, color: darkBluePalette, thickness: 1),
                   Expanded(flex: 10, child: lottieWidget),
                   Expanded(flex: 10, child:
@@ -62,7 +67,12 @@ class NonNullCardContentLayout extends StatelessWidget{
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     const Spacer(flex: 1),
-                    Expanded(flex: 2, child: StylizedText(darkBluePalette, cardData!.code, null, FontWeight.bold)),
+                    Expanded(flex: 2, child: Text(cardData.title,
+                        style: TextStyle(color: darkBluePalette,
+                          fontSize: screenHeight * 0.012,
+                          fontWeight: FontWeight.normal,
+                          fontFamily: 'Roboto',),
+                        textAlign: TextAlign.justify)),
                     Divider(indent: screenWidth * 0.1, endIndent: screenWidth * 0.1, color: darkBluePalette, thickness: 1),
                     const Spacer(flex: 20)
                   ])

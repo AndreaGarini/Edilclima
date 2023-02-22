@@ -33,7 +33,9 @@ class GameBoardPngStackState extends State<GameBoardPngStack> {
   }
 
   gameBoardCallback(String cardCode, bool isPlayed, int level, String team){
+    print("game board callback");
     if(team == widget.team){
+      print("game board callback executing");
       int millisDelay = 0;
       for(List<String> pngStackPathList in pngLogic.getNewPngStack(cardCode, isPlayed, level)){
         List<Widget> pngStackList = pngStackPathList.map((e) => Image.asset(e, height: widget.imageHeight, width: widget.imageWidth)).toList();
@@ -50,8 +52,8 @@ class GameBoardPngStackState extends State<GameBoardPngStack> {
 
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
-        if(gameModel.gameBoardPngCallback == null){
-          gameModel.gameBoardPngCallback = gameBoardCallback;
+        if(gameModel.gameBoardPngCallback[widget.team] == null){
+          gameModel.gameBoardPngCallback[widget.team] = gameBoardCallback;
         }
 
         WidgetsBinding.instance?.addPostFrameCallback((_){
@@ -86,7 +88,6 @@ class GameBoardPngStackState extends State<GameBoardPngStack> {
   }
 
   void setPngList(int delay, List<Widget> newPngList) {
-    print("set png called with delay: $delay");
     Future.delayed(Duration(milliseconds: delay), () {
       setState(() {
         stackChildren = newPngList;

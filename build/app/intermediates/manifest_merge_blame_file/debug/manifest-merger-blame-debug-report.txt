@@ -66,7 +66,7 @@
 60            android:name="com.google.firebase.components.ComponentDiscoveryService"
 60-->[:firebase_database] /Users/garonofsky/Documents/Polito/Edilclima/build/firebase_database/intermediates/merged_manifest/debug/AndroidManifest.xml:10:18-89
 61            android:directBootAware="true"
-61-->[com.google.firebase:firebase-common:20.2.0] /Users/garonofsky/.gradle/caches/transforms-3/ef8423601b72496d12bca9ac87595f67/transformed/jetified-firebase-common-20.2.0/AndroidManifest.xml:34:13-43
+61-->[com.google.firebase:firebase-common:20.3.0] /Users/garonofsky/.gradle/caches/transforms-3/b24238b145583e9bb28ada432bde27f7/transformed/jetified-firebase-common-20.3.0/AndroidManifest.xml:34:13-43
 62            android:exported="false" >
 62-->[com.google.firebase:firebase-database:20.1.0] /Users/garonofsky/.gradle/caches/transforms-3/69d53eedac0925ac58cc10249c7aad25/transformed/jetified-firebase-database-20.1.0/AndroidManifest.xml:30:13-37
 63            <meta-data
@@ -103,17 +103,17 @@
 79-->[androidx.window:window:1.0.0-beta04] /Users/garonofsky/.gradle/caches/transforms-3/e1f53c96aa78f7b42431169b7cd59214/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:30:13-37
 80
 81        <provider
-81-->[com.google.firebase:firebase-common:20.2.0] /Users/garonofsky/.gradle/caches/transforms-3/ef8423601b72496d12bca9ac87595f67/transformed/jetified-firebase-common-20.2.0/AndroidManifest.xml:25:9-30:39
+81-->[com.google.firebase:firebase-common:20.3.0] /Users/garonofsky/.gradle/caches/transforms-3/b24238b145583e9bb28ada432bde27f7/transformed/jetified-firebase-common-20.3.0/AndroidManifest.xml:25:9-30:39
 82            android:name="com.google.firebase.provider.FirebaseInitProvider"
-82-->[com.google.firebase:firebase-common:20.2.0] /Users/garonofsky/.gradle/caches/transforms-3/ef8423601b72496d12bca9ac87595f67/transformed/jetified-firebase-common-20.2.0/AndroidManifest.xml:26:13-77
+82-->[com.google.firebase:firebase-common:20.3.0] /Users/garonofsky/.gradle/caches/transforms-3/b24238b145583e9bb28ada432bde27f7/transformed/jetified-firebase-common-20.3.0/AndroidManifest.xml:26:13-77
 83            android:authorities="com.example.edilclima_app.firebaseinitprovider"
-83-->[com.google.firebase:firebase-common:20.2.0] /Users/garonofsky/.gradle/caches/transforms-3/ef8423601b72496d12bca9ac87595f67/transformed/jetified-firebase-common-20.2.0/AndroidManifest.xml:27:13-72
+83-->[com.google.firebase:firebase-common:20.3.0] /Users/garonofsky/.gradle/caches/transforms-3/b24238b145583e9bb28ada432bde27f7/transformed/jetified-firebase-common-20.3.0/AndroidManifest.xml:27:13-72
 84            android:directBootAware="true"
-84-->[com.google.firebase:firebase-common:20.2.0] /Users/garonofsky/.gradle/caches/transforms-3/ef8423601b72496d12bca9ac87595f67/transformed/jetified-firebase-common-20.2.0/AndroidManifest.xml:28:13-43
+84-->[com.google.firebase:firebase-common:20.3.0] /Users/garonofsky/.gradle/caches/transforms-3/b24238b145583e9bb28ada432bde27f7/transformed/jetified-firebase-common-20.3.0/AndroidManifest.xml:28:13-43
 85            android:exported="false"
-85-->[com.google.firebase:firebase-common:20.2.0] /Users/garonofsky/.gradle/caches/transforms-3/ef8423601b72496d12bca9ac87595f67/transformed/jetified-firebase-common-20.2.0/AndroidManifest.xml:29:13-37
+85-->[com.google.firebase:firebase-common:20.3.0] /Users/garonofsky/.gradle/caches/transforms-3/b24238b145583e9bb28ada432bde27f7/transformed/jetified-firebase-common-20.3.0/AndroidManifest.xml:29:13-37
 86            android:initOrder="100" />
-86-->[com.google.firebase:firebase-common:20.2.0] /Users/garonofsky/.gradle/caches/transforms-3/ef8423601b72496d12bca9ac87595f67/transformed/jetified-firebase-common-20.2.0/AndroidManifest.xml:30:13-36
+86-->[com.google.firebase:firebase-common:20.3.0] /Users/garonofsky/.gradle/caches/transforms-3/b24238b145583e9bb28ada432bde27f7/transformed/jetified-firebase-common-20.3.0/AndroidManifest.xml:30:13-36
 87
 88        <activity
 88-->[com.google.android.gms:play-services-base:18.0.1] /Users/garonofsky/.gradle/caches/transforms-3/1a2cb69c9228e95e429c828957f3a3b6/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:20:9-22:45

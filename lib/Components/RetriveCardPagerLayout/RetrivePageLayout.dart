@@ -38,6 +38,11 @@ class RetriveCardLayoutState extends State<RetrivePageLayout>{
       ableToRetrive = cardData!=null && gameModel.playerTimer!=null;
       cardInfData = cardData!=null ? generateCardInfData(gameModel, baseCardData!) : null;
 
+      if(cardData?.code == "inv01"){
+        print("card data in retrive page layout: ${cardData!.energy}");
+        print("card base data in retrive page layout: ${baseCardData!.energy}");
+      }
+
       return Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [

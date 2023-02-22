@@ -10,8 +10,9 @@ import 'GameBoardChartBar.dart';
 class GameBoardCard extends StatelessWidget{
 
   String team;
+  String chartType;
   double usableHeight;
-  GameBoardCard(this.team, this.usableHeight);
+  GameBoardCard(this.team, this.chartType,  this.usableHeight);
 
   @override
   Widget build(BuildContext context) {
@@ -40,12 +41,8 @@ class GameBoardCard extends StatelessWidget{
                           shadowColor: darkGreyPalette,
                           child: Stack(alignment: Alignment.center,
                               children: [
-                                Container(color: Colors.transparent, height: usableHeight * 0.35, width: usableHeight * 0.35,
-                                  child: GameBoardChartBar("smog", team, usableHeight),),
-                                Container(color: Colors.transparent, height: usableHeight * 0.25, width: usableHeight * 0.25,
-                                  child: GameBoardChartBar("energy", team, usableHeight),),
-                                Container(color: Colors.transparent, height: usableHeight * 0.15, width: usableHeight * 0.15,
-                                  child: GameBoardChartBar("comfort", team, usableHeight),)
+                                Container(color: Colors.transparent, height: usableHeight * 0.3, width: usableHeight * 0.3,
+                                  child: GameBoardChartBar(chartType, team, usableHeight)),
                               ]))))
             ]));
   }

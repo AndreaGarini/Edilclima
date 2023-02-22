@@ -6,6 +6,7 @@ import 'package:edilclima_app/DataClasses/Pair.dart';
 class CardData {
 
   String code;
+  String title;
   int money;
   int energy;
   int smog;
@@ -17,15 +18,15 @@ class CardData {
 
 
   CardData(this.code,
+      this.title,
       this.money,
-      this.energy,
       this.smog,
+      this.energy,
       this.comfort,
       this.type,
       this.mul,
       this.inf,
       this.level);
-
 }
 
 enum cardType{

@@ -19,11 +19,13 @@ class MatchMakingScreen extends StatefulWidget {
 class MatchMakingState extends State<MatchMakingScreen> {
 
   late bool playShakeAnim;
+  late bool matchCreated;
 
   @override
   void initState() {
     super.initState();
     playShakeAnim = false;
+    matchCreated = false;
   }
 
   @override
@@ -45,13 +47,13 @@ class MatchMakingState extends State<MatchMakingScreen> {
           return  Expanded(flex: 1,
               child: SizedButton(
                 //todo: se premi due volte questo button fai next lvel due volte lato gm e non trova la zone
-                  screenWidth * 0.4, "Prepara il match", gameModel.playerCounter==0 ?
+                  screenWidth * 0.4, "Prepara il match", gameModel.playerCounter==0 && matchCreated ?
                   (){
                     setState((){
                       playShakeAnim = true;
                     });
                   stopShakeAnim();} :
-                  () {gameModel.prepareMatch();}));
+                  matchCreated ? () {gameModel.prepareMatch();} : null));
         }
       }
 
@@ -101,9 +103,10 @@ class MatchMakingState extends State<MatchMakingScreen> {
                             const Spacer(),
                             Expanded(flex: 1,
                                 child: SizedButton(
-                                    screenWidth * 0.4, "Crea un nuovo match", () {
+                                    screenWidth * 0.4, "Crea un nuovo match", !matchCreated ?  () {
                                   gameModel.createNewMatch();
-                                })),
+                                  matchCreated = true;
+                                } : null )),
                             const Spacer()
                           ],),),
                       Spacer()
