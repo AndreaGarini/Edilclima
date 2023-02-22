@@ -194,8 +194,13 @@ class PngStackLogic {
           finalPngStackList.add(newPngStack);
         }
         else {
-          List<String> newPngStack = fullPngStackPerLevel[level]!.where((element) => pngStack.contains(element) || element == action.first()).toList();
+          print("action first: ${action.first()}");
+          List<String> newPngStack = fullPngStackPerLevel[level]!.where((element) => pngStack.contains(element)).toList();
+          if(!newPngStack.any((element) => element.contains(action.first()))){
+            newPngStack.add("${action.first()}Base.png");
+          }
           newPngStack.sort((a, b) => fullPngStackPerLevel[level]!.indexOf(a).compareTo(fullPngStackPerLevel[level]!.indexOf(b)));
+          print("new png stack in retrieve card: $newPngStack");
           pngStack = newPngStack;
           finalPngStackList.add(newPngStack);
           }

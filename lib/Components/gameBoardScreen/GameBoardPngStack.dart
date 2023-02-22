@@ -33,12 +33,10 @@ class GameBoardPngStackState extends State<GameBoardPngStack> {
   }
 
   gameBoardCallback(String cardCode, bool isPlayed, int level, String team){
-    print("card code : ${cardCode}");
+
     if(team == widget.team){
-      print("callback executed");
       int millisDelay = 0;
       for(List<String> pngStackPathList in pngLogic.getNewPngStack(cardCode, isPlayed, level)){
-        print("png stack path list : ${pngStackPathList}");
         List<Widget> pngStackList = pngStackPathList.map((e) => Image.asset(e, height: widget.imageHeight, width: widget.imageWidth)).toList();
         setPngList(millisDelay, pngStackList);
         millisDelay += 500;
