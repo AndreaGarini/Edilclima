@@ -1,4 +1,4 @@
-# edilclima_app
+# Edilclima
 
 A new Flutter project.
 

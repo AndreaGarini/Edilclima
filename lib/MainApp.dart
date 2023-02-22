@@ -124,6 +124,7 @@ class MainApp extends StatelessWidget{
             fontFamily: 'Roboto'
         ),
         routerConfig: router,
+        debugShowCheckedModeBanner: false,
       );
   }
 }
