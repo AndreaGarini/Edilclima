@@ -40,31 +40,31 @@ class GameLogic {
 
   List<CardData> CardsList = [
     //inv
-    CardData("inv01", "Muro base",  0, 0, -10, -10, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 2),
-    CardData("inv02", "Cappotto EPS", -7, -10, 10, 10, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 2),
-    CardData("inv03", "Cappotto Fibra di Legno", -10, -15, 15, 10, cardType.Inv, mulType.Fac, [Pair(influence.None, null)],  2),
+    CardData("inv01", "Muro base",  0, 0, -10, -10, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 1),
+    CardData("inv02", "Cappotto EPS", -7, -10, 10, 10, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 1),
+    CardData("inv03", "Cappotto Fibra di Legno", -10, -15, 15, 10, cardType.Inv, mulType.Fac, [Pair(influence.None, null)],  1),
     CardData("inv04", "Tetto base", 0, 0, -10, -10, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 1 ),
-    CardData("inv05", "Isolamento tetto in poliuretano",  -12, -10, 10, 15, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 2 ),
+    CardData("inv05", "Isolamento tetto in poliuretano",  -12, -10, 10, 15, cardType.Inv, mulType.Fac, [Pair(influence.None, null)], 1 ),
     CardData("inv06", "Isolamento tetto in fibra di legno",  -17, -15, 15, 20, cardType.Inv, mulType.Fac, [Pair(influence.None, null)] ,1 ),
-    CardData("inv07", "Serramenti a vetro singolo", -2, 0, 5, 5, cardType.Inv, mulType.Int, [Pair(influence.None, null)] ,2 ),
+    CardData("inv07", "Serramenti a vetro singolo", -2, 0, 5, 5, cardType.Inv, mulType.Int, [Pair(influence.None, null)] ,1 ),
     CardData("inv08", "Serramenti in legno doppio vetro", -5, -5, 15, 10, cardType.Inv, mulType.Int, [Pair(influence.None, null)], 1 ),
     CardData("inv09", "Serramenti in PVC doppio vetro",  -4, -5, 10, 10, cardType.Inv, mulType.Int, [Pair(influence.None, null)], 1),
     CardData("inv10", "Serramenti in PVC triplo vetro", -6, -7, 15, 10, cardType.Inv, mulType.Int, [Pair(influence.None, null)], 1,),
 
     //imp
     CardData("imp01", "Radiatori", -5, 7, -5, 20, cardType.Imp, mulType.Int, [Pair(influence.Card,
-        CardInfluence("inv", {"A": 1.3, "E" : 1.3, "C" : 1.3}, true, 3))], 2),
-    CardData("imp02", "Pannelli a pavimento", -9, 5, 5, 20, cardType.Imp, mulType.Int,[Pair(influence.None, null)], 2),
-    CardData("imp03", "Caldaia tradizionale", -100, -5, -15, 35, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 2),
+        CardInfluence("inv", {"A": 1.3, "E" : 1.3, "C" : 1.3}, true, 3))], 1),
+    CardData("imp02", "Pannelli a pavimento", -9, 5, 5, 20, cardType.Imp, mulType.Int,[Pair(influence.None, null)], 1),
+    CardData("imp03", "Caldaia tradizionale", -100, -5, -15, 35, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 1),
     CardData("imp04", "Caldaia a condensazione", -150, -5, -10, 35, cardType.Imp, mulType.Fac, [Pair(influence.None, null)],  1),
-    CardData("imp05", "Caldaia a pellet", -300, -10, -5, 40, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 2),
+    CardData("imp05", "Caldaia a pellet", -300, -10, -5, 40, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 1),
     CardData("imp06", "Sistema ibrido", -550, -15, 0, 40, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 1),
     CardData("imp07", "Pompa di calore geotermica",  -1400, -20, -20, 40, cardType.Imp, mulType.Fac,
         [Pair(influence.Card,
               CardInfluence("imp01", {"A": 1.2, "E" : 1.2, "C" : 1.2}, false, null)),
           Pair(influence.Card,
               CardInfluence("imp02", {"A": 1.2, "E" : 1.2, "C" : 1.2}, false, null))], 1),
-    CardData("imp08", "Pompa di calore tradizionale", -900, -15, -20, -35, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 2),
+    CardData("imp08", "Pompa di calore tradizionale", -900, -15, -20, -35, cardType.Imp, mulType.Fac, [Pair(influence.None, null)], 1),
     CardData("imp09", "Solare termico",  -200, -5, 20, 20, cardType.Imp, mulType.Fac, [Pair(influence.None, null)],1),
     CardData("imp10", "Fotovoltaico",  -600, -10, 25, 25, cardType.Imp, mulType.Fac, [Pair(influence.None, null)],1),
     CardData("imp11", "Batteria di accumulo", -600, 0, 10, 5, cardType.Imp, mulType.Fac, [Pair(influence.None, null)],1),
@@ -122,9 +122,8 @@ class GameLogic {
     return resultingMap;
   }
 
-  Map<String, Map<String, Object>> createTeamsOnDb(){
+  Map<String, Map<String, Object>> createTeamsOnDb(List<String> teams){
     Map<String, Map<String, Object>> resultingMap = {};
-    var teams = ["team1", "team2", "team3", "team4"];
     for (final team in teams){
       resultingMap.putIfAbsent(team, () => {"ableToPlay" : "",
         "playedCards" : "",
@@ -134,7 +133,7 @@ class GameLogic {
     return resultingMap;
   }
 
-  Map<String, Map<String, bool>> CardsToPLayers(int level){
+  Map<String, Map<String, bool>> CardsToPlayers(int level){
     Map<String, Map<String, bool>> resultingMap = {};
 
     var startingCardDatasSet = CardsList.where((element) => (!zoneMap[level]!.startingList.contains(element.code) && element.level==level))
@@ -347,6 +346,8 @@ class GameLogic {
         });
       }
 
+      //print("points after cards: $points");
+
       if(objective!=""){
         switch(objective){
           case "smog" : {
@@ -385,7 +386,12 @@ class GameLogic {
         }
       }
 
+
+      //print("points after objective: $points");
+
       points -= (moves * movesNegPoints);
+
+      //print("points after moves: $points");
 
       return TeamInfo(budget, smog, energy, comfort, points >= 0 ? points : 0, moves);
     }

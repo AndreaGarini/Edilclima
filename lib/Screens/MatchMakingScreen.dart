@@ -33,6 +33,12 @@ class MatchMakingState extends State<MatchMakingScreen> {
 
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
+      //todo: aggiungi qui l'uid del master
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        //gameModel.joinMatchWithAuth();
+      });
+
+
       gameModel.setPlayerCounter();
 
       dynamicWidget(bool state) {

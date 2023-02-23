@@ -87,7 +87,9 @@ class MasterTutorialFeaturesState extends State<MasterTutorialFeatures> {
                             child: Stack(alignment: Alignment.center,
                                 children: [
                                   Container(color: Colors.transparent, height: screenHeight * 0.2, width:  screenHeight * 0.2,
-                                    child: GameBoardChartBar("smog", "team1", screenHeight)),
+                                    child: CircularProgressIndicator(value: 0.4,
+                                        color: Color.lerp(lightBluePalette.withAlpha(200), lightBluePalette, 0.4)
+                                        ,strokeWidth: screenHeight / 2 * 0.075)),
                                 ]))))
               ]))),
     const Spacer()

@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'dart:math';
 import 'package:edilclima_app/GameLogic.dart';
 import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,12 +33,12 @@ class GameModel extends ChangeNotifier{
   bool ongoingLevel = false;
   int? levelTimerCountdown;
   String? masterContextCode;
-  Map<String, Function?> gameBoardPngCallback = {"team1" : null, "team2" : null, "team3" : null, "team4" : null};
 
-  Map <String, Map<String, CardData>?> playedCardsPerTeam = {"team1" : {}, "team2" : {}, "team3" : {}, "team4" : {}};
+  Map<String, Function?> gameBoardPngCallback = {};
+  Map <String, Map<String, CardData>?> playedCardsPerTeam = {};
   Map<String, TeamInfo?> teamStats = {};
-  Map<String, String> ableToPlayPerTeam = {"team1" : "", "team2" : "", "team3" : "", "team4" : "" };
-  Map<String, String> objectivePerTeam = {"team1" : "", "team2" : "", "team3" : "", "team4" : "" };
+  Map<String, String> ableToPlayPerTeam = {};
+  Map<String, String> objectivePerTeam = {};
 
 
   //variabili lato player
@@ -58,6 +59,32 @@ class GameModel extends ChangeNotifier{
   //variabili sia master che player per schermate di splash e error
   bool splash = false;
   bool error = false;
+
+  Future<bool> checkMasterPassword(String string) async{
+    return await db.child("password").get()
+        .then((value) {
+      if(value.value.toString() == string){
+        return masterRegisteredYet().then((value) async {
+          if(!value) {
+            await FirebaseAuth.instance.signInAnonymously()
+                .then((value) => db.child("masters").child(value.user!.uid).set(true));
+          }
+          return true;
+        });
+      }
+      else{
+        return false;
+      }
+    });
+  }
+
+  Future<bool> masterRegisteredYet() async{
+    return await db.child("masters").get().then((value) {
+      return (FirebaseAuth.instance.currentUser!=null &&
+          value.children.map((e) => e.key as String).contains(FirebaseAuth.instance.currentUser!.uid));
+    });
+  }
+
 
   void createNewMatch() async {
     await db.set({
@@ -108,6 +135,10 @@ class GameModel extends ChangeNotifier{
         }
         break;
       }
+      ableToPlayPerTeam = { for (var e in teamsNames) e : "" };
+      objectivePerTeam = { for (var e in teamsNames) e : "" };
+      playedCardsPerTeam = { for (var e in teamsNames) e : {}};
+      gameBoardPngCallback = { for (var e in teamsNames) e : null};
     });
     Context context = gameLogic.contextList[Random().nextInt(gameLogic.contextList.length)];
     masterContextCode = context.code;
@@ -115,7 +146,7 @@ class GameModel extends ChangeNotifier{
           db.child("matches").child("test").child("players").set(
               gameLogic.selectTeamForPlayers(value)
           )).
-      then((_) { db.child("matches").child("test").child("teams").set(gameLogic.createTeamsOnDb());}).
+      then((_) { db.child("matches").child("test").child("teams").set(gameLogic.createTeamsOnDb(teamsNames));}).
       then((_) {
         giveCardsToPlayers(1);}).
     then((_) => gameLogic.masterLevelCounter = 1);
@@ -135,8 +166,9 @@ class GameModel extends ChangeNotifier{
 
 
   void giveCardsToPlayers(int level) async{
-    Map<String, Map<String, bool>> cardsPerPlayerMap = gameLogic.CardsToPLayers(level);
+    Map<String, Map<String, bool>> cardsPerPlayerMap = gameLogic.CardsToPlayers(level);
 
+    print("give cards to player called");
     await db.child("matches").child("test").child("players").get().then((value) =>{
       for (final player in value.children){
         db.child("matches").child("test").child("players").child(player.key!)
@@ -157,7 +189,7 @@ class GameModel extends ChangeNotifier{
 
   void setDrawableCards(int level) async{
     //todo: definisci la lista delle drawable cards (non metterci le ricerche)
-    //todo: aggiungi un pushResult per quando le drawable sono finite(non metterci le ricerche)
+    //todo: aggiungi un pushResult per quando le drawable sono finite
     Map<String, bool> drawableCardsPerLevel = gameLogic.createDrawableCardsMap(level);
     drawableCardsPerLevel.putIfAbsent("void", () => false);
 
@@ -167,7 +199,6 @@ class GameModel extends ChangeNotifier{
             .child("drawableCards").set(drawableCardsPerLevel)
       }
       });
-
   }
 
   void changePushValue(Pair newPush){
@@ -210,47 +241,57 @@ class GameModel extends ChangeNotifier{
     }
   }
 
-  void addPlayedCardsListener() {
+  void addPlayedCardsListener() async {
     Map<String, Map<String, CardData>?> avatarMap = {};
 
     //todo: controlla che giocando una carta o perdendola il numero di moves salga di uno
-    for (final team in playedCardsPerTeam.keys){
-      db.child("matches").child("test").child("teams").child(team).child("playedCards").onValue.listen((event) {
-        if(event.snapshot.children.length - 1 != playedCardsPerTeam[team]!.length){
-          //questo if serve per fare in modo che i dati cambino solo se una carta è stata presa o posizionata,
-          //e non solo se il listener è stato triggerato
-          if(gameBoardPngCallback[team]!=null){
-            triggerGameBoardCallback(team, event.snapshot);
-          }
-          Map<String, CardData> map = {};
-          for (final playedCard in event.snapshot.children){
-            if (playedCard.value.toString() != "no Card")
-              {
-                String? contextCode = masterContextCode ?? playerContextCode;
-                int playerCounter = playerLevelCounter!=0 ? playerLevelCounter : gameLogic.masterLevelCounter;
-                map.putIfAbsent(playedCard.key.toString(),
-                        () => gameLogic.findCard(playedCard.value.toString(), contextCode!, playerCounter)!);
-              }
-          }
-          newStatsPerTeam(team, map);
-          avatarMap = playedCardsPerTeam;
-          avatarMap.remove(team);
-          avatarMap.putIfAbsent(team, () => gameLogic.obtainPlayedCardsStatsMap(map));
-          playedCardsPerTeam = avatarMap;
-          notifyListeners();
-        }
-        else if(event.snapshot.children.length == 1
-            && event.snapshot.children.single.key=="void"){
-          Map<String, CardData> map = {};
-          newStatsPerTeam(team, map);
-          avatarMap = playedCardsPerTeam;
-          avatarMap.remove(team);
-          avatarMap.putIfAbsent(team, () => gameLogic.obtainPlayedCardsStatsMap(map));
-          playedCardsPerTeam = avatarMap;
-          notifyListeners();
-        }
-      });
-    }
+    //todo: chiamata troppe volte
+       for (final team in teamsNames){
+
+         print("for called in played cards listener");
+
+         db.child("matches").child("test").child("teams").child(team).child("playedCards").onValue.listen((event) {
+           if(event.snapshot.children.length - 1 != playedCardsPerTeam[team]!.length){
+             print("event snapshot legnth: ${event.snapshot.children.length}");
+             print("played cards length: ${playedCardsPerTeam[team]!.length}");
+
+             //questo if serve per fare in modo che i dati cambino solo se una carta è stata presa o posizionata,
+             //e non solo se il listener è stato triggerato
+             if(gameBoardPngCallback[team]!=null){
+               triggerGameBoardCallback(team, event.snapshot);
+             }
+             Map<String, CardData> map = {};
+             for (final playedCard in event.snapshot.children){
+               if (playedCard.value.toString() != "no Card")
+               {
+                 String? contextCode = masterContextCode ?? playerContextCode;
+                 int playerCounter = playerLevelCounter!=0 ? playerLevelCounter : gameLogic.masterLevelCounter;
+                 map.putIfAbsent(playedCard.key.toString(),
+                         () => gameLogic.findCard(playedCard.value.toString(), contextCode!, playerCounter)!);
+               }
+             }
+             newStatsPerTeam(team, map);
+             avatarMap = playedCardsPerTeam;
+             avatarMap.remove(team);
+             avatarMap.putIfAbsent(team, () => gameLogic.obtainPlayedCardsStatsMap(map));
+             print("avatar map length: ${avatarMap[team]!.length}");
+             playedCardsPerTeam = avatarMap;
+             print("played cards per team length after avatar: ${playedCardsPerTeam[team]!.length}");
+             notifyListeners();
+           }
+           else if(event.snapshot.children.length == 1
+               && event.snapshot.children.single.key=="void"){
+             Map<String, CardData> map = {};
+             newStatsPerTeam(team, map);
+             avatarMap = playedCardsPerTeam;
+             avatarMap.remove(team);
+             avatarMap.putIfAbsent(team, () => gameLogic.obtainPlayedCardsStatsMap(map));
+             playedCardsPerTeam = avatarMap;
+             notifyListeners();
+           }
+         });
+       }
+
   }
 
   void triggerGameBoardCallback(String team, DataSnapshot snapshot){
@@ -282,7 +323,7 @@ class GameModel extends ChangeNotifier{
   }
 
   void addTeamTimeOutListener(){
-    for (final team in ["team1", "team2", "team3", "team4"]){
+    for (final team in teamsNames){
       db.child("matches").child("test").child("teams").child(team).child("ableToPlay").onValue.listen((event) {
         if(event.snapshot.value.toString() == ""){
           String newPlayer = gameLogic.findNextPlayer(team, ableToPlayPerTeam[team]!);
@@ -370,6 +411,10 @@ class GameModel extends ChangeNotifier{
         .child(count.toString()).set("").then((_) => count++);
   }
 
+  void joinMatchWithAuth() async{
+    await FirebaseAuth.instance.signInAnonymously().then((value) => print("auth value: ${value.user!.uid}"));
+  }
+
   Future<bool?> matchJoinedYet() async{
 
     //todo: fai in modo che ci sia il check sull' uid, e che in nessun modo il master
@@ -441,11 +486,25 @@ class GameModel extends ChangeNotifier{
   }
 
   //per preparare il giocatore alla partita
-  void playerReadyToPlay(){
-    bindCardsForPlayer();
-    notifyAbleToPlayChange();
-    addPlayedCardsListener();
-    addDrawableCardsListener();
+  void playerReadyToPlay() async {
+    initPlayerCollections().then((_) {
+      bindCardsForPlayer();
+      notifyAbleToPlayChange();
+      addPlayedCardsListener();
+      addDrawableCardsListener();
+    });
+  }
+
+  Future<void> initPlayerCollections() async {
+    return db.child("matches").child("test").child("teams").get().then((value) {
+
+      teamsNames = value.children.map((e) => e.key as String).toList();
+
+      ableToPlayPerTeam = { for (var e in teamsNames) e : "" };
+      objectivePerTeam = { for (var e in teamsNames) e : "" };
+      playedCardsPerTeam = { for (var e in teamsNames) e : {}};
+      gameBoardPngCallback = { for (var e in teamsNames) e : null};
+    });
   }
 
   void setTutorialDone(){
@@ -640,30 +699,38 @@ class GameModel extends ChangeNotifier{
     });
   }
 
-  Future<CardData> discardCardMech(int selectedCardPos) async{
-
+  Future<CardData> discardCardMech(int selectedCardPos) async {
     String selectedCardCode = playerCards[selectedCardPos].code;
 
-    if(lastDrawnCards.contains(selectedCardCode)){
+    if (lastDrawnCards.contains(selectedCardCode)) {
       lastDrawnCards.remove(selectedCardCode);
     }
 
-    return await db.child("matches").child("test").child("teams").child(team).child("drawableCards")
-    .get().then((drawableCards) async{
-      return await db.child("matches").child("test").child("teams").child(team).child("drawableCards")
-          .child(selectedCardCode).set(true).then((value) async {
-           String extractedCardCode;
-            do{
-              int extractedPos = Random().nextInt(drawableCards.children.length - 1);
-              extractedCardCode = drawableCards.children.toList()[extractedPos].key!;
-             } while(extractedCardCode=="void");
-            lastDrawnCards.add(extractedCardCode);
-            return await db.child("matches").child("test").child("players").child("1").child("ownedCards")
-            .child(selectedCardCode).remove().then((value) async{
-              return await db.child("matches").child("test").child("players").child("1").child("ownedCards")
-                  .child(extractedCardCode).set(true).then((_) =>
-              gameLogic.findCard(extractedCardCode, playerContextCode!, playerLevelCounter)!);
-            });
+    return await db.child("matches").child("test").child("teams").child(team)
+        .child("drawableCards")
+        .get()
+        .then((drawableCards) async {
+      return await db.child("matches").child("test").child("teams").child(team)
+          .child("drawableCards")
+          .child(selectedCardCode).set(true)
+          .then((value) async {
+        String extractedCardCode;
+        do {
+          int extractedPos = Random().nextInt(
+              drawableCards.children.length - 1);
+          extractedCardCode =
+          drawableCards.children.toList()[extractedPos].key!;
+        } while (extractedCardCode == "void");
+        lastDrawnCards.add(extractedCardCode);
+        return await db.child("matches").child("test").child("players").child(
+            "1").child("ownedCards")
+            .child(selectedCardCode).remove().then((value) async {
+          return await db.child("matches").child("test").child("players").child(
+              "1").child("ownedCards")
+              .child(extractedCardCode).set(true).then((_) =>
+          gameLogic.findCard(
+              extractedCardCode, playerContextCode!, playerLevelCounter)!);
+        });
       });
     });
   }

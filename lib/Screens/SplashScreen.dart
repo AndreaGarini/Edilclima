@@ -18,10 +18,12 @@ class SplashScreen extends StatefulWidget{
 class SpashScreenState extends State<SplashScreen> {
 
   bool pushRoute = false;
+  late bool dbCalled;
 
   @override
   void initState() {
     super.initState();
+    dbCalled = false;
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -35,7 +37,9 @@ class SpashScreenState extends State<SplashScreen> {
 
       //todo: fai un test senza connessione, per vedere se almeno non si rompe anche senza dati
       WidgetsBinding.instance?.addPostFrameCallback((_) {
-        updateData(gameModel);
+        if(!dbCalled){
+          updateData(gameModel);
+        }
         if (gameModel.playerLevelCounter >0 && gameModel.playerLevelStatus != null) {
           if(!pushRoute){
             pushRoute = true;
@@ -57,6 +61,7 @@ class SpashScreenState extends State<SplashScreen> {
   }
 
   Future<void> updateData(GameModel gm) async{
+    dbCalled = true;
     return Future<void>.delayed(const Duration(milliseconds: 0), () {gm.playerReadyToPlay();});
   }
 }
