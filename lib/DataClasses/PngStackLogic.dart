@@ -8,9 +8,20 @@ class PngStackLogic {
 
   List<String> pngStack = [];
 
+  List<String> playedCards = [];
+
+  Map<int, List<String>> initPlayedCardsPerLevel = {
+    1: [
+      "inv01", "inv02", "imp03", "oth01"
+    ],
+    2: [],
+    3: [],
+    4: [],
+  };
+
   Map<int, List<String>> initPngStackPerLevel = {
     1 : ['assets/gameBoardPng/Casa/MuriEsterno.png',
-      'assets/gameBoardPng/Casa/MuriCappotto.png',
+      'assets/gameBoardPng/Casa/MuriCappottoBase.png',
       'assets/gameBoardPng/Casa/MuriInterno.png',
       'assets/gameBoardPng/Casa/PavimentoBase.png',
       'assets/gameBoardPng/Casa/PavimentoRivestimento.png',
@@ -28,15 +39,15 @@ class PngStackLogic {
 
   Map<String, List<PngAction>> pngActionPerCard = {
     "inv01" : [PngAction("assets/gameBoardPng/Casa/MuriInterno.png", false),
-      PngAction("assets/gameBoardPng/Casa/MuriCappotto.png", false),
+      PngAction("assets/gameBoardPng/Casa/MuriCappotto", false),
       PngAction("assets/gameBoardPng/Casa/MuriCappottoBase.png", true),
       PngAction("assets/gameBoardPng/Casa/MuriInterno.png", true)],
     "inv02" : [PngAction("assets/gameBoardPng/Casa/MuriInterno.png", false),
-      PngAction("assets/gameBoardPng/Casa/MuriCappotto.png", false),
+      PngAction("assets/gameBoardPng/Casa/MuriCappotto", false),
       PngAction("assets/gameBoardPng/Casa/MuriCappottoEPS.png", true),
       PngAction("assets/gameBoardPng/Casa/MuriInterno.png", true)],
     "inv03" : [PngAction("assets/gameBoardPng/Casa/MuriInterno.png", false),
-      PngAction("assets/gameBoardPng/Casa/MuriCappotto.png", false),
+      PngAction("assets/gameBoardPng/Casa/MuriCappotto", false),
       PngAction("assets/gameBoardPng/Casa/MuriCappottoFibraLegno.png", true),
       PngAction("assets/gameBoardPng/Casa/MuriInterno.png", true)],
     "inv04" : [PngAction("assets/gameBoardPng/Casa/Tegole.png", false),
@@ -51,21 +62,13 @@ class PngStackLogic {
       PngAction("assets/gameBoardPng/Casa/TettoRivestimento", false),
       PngAction("assets/gameBoardPng/Casa/TettoRivestimentoFibraLegno.png", true),
       PngAction("assets/gameBoardPng/Casa/Tegole.png", true)],
-    "inv07" : [PngAction("assets/gameBoardPng/Casa/FinestraVetri.png", false),
-      PngAction("assets/gameBoardPng/Casa/Finestra.png", false),
-      PngAction("assets/gameBoardPng/Casa/FinestraBase.png", true),
+    "inv07" : [PngAction("assets/gameBoardPng/Casa/FinestraBase.png", true),
       PngAction("assets/gameBoardPng/Casa/FinestraVetri.png", true)],
-    "inv08" : [PngAction("assets/gameBoardPng/Casa/FinestraVetri.png", false),
-      PngAction("assets/gameBoardPng/Casa/Finestra", false),
-      PngAction("assets/gameBoardPng/Casa/FinestraLegno.png", true),
+    "inv08" : [PngAction("assets/gameBoardPng/Casa/FinestraLegno.png", true),
       PngAction("assets/gameBoardPng/Casa/FinestraVetri.png", true)],
-    "inv09" : [PngAction("assets/gameBoardPng/Casa/FinestraVetri.png", false),
-      PngAction("assets/gameBoardPng/Casa/Finestra", false),
-      PngAction("assets/gameBoardPng/Casa/FinestraPVC2.png", true),
+    "inv09" : [PngAction("assets/gameBoardPng/Casa/FinestraPVC2.png", true),
       PngAction("assets/gameBoardPng/Casa/FinestraVetri.png", true)],
-    "inv10" : [PngAction("assets/gameBoardPng/Casa/FinestraVetri.png", false),
-      PngAction("assets/gameBoardPng/Casa/Finestra", false),
-      PngAction("assets/gameBoardPng/Casa/FinestraPVC3.png", true),
+    "inv10" : [PngAction("assets/gameBoardPng/Casa/FinestraPVC3.png", true),
       PngAction("assets/gameBoardPng/Casa/FinestraVetri.png", true)],
     "imp01" : [PngAction("assets/gameBoardPng/Casa/Termosifoni.png", true)],
     "imp02" : [PngAction("assets/gameBoardPng/Casa/PavimentoRivestimento.png", false),
@@ -102,7 +105,7 @@ class PngStackLogic {
   Map<int,List<String>> fullPngStackPerLevel = {
     1 : [
       'assets/gameBoardPng/Casa/MuriEsterno.png',
-      'assets/gameBoardPng/Casa/MuriCappotto.png',
+      'assets/gameBoardPng/Casa/MuriCappottoBase.png',
       'assets/gameBoardPng/Casa/MuriCappottoEPS.png',
       'assets/gameBoardPng/Casa/MuriCappottoFibraLegno.png',
       'assets/gameBoardPng/Casa/MuriInterno.png',
@@ -125,13 +128,14 @@ class PngStackLogic {
       'assets/gameBoardPng/Casa/PannelloFotovoltaico.png',
       'assets/gameBoardPng/Casa/PannelloSolare.png',
       'assets/gameBoardPng/Casa/FinestraVetri.png',
-      'assets/gameBoardPng/Casa/FinestraVecchia.png',
+      'assets/gameBoardPng/Casa/FinestraBase.png',
       'assets/gameBoardPng/Casa/FinestraLegno.png',
       'assets/gameBoardPng/Casa/FinestraPVC2.png',
       'assets/gameBoardPng/Casa/FinestraPVC3.png',
       'assets/gameBoardPng/Casa/Accumulo.png',
       'assets/gameBoardPng/Casa/Termosifoni.png',
       'assets/gameBoardPng/Casa/PompaCaloreBase.png',
+      'assets/gameBoardPng/Casa/PompaCaloreGeo.png',
       'assets/gameBoardPng/Casa/VentMeccanica.png'],
     2 : [],
     3 : [],
@@ -145,12 +149,37 @@ class PngStackLogic {
   //todo: qui passare anche il context e creare lo sfondo in base al context
   List<String> setPngStackFromLevel(int level){
     pngStack = initPngStackPerLevel[level]!;
+    playedCards = initPlayedCardsPerLevel[level]!;
     return pngStack;
   }
 
   List<List<String>> getNewPngStack(String cardCode, bool isPlayed, int level){
 
     List<List<String>> finalPngStackList = [];
+
+    if(isPlayed && !playedCards.contains(cardCode)){
+      //play card
+      playedCards.add(cardCode);
+    }
+    else {
+      //retrieve card
+      playedCards.remove(cardCode);
+    }
+
+    List<String> onlyAddPngStack = [];
+    for (String card in playedCards){
+      for(PngAction action in pngActionPerCard[card]!){
+        if(action.second()){
+          onlyAddPngStack.add(action.first());
+        }
+      }
+      for (String startingPng in initPngStackPerLevel[level]!){
+        if(!onlyAddPngStack.contains(startingPng)){
+          onlyAddPngStack.add(startingPng);
+        }
+      }
+    }
+
 
     if(isPlayed){
       //play card
@@ -194,15 +223,21 @@ class PngStackLogic {
           finalPngStackList.add(newPngStack);
         }
         else {
-          print("action first: ${action.first()}");
-          List<String> newPngStack = fullPngStackPerLevel[level]!.where((element) => pngStack.contains(element)).toList();
-          if(!newPngStack.any((element) => element.contains(action.first()))){
-            newPngStack.add("${action.first()}Base.png");
-          }
-          newPngStack.sort((a, b) => fullPngStackPerLevel[level]!.indexOf(a).compareTo(fullPngStackPerLevel[level]!.indexOf(b)));
-          print("new png stack in retrieve card: $newPngStack");
-          pngStack = newPngStack;
-          finalPngStackList.add(newPngStack);
+            List<String> newPngStack = fullPngStackPerLevel[level]!.where((element) => pngStack.contains(element)).toList();
+            bool genericPath = !fullPngStackPerLevel[level]!.any((png) => png == action.first());
+            bool hasSubstitute = onlyAddPngStack.any((png) => png.contains(action.first()));
+
+            if(genericPath && hasSubstitute){
+              List<String> substitutePng = onlyAddPngStack.where((png) => png.contains(action.first())).toList();
+              substitutePng.sort((a, b) => fullPngStackPerLevel[level]!.indexOf(a).compareTo(fullPngStackPerLevel[level]!.indexOf(b)));
+              newPngStack.add(substitutePng.last);
+            }
+            else if (!genericPath){
+              newPngStack.add(action.first());
+            }
+            newPngStack.sort((a, b) => fullPngStackPerLevel[level]!.indexOf(a).compareTo(fullPngStackPerLevel[level]!.indexOf(b)));
+            pngStack = newPngStack;
+            finalPngStackList.add(newPngStack);
           }
       }
     }

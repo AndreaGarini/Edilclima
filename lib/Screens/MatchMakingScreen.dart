@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../GameModel.dart';
 
@@ -20,10 +21,17 @@ class MatchMakingState extends State<MatchMakingScreen> {
 
   late bool playShakeAnim;
   late bool matchPrepared;
+  late bool matchCreated;
+  late String timestamp;
 
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
+    matchCreated = false;
     playShakeAnim = false;
     matchPrepared = false;
   }
@@ -33,13 +41,6 @@ class MatchMakingState extends State<MatchMakingScreen> {
 
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
-      //todo: aggiungi qui l'uid del master
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
-        //gameModel.joinMatchWithAuth();
-      });
-
-
-      gameModel.setPlayerCounter();
 
       dynamicWidget(bool state) {
         if(state) {
@@ -68,75 +69,95 @@ class MatchMakingState extends State<MatchMakingScreen> {
           Material(
           color: Colors.white,
           child:
-          Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-
-              children: [
-                Expanded(
-                  flex: 1, child: Row(crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Spacer(),
-                      Expanded(flex: 4,
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            const Spacer(flex: 1,),
-                            Expanded(flex: 1,
-                                child: ShakeWidget(
-                                  duration: const Duration(milliseconds: 1000),
-                                  shakeConstant: ShakeHorizontalConstant1(),
-                                  autoPlay: playShakeAnim,
-                                  enableWebMouseHover: true,
-                                  child: StylizedText(darkBluePalette, "Giocatori connessi : ${gameModel.playerCounter}",
-                                      screenWidth * 0.05, FontWeight.normal),
-                                )),
-                            const Spacer(flex: 1)
-                          ],),),
-                      const Spacer()
-                    ]
-                ),),
-                Expanded(
-                  flex: 1, child: Row(crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
+              Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max, children: [
+                  matchCreated ? Expanded(child: Center(child: QrImage(
+                  //todo: aggiungi qui il path corretto (che devi generare quando si preme crea nuovo match)
+                  data: "${gameModel.masterUid!}/$timestamp",
+                  size: 280,
+                  // You can include embeddedImageStyle Property if you
+                  //wanna embed an image from your Asset folder
+                  embeddedImageStyle: QrEmbeddedImageStyle(
+                    size: const Size(
+                      100,
+                      100,
+                    ),
+                  ),
+                ))) : const Spacer(),
+                Expanded(child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Spacer(),
-                      Expanded(flex: 2,
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                      Expanded(
+                        flex: 1, child: Row(crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Spacer(),
+                            Expanded(flex: 4,
+                              child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  const Spacer(flex: 1),
+                                  Expanded(flex: 1,
+                                      child: ShakeWidget(
+                                        duration: const Duration(milliseconds: 1000),
+                                        shakeConstant: ShakeHorizontalConstant1(),
+                                        autoPlay: playShakeAnim,
+                                        enableWebMouseHover: true,
+                                        child: StylizedText(darkBluePalette, "Giocatori connessi : ${gameModel.playerCounter}",
+                                            screenWidth * 0.05, FontWeight.normal),
+                                      )),
+                                  const Spacer(flex: 1)
+                                ])),
+                            const Spacer()
+                          ]
+                      )),
+                      Expanded(
+                        flex: 1, child: Row(crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Spacer(),
+                            Expanded(flex: 2,
+                              child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  const Spacer(),
+                                  Expanded(flex: 1,
+                                      child: SizedButton(
+                                          screenWidth * 0.4, "Crea un nuovo match", !matchPrepared ?  () {
+                                            String tmp = DateTime.now().millisecondsSinceEpoch.toString();
+                                            setState((){
+                                              matchCreated = true;
+                                              timestamp = tmp;
+                                            });
+                                        gameModel.createNewMatch(tmp);
+                                      } : null )),
+                                  const Spacer()
+                                ],),),
+                            Spacer()
+                          ]
+                      ),),
+                      Expanded(
+                        flex: 1, child: Row(crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             const Spacer(),
-                            Expanded(flex: 1,
-                                child: SizedButton(
-                                    screenWidth * 0.4, "Crea un nuovo match", !matchPrepared ?  () {
-                                  gameModel.createNewMatch();
-                                } : null )),
+                            Expanded(flex: 2,
+                              child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  const Spacer(),
+                                  dynamicWidget(gameModel.startMatch),
+                                  const Spacer()
+                                ],),),
                             const Spacer()
-                          ],),),
-                      Spacer()
-                    ]
-                ),),
-                Expanded(
-                  flex: 1, child: Row(crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      const Spacer(),
-                      Expanded(flex: 2,
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            const Spacer(),
-                            dynamicWidget(gameModel.startMatch),
-                            const Spacer()
-                          ],),),
-                      const Spacer()
-                    ]
-                ),),
-              ]
-          ))
+                          ]
+                      )),
+                    ]))
+                ])
+          )
       );
     });
   }

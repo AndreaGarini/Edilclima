@@ -25,6 +25,8 @@ class GameBoardChartBarState extends State<GameBoardChartBar>
 with TickerProviderStateMixin{
 
   late AnimationController indicatorController;
+  late AnimationController fullBarController;
+  late bool fullBar;
   Color barColorStart = Colors.white;
   Color barColorEnd = Colors.white;
   int playedCardsNum = 0;
@@ -32,16 +34,25 @@ with TickerProviderStateMixin{
   double startChartBarRatio = 0;
   String? barTypology;
   Widget chartContent = const Spacer();
+  int startBarValue = 0;
+
 
   void initState() {
     super.initState();
     indicatorController = AnimationController(vsync: this, duration: const Duration(seconds: 3));
+    fullBarController = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
+    fullBarController.addListener(() {
+      setState(() {
+      });
+    });
+    fullBar = false;
   }
 
   @override
   void dispose(){
     super.dispose();
     indicatorController.dispose();
+    fullBarController.dispose();
   }
 
   Widget staticChartBar(){
@@ -49,8 +60,17 @@ with TickerProviderStateMixin{
         ,strokeWidth: widget.usableHeight * 0.075);
   }
 
+  Widget fullChartBar() {
+          var colorAnim = ColorTween(begin: barColorEnd, end: barColorEnd.withOpacity(0.5)).animate(fullBarController);
+          return CircularProgressIndicator(value: 1, valueColor: colorAnim,
+              strokeWidth: widget.usableHeight * 0.075 + (widget.usableHeight * 0.02 * fullBarController.value));
+      }
+
 
   Widget dynamicChartBar(GameModel gameModel, Function animCallback) {
+      if(startBarValue == 0){
+        startBarValue = setStartBarValue(gameModel);
+      }
       calculateNewBarRatio(gameModel);
 
       if(endChartBarRatio!=startChartBarRatio){
@@ -78,21 +98,36 @@ with TickerProviderStateMixin{
       setState(() {
         startChartBarRatio = endChartBarRatio;
         playedCardsNum = gameModel.playedCardsPerTeam[widget.team]!.length;
+        if(endChartBarRatio==1){
+          fullBar = true;
+          fullBarController.repeat(reverse : true);
+          setFullBarFalse();
+        }
       });
     }
+  }
+
+  void fullBarCallback(){
+    setState(() {
+      setFullBarFalse();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
 
-
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
-      if(playedCardsNum != gameModel.playedCardsPerTeam[widget.team]?.length){
-        chartContent = dynamicChartBar(gameModel, animCallback);
+      if(fullBar){
+          chartContent = fullChartBar();
       }
       else{
-        chartContent = staticChartBar();
+          if(playedCardsNum != gameModel.playedCardsPerTeam[widget.team]?.length){
+            chartContent = dynamicChartBar(gameModel, animCallback);
+          }
+          else{
+            chartContent = staticChartBar();
+          }
       }
 
       return chartContent;
@@ -154,12 +189,12 @@ with TickerProviderStateMixin{
     switch(objType){
       case "smog" : {
         int target = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.TargetA;
-        Context context = gameModel.gameLogic.contextList.where((element) => element.code==gameModel.masterContextCode).single;
-        int baseInitStat = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initSmog;
-        int contextModInitStat = (baseInitStat * context.startStatsInfluence["A"]!).round();
+        //Context context = gameModel.gameLogic.contextList.where((element) => element.code==gameModel.masterContextCode).single;
+        //int baseInitStat = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initSmog;
+        //int contextModInitStat = (baseInitStat * context.startStatsInfluence["A"]!).round();
 
-        int  maxRange = (contextModInitStat - target).abs();
-        int actualRange = (teamInfo!.smog! - contextModInitStat);
+        int  maxRange = (startBarValue! - target).abs();
+        int actualRange = (teamInfo!.smog! - startBarValue!);
 
         if(actualRange < 0){
           ratio = (actualRange.abs() / maxRange).abs();
@@ -167,17 +202,16 @@ with TickerProviderStateMixin{
         else{
           ratio = 0.03;
         }
-
       }
       break;
       case "energy" : {
         int target = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.TargetE;
-        Context context = gameModel.gameLogic.contextList.where((element) => element.code==gameModel.masterContextCode).single;
-        int baseInitStat = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initEnergy;
-        int contextModInitStat = (baseInitStat * context.startStatsInfluence["E"]!).round();
+        //Context context = gameModel.gameLogic.contextList.where((element) => element.code==gameModel.masterContextCode).single;
+        //int baseInitStat = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initEnergy;
+        //int contextModInitStat = (baseInitStat * context.startStatsInfluence["E"]!).round();
 
-        int  maxRange = (contextModInitStat - target).abs();
-        int actualRange = (teamInfo!.energy! - contextModInitStat);
+        int  maxRange = (startBarValue - target).abs();
+        int actualRange = (teamInfo!.energy! - startBarValue);
 
         if(actualRange > 0){
           ratio = (actualRange.abs() / maxRange).abs();
@@ -189,12 +223,12 @@ with TickerProviderStateMixin{
       break;
       case "comfort" : {
         int target = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.TargetC;
-        Context context = gameModel.gameLogic.contextList.where((element) => element.code==gameModel.masterContextCode).single;
-        int baseInitStat = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initComfort;
-        int contextModInitStat = (baseInitStat * context.startStatsInfluence["C"]!).round();
+        //Context context = gameModel.gameLogic.contextList.where((element) => element.code==gameModel.masterContextCode).single;
+        //int baseInitStat = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initComfort;
+        //int contextModInitStat = (baseInitStat * context.startStatsInfluence["C"]!).round();
 
-        int  maxRange = (contextModInitStat - target).abs();
-        int actualRange = (teamInfo!.comfort! - contextModInitStat);
+        int  maxRange = (startBarValue! - target).abs();
+        int actualRange = (teamInfo!.comfort! - startBarValue!);
 
         if(actualRange > 0){
           ratio = (actualRange.abs() / maxRange).abs();
@@ -209,11 +243,73 @@ with TickerProviderStateMixin{
         ratio = 0;
       }
       break;
-
     }
 
     if(ratio > 1) return 1;
     else return ratio;
+  }
+
+  setStartBarValue(GameModel gameModel){
+
+    String objType = gameModel.objectivePerTeam[widget.team]!;
+    int lv = gameModel.gameLogic.masterLevelCounter;
+    Context context = gameModel.gameLogic.contextList.where((element) => element.code==gameModel.masterContextCode).single;
+
+    int startValue = 0;
+
+    switch(objType){
+      case "smog" : {
+        int baseInitStat = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initSmog;
+        startValue = (baseInitStat * context.startStatsInfluence["A"]!).round();
+
+          gameModel.gameLogic.obtainPlayedCardsStatsMap({ for (var entry in gameModel.playedCardsPerTeam[widget.team]!.entries.where((element) => element.value.code!="no Card"))
+          entry.key : gameModel.gameLogic.findCard(entry.value.code, context.code, lv)! })
+            .forEach((key, value) {
+              startValue += value.smog;
+            });
+      }
+      break;
+      case "comfort" : {
+        int baseInitStat = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initComfort;
+        startValue = (baseInitStat * context.startStatsInfluence["C"]!).round();
+
+        gameModel.gameLogic.obtainPlayedCardsStatsMap({ for (var entry in gameModel.playedCardsPerTeam[widget.team]!.entries.where((element) => element.value.code!="no Card"))
+          entry.key : gameModel.gameLogic.findCard(entry.value.code, context.code, lv)! })
+            .forEach((key, value) {
+          startValue += value.comfort;
+        });
+
+      }
+      break;
+      case "energy" : {
+        int baseInitStat = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.initEnergy;
+        startValue = (baseInitStat * context.startStatsInfluence["E"]!).round();
+
+        gameModel.gameLogic.obtainPlayedCardsStatsMap({ for (var entry in gameModel.playedCardsPerTeam[widget.team]!.entries.where((element) => element.value.code!="no Card"))
+          entry.key : gameModel.gameLogic.findCard(entry.value.code, context.code, lv)! })
+            .forEach((key, value) {
+          startValue += value.energy;
+        });
+
+      }
+      break;
+      default : {
+        startValue = 0;
+      }
+    }
+
+    return startValue;
+
+  }
+
+
+  Future<void> setFullBarFalse(){
+    return Future.delayed(const Duration(seconds: 3), () {
+      setState((){
+        fullBarController.stop();
+        fullBar = false;
+      });
+    });
   }
 
 

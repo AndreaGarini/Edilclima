@@ -73,7 +73,7 @@ class GameLogic {
     CardData("oth01", "Lampade a incandescenza", -8, 5, -10, 5, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
     CardData("oth02", "Lampade a neon", -10, 5, -5, 5, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
     CardData("oth03", "lampade a led", -14, 10, -5, 10, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
-    CardData("oth04", "Ventilazione meccanica controllata", -250, 15, -5, 30, cardType.Oth, mulType.Fac, [Pair(influence.None, null)],  1),
+    CardData("oth04", "Ventilazione meccanica", -250, 15, -5, 30, cardType.Oth, mulType.Fac, [Pair(influence.None, null)],  1),
     CardData("oth05", "Split e PDC",  -250, 10, -5, 25, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
   ];
 

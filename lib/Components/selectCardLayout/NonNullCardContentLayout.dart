@@ -34,7 +34,7 @@ class NonNullCardContentLayout extends StatelessWidget{
                     fontSize: screenHeight * 0.015,
                     fontWeight: FontWeight.normal,
                     fontFamily: 'Roboto',),
-                      textAlign: TextAlign.justify)),
+                      textAlign: TextAlign.center)),
                   Divider(indent: screenWidth * 0.1, endIndent: screenWidth * 0.1, color: darkBluePalette, thickness: 1),
                   Expanded(flex: 10, child: lottieWidget),
                   Expanded(flex: 10, child:
@@ -72,7 +72,7 @@ class NonNullCardContentLayout extends StatelessWidget{
                           fontSize: screenHeight * 0.012,
                           fontWeight: FontWeight.normal,
                           fontFamily: 'Roboto',),
-                        textAlign: TextAlign.justify)),
+                        textAlign: TextAlign.center)),
                     Divider(indent: screenWidth * 0.1, endIndent: screenWidth * 0.1, color: darkBluePalette, thickness: 1),
                     const Spacer(flex: 20)
                   ])

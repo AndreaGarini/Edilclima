@@ -41,6 +41,8 @@ dependencies:
   provider: ^5.0.0
   firebase_core: ^2.3.0
   firebase_database: 10.0.6
+  qr_flutter: ^4.0.0
+  qr_code_scanner: ^1.0.1
   firebase_auth: ^4.2.0
   go_router: ^5.2.3
   collection: 1.16.0

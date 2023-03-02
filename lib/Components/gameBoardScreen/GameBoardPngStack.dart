@@ -39,7 +39,7 @@ class GameBoardPngStackState extends State<GameBoardPngStack> {
       for(List<String> pngStackPathList in pngLogic.getNewPngStack(cardCode, isPlayed, level)){
         List<Widget> pngStackList = pngStackPathList.map((e) => Image.asset(e, height: widget.imageHeight, width: widget.imageWidth)).toList();
         setPngList(millisDelay, pngStackList);
-        millisDelay += 500;
+        millisDelay += 2000;
       }
     }
   }

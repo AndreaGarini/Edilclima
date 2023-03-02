@@ -1,4 +1,4 @@
-import 'package:edilclima_app/Components/generalFeatures/StylizedText.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/elusive_icons.dart';
@@ -31,10 +31,7 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
   double cardYShiftFromIcon =  screenHeight * 0.016;
 
   Offset finalIconShift = Offset(-screenWidth * 0.23, -screenHeight * 0.085);
-  Offset finalTextShift = Offset(-screenWidth * 0.045, -screenHeight * 0.085);
-
-  double cardSizeDeltaX = screenWidth * 0.38;
-  double cardSizeDeltaY = screenHeight * 0.25;
+  Offset finalTextShift = Offset(-screenWidth * 0.02, -screenHeight * 0.085);
 
 
 
@@ -44,6 +41,7 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
   Widget? iconWidget;
   String? textWidget;
   int? valueWidget;
+  Alignment? cardTransfAlign;
   List<Widget>? statInfoRows;
   bool animCompleted = false;
 
@@ -74,9 +72,9 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
         return Stack(alignment: Alignment.center, children: [
           AnimatedBuilder(animation: controller, builder: (context, child) =>
           Transform(transform: animMap["Card"]!.evaluate(controller),
+          alignment: cardTransfAlign,
           child:
-          SizedBox(height: screenHeight * 0.14 + cardSizeDeltaY * controller.value,
-              width: screenWidth * 0.33 + cardSizeDeltaX * controller.value,
+          SizedBox(height: screenHeight * 0.14, width: screenWidth * 0.33,
           child: Card(
               color: Colors.white,
               shadowColor: lightOrangePalette,
@@ -154,6 +152,7 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
                          animMap = generateMatrix4Anim("comfort");
                          iconWidget = generateIconWidget("comfort");
                          textWidget = "Comfort: ";
+                         cardTransfAlign = FractionalOffset.topLeft;
                          valueWidget = widget.cardData.comfort;
                          bool statsUp = widget.cardData.comfort > widget.baseCardData.comfort;
                          statInfoRows = generateStatInfoRows("comfort", statsUp);
@@ -170,6 +169,7 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
                           animMap = generateMatrix4Anim("money");
                           iconWidget = generateIconWidget("money");
                           textWidget = "Cost: ";
+                          cardTransfAlign = FractionalOffset.topRight;
                           valueWidget = widget.cardData.money;
                           bool statsUp = widget.cardData.money > widget.baseCardData.money;
                           statInfoRows = generateStatInfoRows("money", statsUp);
@@ -190,6 +190,7 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
                           animMap = generateMatrix4Anim("smog");
                           iconWidget = generateIconWidget("smog");
                           textWidget = "Smog: ";
+                          cardTransfAlign = FractionalOffset.bottomLeft;
                           valueWidget = widget.cardData.smog;
                           bool statsUp = widget.cardData.smog < widget.baseCardData.smog;
                           statInfoRows = generateStatInfoRows("smog", statsUp);
@@ -201,15 +202,12 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
                   Expanded(flex: 8, child:
                   InkWell(
                       onTap: (widget.cardData.energy != widget.baseCardData.energy) ? (){
-                        if(widget.cardData.code== "inv01"){
-                          print("card data energy: ${widget.cardData.energy}");
-                          print("card data base energy: ${widget.baseCardData.energy}");
-                        }
                         setState((){
                           triggerAnim = true;
                           animMap = generateMatrix4Anim("energy");
                           iconWidget = generateIconWidget("energy");
                           textWidget = "Energy: ";
+                          cardTransfAlign = FractionalOffset.bottomRight;
                           valueWidget = widget.cardData.energy;
                           bool statsUp = widget.cardData.comfort > widget.baseCardData.comfort;
                           statInfoRows = generateStatInfoRows("energy", statsUp);
@@ -232,41 +230,52 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
     double defCardShiftX= 0;
     double defCardShiftY = 0;
 
+    double cardScaleX = 0;
+    double cardScaleY = 0;
+
     switch(animCode){
       case "smog" : {
         defIconShiftX = -iconShiftDown.dx;
         defIconShiftY = iconShiftDown.dy;
-        defTextShiftX= -iconShiftDown.dx;
+        defTextShiftX = -iconShiftDown.dx;
         defTextShiftY = iconShiftDown.dy + textYShiftFromIcon;
-        defCardShiftX= -iconShiftDown.dx;
+        defCardShiftX = -iconShiftDown.dx;
         defCardShiftY = iconShiftDown.dy + cardYShiftFromIcon;
+        cardScaleX = 2.15;
+        cardScaleY = 2.0;
       }
       break;
       case "comfort" : {
         defIconShiftX = -iconShiftUp.dx;
         defIconShiftY = iconShiftUp.dy;
-        defTextShiftX= -iconShiftUp.dx;
+        defTextShiftX = -iconShiftUp.dx;
         defTextShiftY = iconShiftUp.dy + textYShiftFromIcon;
-        defCardShiftX= -iconShiftUp.dx;
+        defCardShiftX = -iconShiftUp.dx;
         defCardShiftY = iconShiftUp.dy + cardYShiftFromIcon;
+        cardScaleX = 2.15;
+        cardScaleY = 2.0;
       }
       break;
       case "energy" : {
         defIconShiftX = iconShiftDown.dx;
         defIconShiftY = iconShiftDown.dy;
-        defTextShiftX= iconShiftDown.dx;
+        defTextShiftX = iconShiftDown.dx;
         defTextShiftY = iconShiftDown.dy + textYShiftFromIcon;
-        defCardShiftX= iconShiftDown.dx;
+        defCardShiftX = iconShiftDown.dx;
         defCardShiftY = iconShiftDown.dy + cardYShiftFromIcon;
+        cardScaleX = 2.15;
+        cardScaleY = 2.0;
       }
       break;
       case "money" : {
         defIconShiftX = iconShiftUp.dx;
         defIconShiftY = iconShiftUp.dy;
-        defTextShiftX= iconShiftUp.dx;
+        defTextShiftX = iconShiftUp.dx;
         defTextShiftY = iconShiftUp.dy + textYShiftFromIcon;
-        defCardShiftX= iconShiftUp.dx;
+        defCardShiftX = iconShiftUp.dx;
         defCardShiftY = iconShiftUp.dy + cardYShiftFromIcon;
+        cardScaleX = 2.15;
+        cardScaleY = 2.0;
       }
       break;
     }
@@ -276,7 +285,8 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
     Matrix4 startingTextMatrix = Matrix4.identity()..setTranslation(vector.Vector3(defTextShiftX, defTextShiftY, 0));
     Matrix4 endingTextMatrix = Matrix4.identity()..setTranslation(vector.Vector3(finalTextShift.dx, finalTextShift.dy, 0));
     Matrix4 startingCardMatrix = Matrix4.identity()..setTranslation(vector.Vector3(defCardShiftX, defCardShiftY, 0));
-    Matrix4 endingCardMatrix = Matrix4.identity();
+    Matrix4 endingCardMatrix = Matrix4.identity()..setTranslation(vector.Vector3(defCardShiftX, defCardShiftY, 0))
+      ..scale(cardScaleX, cardScaleY); //todo: lascia solo l'identity
 
     Matrix4Tween iconMatrixAnim = Matrix4Tween(begin: startingIconMatrix, end: endingIconMatrix);
     Matrix4Tween textMatrixAnim =  Matrix4Tween(begin: startingTextMatrix, end: endingTextMatrix);
@@ -379,12 +389,12 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
               SizedBox(width: containerWidth * 0.05),
               SizedBox(width: containerWidth * 0.7, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.end, children: [Text(message, style: TextStyle(color: darkBluePalette,
-                    fontSize: screenWidth * 0.05,
+                    fontSize: screenWidth * 0.04,
                     fontWeight: FontWeight.normal,
                     fontFamily: 'Roboto',),
                       textAlign: TextAlign.justify),
                     Text(infType, style: TextStyle(color: Colors.redAccent,
-                      fontSize: screenWidth * 0.05,
+                      fontSize: screenWidth * 0.04,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Roboto',),
                         textAlign: TextAlign.justify)])),
@@ -439,12 +449,12 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
               SizedBox(width: containerWidth * 0.05),
               SizedBox(width: containerWidth * 0.7, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end, children: [Text(message, style: TextStyle(color: darkBluePalette,
-                    fontSize: screenWidth * 0.05,
+                    fontSize: screenWidth * 0.04,
                     fontWeight: FontWeight.normal,
                     fontFamily: 'Roboto',),
                       textAlign: TextAlign.justify),
                     Text(infType, style: TextStyle(color: Colors.green,
-                      fontSize: screenWidth * 0.05,
+                      fontSize: screenWidth * 0.04,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Roboto',),
                         textAlign: TextAlign.justify)])),

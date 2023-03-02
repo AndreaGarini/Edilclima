@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import '../../DataClasses/CardData.dart';
 import '../../Screens/WaitingScreen.dart';
 import '../generalFeatures/ColorPalette.dart';
-import '../generalFeatures/StylizedText.dart';
-import 'VerticalStatsCard.dart';
 
 class DetailedCardContent extends StatelessWidget{
 
