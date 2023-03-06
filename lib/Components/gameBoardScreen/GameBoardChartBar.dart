@@ -56,8 +56,9 @@ with TickerProviderStateMixin{
   }
 
   Widget staticChartBar(){
-    return CircularProgressIndicator(value: endChartBarRatio, color: Color.lerp(barColorStart, barColorEnd, endChartBarRatio)
-        ,strokeWidth: widget.usableHeight * 0.075);
+    return CircularProgressIndicator(value: endChartBarRatio, color: Color.lerp(barColorStart, barColorEnd, endChartBarRatio),
+        backgroundColor: barColorEnd.withOpacity(0.2),
+        strokeWidth: widget.usableHeight * 0.075);
   }
 
   Widget fullChartBar() {
@@ -85,6 +86,7 @@ with TickerProviderStateMixin{
               var colorAnim = ColorTween(begin: barColorStart, end: barColorEnd).animate(indicatorController);
               indicatorController.value = value;
               return CircularProgressIndicator(value: value, valueColor: colorAnim,
+                  backgroundColor: barColorEnd.withOpacity(0.2),
                   strokeWidth: widget.usableHeight * 0.075);
             });
       }
@@ -122,6 +124,7 @@ with TickerProviderStateMixin{
           chartContent = fullChartBar();
       }
       else{
+           print("played cards num: $playedCardsNum, played cards per team: ${gameModel.playedCardsPerTeam[widget.team]?.length}");
           if(playedCardsNum != gameModel.playedCardsPerTeam[widget.team]?.length){
             chartContent = dynamicChartBar(gameModel, animCallback);
           }

@@ -2,6 +2,8 @@
 import 'dart:async';
 import 'dart:ffi';
 import 'dart:math';
+import 'package:collection/collection.dart';
+import 'package:edilclima_app/Components/generalFeatures/MidRankingDialog.dart';
 import 'package:edilclima_app/GameLogic.dart';
 import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -37,6 +39,7 @@ class GameModel extends ChangeNotifier{
   String? matchTimestamp;
 
   Map<String, Function?> gameBoardPngCallback = {};
+  Map<String, Function?> gameBoardPngEmptyCallback = {};
   Map <String, Map<String, CardData>?> playedCardsPerTeam = {};
   Map<String, TeamInfo?> teamStats = {};
   Map<String, String> ableToPlayPerTeam = {};
@@ -59,6 +62,7 @@ class GameModel extends ChangeNotifier{
   bool? tutorialDone;
   List<String>? firebasePath;
   String? playerUid;
+  int teamPoints = 0;
 
   //variabili sia master che player per schermate di splash e error
   bool splash = false;
@@ -106,14 +110,6 @@ class GameModel extends ChangeNotifier{
 
 
   void createNewMatch(String timestamp) async {
-    /*await db.child("matches").set({
-      "test" : {
-        "masterTutorialDone" : false,
-        "level" : "",
-        "players" : "",
-        "teams" : ""
-      }
-    });*/
 
     //todo: codice per quando aggiungi gli uid
     await db.child("matches").child(masterUid!).set({
@@ -174,6 +170,7 @@ class GameModel extends ChangeNotifier{
         objectivePerTeam = { for (var e in teamsNames) e : "" };
         playedCardsPerTeam = { for (var e in teamsNames) e : {}};
         gameBoardPngCallback = { for (var e in teamsNames) e : null};
+        gameBoardPngEmptyCallback = { for (var e in teamsNames) e : null};
       });
       Context context = gameLogic.contextList[Random().nextInt(gameLogic.contextList.length)];
       masterContextCode = context.code;
@@ -185,6 +182,60 @@ class GameModel extends ChangeNotifier{
       then((_) {
         giveCardsToPlayers(1);}).
       then((_) => gameLogic.masterLevelCounter = 1);
+    }
+  }
+
+  Future<void> shortPrepareMatch() async {
+      if(masterUid!=null && matchTimestamp!=null){
+        var dbPoint = db.child("matches").child(masterUid!).child(matchTimestamp!).child("players");
+      return await dbPoint.get().then((value) {
+        playerCounter = value.children.length;
+        value.children.groupListsBy((player) => player.child("team").value as String).forEach((key, value) {
+          gameLogic.playersPerTeam.putIfAbsent(key, () => value.map((e) => e.key as String).toList());
+        });
+
+        switch(value.children.length){
+          case 1 : {
+            teamsNum = 1;
+            teamsNames = ["team1"];
+          }
+          break;
+          case 2 : {
+            teamsNum = 2;
+            teamsNames = ["team1", "team2"];
+          }
+          break;
+          case 3 : {
+            teamsNum = 3;
+            teamsNames = ["team1", "team2", "team3"];
+          }
+          break;
+          default:  {
+            teamsNum = 4;
+            teamsNames = ["team1", "team2", "team3", "team4"];
+          }
+          break;
+        }
+        ableToPlayPerTeam = { for (var e in teamsNames) e : "" };
+        objectivePerTeam = { for (var e in teamsNames) e : "" };
+        playedCardsPerTeam = { for (var e in teamsNames) e : {}};
+        gameBoardPngCallback = { for (var e in teamsNames) e : null};
+        gameBoardPngEmptyCallback = { for (var e in teamsNames) e : null};
+      }).then((_) async{
+        return await db.child("matches").child(masterUid!).child(matchTimestamp!).child("level").get().then((value) {
+          gameLogic.masterLevelCounter = value.child("count").value as int;
+          masterLevelStatus = value.child("status").value as String;
+          masterContextCode = value.child("context").value as String;
+          startMatch = true;
+        });
+      }).then((value) {
+        for (String team in teamsNames) {
+          db.child("matches").child(masterUid!).child(matchTimestamp!).child("teams").child(team).child("objective").get().then((value) {
+            objectivePerTeam[team] = value.value as String;
+          });
+        }
+        addPlayedCardsListener();
+      });
     }
   }
 
@@ -265,7 +316,7 @@ class GameModel extends ChangeNotifier{
   }
 
 
-  void setStartingCardsPerLevel(int level) async{
+  void setStartingCardsPerLevel(int level) async {
     String noCard = "void";
     Map<String, String> startingCardMap = Map.fromIterable(gameLogic.zoneMap[level]!.startingList,
                                           key: (element) => (element=="no Card") ? noCard :  gameLogic.months[gameLogic.zoneMap[level]!.startingList.indexOf(element)],
@@ -388,16 +439,29 @@ class GameModel extends ChangeNotifier{
       String contextCode = gameLogic.contextList[Random().nextInt(gameLogic.contextList.length)].code;
       masterContextCode = contextCode;
       setObjectivePerTeam();
+      for (var entry in gameBoardPngEmptyCallback.entries) {
+        entry.value!(entry.key);
+      }
       //todo: controlla che se parte il secondo livello non blocchi tutto (si dovrebbe anche bloccare il timer del player alla fine del timer di livello)
       giveCardsToPlayers(level);
       setStartingCardsPerLevel(level);
+      masterLevelStatus = "play";
     }
     notifyListeners();
   }
 
   void setObjectivePerTeam(){
     objectivePerTeam = gameLogic.objectivePerTeam();
+    for (final entry in objectivePerTeam.entries.where((element) => teamsNames.contains(element.key))){
+      db.child("matches").child(masterUid!).child(matchTimestamp!).child("teams").child(entry.key).child("objective").set(entry.value);
+    }
     notifyListeners();
+  }
+
+  Future<bool> checkPlayerTutorialFinished() async{
+    return await db.child("matches").child(masterUid!).child(matchTimestamp!).child("players").get().then((value) {
+      return value.children.map((player) => player.child("tutorialDone").value as bool).toList().where((element) => !element).isEmpty;
+    });
   }
 
   void startLevel() async {
@@ -414,7 +478,13 @@ class GameModel extends ChangeNotifier{
       levelTimerCountdown = null;
       gameLogic.masterLevelCounter = gameLogic.nextLevel();
       Map<String , Object> levelValue = {"status" : masterLevelStatus, "count" : gameLogic.masterLevelCounter, "context" : masterContextCode!};
-      await db.child("matches").child(masterUid!).child(matchTimestamp!).set(levelValue);
+      await db.child("matches").child(masterUid!).child(matchTimestamp!).child("level").set(levelValue)
+          .then((_) async {
+            for (String team in teamsNames){
+              await db.child("matches").child(masterUid!).child(matchTimestamp!).child("teams").child(team).child("ableToPlay").set("").then((_) =>
+              db.child("matches").child(masterUid!).child(matchTimestamp!).child("teams").child(team).child("points").set(teamStats[team]!.points));
+            }
+      });
       notifyListeners();
     }
 
@@ -426,7 +496,7 @@ class GameModel extends ChangeNotifier{
   void startLevelCallback1(Function() onTick, Function() onFinish){
     addTeamTimeOutListener();
     ongoingLevel = true;
-    levelTimerCountdown = 420;
+    levelTimerCountdown = 30;
     gameLogic.setLevelTimer(onTick, onFinish);
   }
 
@@ -440,20 +510,12 @@ class GameModel extends ChangeNotifier{
 
   //logica lato player
 
-  //todo : ovunque ci sia la chiave dell'utente (ad es. 1) devi inserire il suo uid
-
   void setFirebasePath(String path){
     firebasePath = path.split("/");
     joinMatchWithAuth();
   }
 
-  /*void joinMatch() async {
-    await db.child("matches").child("test").child("players")
-        .child(count.toString()).set("").then((_) => count++);
-  }*/
-
   void joinMatchWithAuth() async{
-    //todo: da testare
     await FirebaseAuth.instance.signInAnonymously().then((value) async {
       playerUid = value.user!.uid;
       await db.child("matches").child(firebasePath![0]).child(firebasePath![1]).child("players")
@@ -462,9 +524,8 @@ class GameModel extends ChangeNotifier{
   }
 
   Future<bool?> matchJoinedYet() async{
-
     //todo: da testare, controlla che funzioni anche se hai più partite non finite dello stesso master,
-    //todo: e controlla che funzioni anche il percorso master
+    print("uid: ${FirebaseAuth.instance.currentUser?.uid}");
     if(FirebaseAuth.instance.currentUser == null){
       return false;
     }
@@ -523,7 +584,6 @@ class GameModel extends ChangeNotifier{
         }
 
         if(playerLevelStatus != event.snapshot.child("status").value as String){
-
           playerLevelStatus = event.snapshot.child("status").value as String;
 
           switch(event.snapshot.child("status").value.toString()){
@@ -540,7 +600,6 @@ class GameModel extends ChangeNotifier{
       }
 
         if (event.snapshot.child("status").value.toString() == "preparing" && playerTimerCountdown != null){
-
           playerTimer!.cancel();
           playerTimer = null;
           playerTimerCountdown= null;
@@ -617,16 +676,14 @@ class GameModel extends ChangeNotifier{
 
   void notifyAbleToPlayChange() async{
     // da chiamare quando si passa alla schermata di gioco
-    // (per arrivare alla schermata di gioco devi popolare il resto del db con il master,
-    // quindi popola i failure)
-    //todo: togli 1 e metti il player uid
+    // (per arrivare alla schermata di gioco devi popolare il resto del db con il master)
     await db.child("matches").child(firebasePath![0]).child(firebasePath![1]).child("players")
         .child(playerUid!).child("team").get().
     then((value) {
       team = value.value as String;
+      listenToPointsChange();
       notifyCallback1(value);
     });
-
   }
 
   void notifyCallback1(DataSnapshot value) async{
@@ -727,6 +784,27 @@ class GameModel extends ChangeNotifier{
             });
       })
     });
+  }
+
+  void listenToPointsChange(){
+       print("firebasePath : ${firebasePath![0]}");
+       print("firebasePath : ${firebasePath![1]}");
+       print("team: ${team}");
+       db.child("matches").child(firebasePath![0]).child(firebasePath![1]).child("teams").child(team).child("points")
+           .onValue.listen((event) {
+             print("event.snapshot.value : ${event.snapshot.value}");
+             print("teamPoints : $teamPoints");
+             if(event.snapshot.value !=null && event.snapshot.value as int != teamPoints){
+               teamPoints = event.snapshot.value as int;
+               Map<String, int> pointsMap = Map.fromIterable(teamStats.entries.where((element) => element.value != null),
+                 key: (element) => element.key,
+                 value: (element) => element.value.points as int);
+
+               //todo: controlla che la set dialog data passata così chiuda la dialog
+               DialogData data = DialogData("Intermezzo", MidRankingDialog(playerLevelCounter, pointsMap, setDialogData), false);
+               setDialogData(data);
+             }
+       });
   }
 
   int getBudgetSnapshot(List<String>? playedCards){

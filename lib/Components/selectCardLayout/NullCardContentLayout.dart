@@ -26,7 +26,7 @@ class NullCardContentlayout extends StatelessWidget{
                     const Spacer(),
                     Expanded(flex: 1, child: Center(child: GradientText("No card",
                         [darkBluePalette, lightBluePalette, lightOrangePalette],
-                        screenWidth * 0.15))),
+                        screenWidth * 0.12))),
                     const Spacer(),
                   ])
           );
@@ -43,7 +43,7 @@ class NullCardContentlayout extends StatelessWidget{
                     const Spacer(),
                     Expanded(flex: 1, child: Center(child: GradientText("No card",
                         [darkBluePalette, lightBluePalette, lightOrangePalette],
-                        screenWidth * 0.15))),
+                        screenWidth * 0.12))),
                     const Spacer(),
                   ])
           );

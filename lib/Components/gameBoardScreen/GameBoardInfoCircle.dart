@@ -1,4 +1,5 @@
 
+import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:edilclima_app/Components/generalFeatures/SizedButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +19,16 @@ class GameBoardInfoCircle extends StatefulWidget{
 }
 
 class GameBoardInfoCircleState extends State<GameBoardInfoCircle> {
+
+  late final  GlobalKey<TooltipState> tooltipkey;
+  @override
+  void initState() {
+    super.initState();
+    tooltipkey = GlobalKey<TooltipState>();
+  }
   @override
   Widget build(BuildContext context) {
+
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
 
@@ -30,7 +39,6 @@ class GameBoardInfoCircleState extends State<GameBoardInfoCircle> {
           String text = timeFormatMinSec(gameModel.levelTimerCountdown);
           return Text(text,
                   style: TextStyle(color: Colors.black, fontSize: screenWidth * 0.3 * 0.1));
-
         }
         else{
           return const Text("");
@@ -46,10 +54,38 @@ class GameBoardInfoCircleState extends State<GameBoardInfoCircle> {
         }
         else{
           String text = "inizia livello ${gameModel.gameLogic.masterLevelCounter}";
-          return SizedButton(
-              screenHeight * 0.2,
-              text,
-                  () {gameModel.startLevel();});
+          return Tooltip(
+            message: "Tutti i giocatori devono finire il tutorial",
+            textStyle: TextStyle(color: darkBluePalette, fontSize: screenWidth * 0.03, fontWeight: FontWeight.normal),
+            margin: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [BoxShadow(
+            color: lightBluePalette,
+            spreadRadius: 2,
+            blurRadius: 2,
+            offset: const Offset(0, 0), // changes position of shadow
+            )]),
+            showDuration: const Duration(seconds: 2),
+            triggerMode: TooltipTriggerMode.manual,
+            key: tooltipkey,
+            child: SizedButton(
+                screenHeight * 0.2,
+                text,
+                    () {
+                  gameModel.checkPlayerTutorialFinished().then((value) {
+                    print("value: $value");
+                    if(value){
+                      gameModel.startLevel();
+                    }
+                    else{
+                      tooltipkey.currentState?.ensureTooltipVisible();
+                      Future.delayed(const Duration(seconds: 2), (){
+                        tooltipkey.currentState?.deactivate();
+                      });
+                    }
+                  });
+                })
+          );
         }
       }
 

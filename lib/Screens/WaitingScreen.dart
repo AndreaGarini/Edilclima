@@ -182,7 +182,7 @@ class WaitingScreenState extends State<WaitingScreen> {
                       children: <Widget>[
                         const Spacer(),
                         lottieLoaded ? Expanded(flex: 2, child: Center(child:
-                        AnimatedGradient("Edilclima", screenHeight * 0.10, 5200,
+                        AnimatedGradient("Edilclima", screenHeight * 0.08, 5200,
                             'Inspiration', true)))
                             : const Spacer(flex: 2),
                         const Spacer(),
@@ -276,6 +276,7 @@ class WaitingScreenState extends State<WaitingScreen> {
   Future<void> toGameBoard(GameModel gameModel) async{
     print("to game board called");
     return Future<void>.delayed(const Duration(milliseconds: 50), () {
-      context.go("/initialScreen/matchMakingScreen/gameBoardScreen");});
+       gameModel.shortPrepareMatch().then((value) =>
+           context.go("/initialScreen/matchMakingScreen/gameBoardScreen"));});
   }
 }

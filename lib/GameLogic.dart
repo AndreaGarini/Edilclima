@@ -34,9 +34,13 @@ class GameLogic {
     Context("C03", null, ["imp09", "imp10", "imp11", "oth05"], {"A" : 1, "E" : 1, "C" : 0.7, "B" : 0.8})];
 
   //todo: rimetti il budget della prima zona a 350
-  Map<int, Zone> zoneMap = {1 : Zone(1, 120, 135, 250, 2330, 150, 100, 50, 10, 1,
-  ["inv03", "inv06", "inv08", "imp01", "imp02", "imp04", "imp08", "imp09", "imp11", "oth02", "oth05"],
-  ["inv01", "inv02", "imp03", "oth01", "no Card"])};
+  Map<int, Zone> zoneMap = {
+    1 : Zone(1, 120, 135, 250, 2330, 150, 100, 50, 10, 1,
+        ["inv03", "inv06", "inv08", "imp01", "imp02", "imp04", "imp08", "imp09", "imp11", "oth02", "oth05"],
+        ["inv01", "inv02", "imp03", "oth01", "no Card"]),
+    2 : Zone(1, 135, 130, 280, 2580, 150, 100, 50, 10, 1,
+        ["inv03", "inv06", "inv08", "imp01", "imp02", "imp04", "imp08", "imp09", "imp11", "oth02", "oth04", "oth05"],
+        ["inv01", "inv02", "imp03", "oth01", "no Card"])};
 
   List<CardData> CardsList = [
     //inv
@@ -73,7 +77,7 @@ class GameLogic {
     CardData("oth01", "Lampade a incandescenza", -8, 5, -10, 5, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
     CardData("oth02", "Lampade a neon", -10, 5, -5, 5, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
     CardData("oth03", "lampade a led", -14, 10, -5, 10, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
-    CardData("oth04", "Ventilazione meccanica", -250, 15, -5, 30, cardType.Oth, mulType.Fac, [Pair(influence.None, null)],  1),
+    CardData("oth04", "Ventilazione meccanica", -250, 15, -5, 30, cardType.Oth, mulType.Fac, [Pair(influence.None, null)],  2),
     CardData("oth05", "Split e PDC",  -250, 10, -5, 25, cardType.Oth, mulType.Fac, [Pair(influence.None, null)], 1),
   ];
 
@@ -84,7 +88,7 @@ class GameLogic {
   }
 
   void setLevelTimer(Function onTick, Function onFinish){
-    var counter = 420;
+    var counter = 30;
     var levelTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       onTick();
       counter--;
@@ -159,7 +163,6 @@ class GameLogic {
         resultingMap.putIfAbsent(k, () => avatarList);
       });
     }
-
     return resultingMap;
   }
 
@@ -183,7 +186,6 @@ class GameLogic {
       var obj = zoneObj[ (i + masterLevelCounter) % 3];
       resultingMap.putIfAbsent(teamList[i], () => obj);
      }
-
      return resultingMap;
   }
 

@@ -33,7 +33,6 @@ class GameBoardPngStackState extends State<GameBoardPngStack> {
   }
 
   gameBoardCallback(String cardCode, bool isPlayed, int level, String team){
-
     if(team == widget.team){
       int millisDelay = 0;
       for(List<String> pngStackPathList in pngLogic.getNewPngStack(cardCode, isPlayed, level)){
@@ -41,6 +40,12 @@ class GameBoardPngStackState extends State<GameBoardPngStack> {
         setPngList(millisDelay, pngStackList);
         millisDelay += 2000;
       }
+    }
+  }
+  
+  emptyPngStack(String team){
+    if(team == widget.team){
+      setPngStackEmpty();
     }
   }
 
@@ -53,6 +58,10 @@ class GameBoardPngStackState extends State<GameBoardPngStack> {
     {
         if(gameModel.gameBoardPngCallback[widget.team] == null){
           gameModel.gameBoardPngCallback[widget.team] = gameBoardCallback;
+        }
+
+        if(gameModel.gameBoardPngEmptyCallback[widget.team] == null){
+          gameModel.gameBoardPngEmptyCallback[widget.team] = emptyPngStack;
         }
 
         WidgetsBinding.instance?.addPostFrameCallback((_){
@@ -93,5 +102,14 @@ class GameBoardPngStackState extends State<GameBoardPngStack> {
       });
     });
   }
+  
+  Future<void> setPngStackEmpty() async {
+    return Future.delayed(const Duration(milliseconds: 50), (){
+      setState(() {
+        stackChildren = [];
+      });
+    });
+  }
+  
 
 }

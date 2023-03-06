@@ -161,7 +161,7 @@ class MainScreenContentState extends State<MainScreenContent>{
               ],
             )),
             Expanded(flex: 8, child: Row(mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Spacer(),
                 Expanded(flex: 10, child: data.body!),
