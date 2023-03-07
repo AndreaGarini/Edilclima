@@ -23,7 +23,7 @@ class CardInfoScreen extends StatelessWidget{
     return Consumer<GameModel>(builder: (context, gameModel, child) {
 
       Map<String, CardData> playedCards = gameModel.playedCardsPerTeam[gameModel.team]!;
-      CardData? cardData = onFocusCard;
+      CardData? cardData =  onFocusCard!=null && onFocusCard!.code != "void" ? onFocusCard : null;
       CardData? baseCardData = cardData!=null ? gameModel.gameLogic.CardsMap[cardData.code] : null;
       Map<String, Map<String, String>>? cardInfData = cardData!=null ? generateCardInfData(gameModel, baseCardData!) : null;
 
@@ -34,7 +34,7 @@ class CardInfoScreen extends StatelessWidget{
                   Expanded(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center, children: [
                         const Spacer(),
-                        Expanded(flex: 8, child: DetailedCardLayout.fromHeight(onFocusCard, baseCardData, cardInfData, screenHeight * 0.7)),
+                        Expanded(flex: 8, child: DetailedCardLayout.fromHeight(cardData, baseCardData, cardInfData, screenHeight * 0.7)),
                         const Spacer()
                       ])),
                 ]),

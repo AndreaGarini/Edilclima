@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import '../../DataClasses/CardData.dart';
 import '../../DataClasses/Pair.dart';
 import '../../Screens/WaitingScreen.dart';
+import '../generalFeatures/LottieContent.dart';
 
 class PageLayout extends StatefulWidget{
 
@@ -109,16 +110,24 @@ class PageLayoutState extends State<PageLayout> with SingleTickerProviderStateMi
 
     if(widget.crd?.type != null){
       switch (widget.crd!.type){
-        case cardType.Imp: {
-          lottieWidget = Lottie.asset('assets/animations/solarpanel.json', animate: false);
+        case cardType.Build: {
+          lottieWidget = LottieContent('assets/animations/Muri.json', true);
         }
         break;
-        case cardType.Inv: {
-          lottieWidget = Lottie.asset('assets/animations/55131-grow-your-forest.json', animate: false);
+        case cardType.Gear: {
+          lottieWidget = LottieContent('assets/animations/Impianto.json', true);
         }
         break;
-        case cardType.Oth: {
-          lottieWidget = Lottie.asset('assets/animations/100337-research-lottie-animation.json', animate: false);
+        case cardType.Lights: {
+          lottieWidget = LottieContent('assets/animations/Luci.json', true);
+        }
+        break;
+        case cardType.Window: {
+          lottieWidget = LottieContent('assets/animations/Finestra.json', true);
+        }
+        break;
+        case cardType.Panels: {
+          lottieWidget = LottieContent('assets/animations/Pannelli.json', true);
         }
         break;
       }

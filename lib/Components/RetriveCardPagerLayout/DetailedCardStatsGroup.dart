@@ -25,10 +25,10 @@ class DetailedCardStatsGroup extends StatefulWidget{
 class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
   with TickerProviderStateMixin{
 
-  Offset iconShiftUp = Offset(screenWidth * 0.185, -screenHeight * 0.085);
-  Offset iconShiftDown = Offset(screenWidth * 0.185, screenHeight * 0.055);
-  double textYShiftFromIcon = screenHeight * 0.052;
-  double cardYShiftFromIcon =  screenHeight * 0.016;
+  Offset iconShiftUp = Offset(screenWidth * 0.185, -screenHeight * 0.0875);
+  Offset iconShiftDown = Offset(screenWidth * 0.185, screenHeight * 0.049);
+  double textYShiftFromIcon = screenHeight * 0.055;
+  double cardYShiftFromIcon =  screenHeight * 0.022;
 
   Offset finalIconShift = Offset(-screenWidth * 0.23, -screenHeight * 0.085);
   Offset finalTextShift = Offset(-screenWidth * 0.02, -screenHeight * 0.085);
@@ -151,7 +151,7 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
                          triggerAnim = true;
                          animMap = generateMatrix4Anim("comfort");
                          iconWidget = generateIconWidget("comfort");
-                         textWidget = "Comfort: ";
+                         textWidget = "Comfort : ";
                          cardTransfAlign = FractionalOffset.topLeft;
                          valueWidget = widget.cardData.comfort;
                          bool statsUp = widget.cardData.comfort > widget.baseCardData.comfort;
@@ -168,7 +168,7 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
                           triggerAnim = true;
                           animMap = generateMatrix4Anim("money");
                           iconWidget = generateIconWidget("money");
-                          textWidget = "Cost: ";
+                          textWidget = "Cost : ";
                           cardTransfAlign = FractionalOffset.topRight;
                           valueWidget = widget.cardData.money;
                           bool statsUp = widget.cardData.money > widget.baseCardData.money;
@@ -189,14 +189,14 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
                           triggerAnim = true;
                           animMap = generateMatrix4Anim("smog");
                           iconWidget = generateIconWidget("smog");
-                          textWidget = "Smog: ";
+                          textWidget = "Smog : ";
                           cardTransfAlign = FractionalOffset.bottomLeft;
                           valueWidget = widget.cardData.smog;
                           bool statsUp = widget.cardData.smog < widget.baseCardData.smog;
                           statInfoRows = generateStatInfoRows("smog", statsUp);
                         });
                         controller.forward(from: 0);
-                      } : null,
+                      }  : null,
                       child: VerticalStatsCard("smog", widget.cardData.smog, widget.baseCardData.smog))),
                   const Spacer(),
                   Expanded(flex: 8, child:
@@ -206,7 +206,7 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
                           triggerAnim = true;
                           animMap = generateMatrix4Anim("energy");
                           iconWidget = generateIconWidget("energy");
-                          textWidget = "Energy: ";
+                          textWidget = "Energy : ";
                           cardTransfAlign = FractionalOffset.bottomRight;
                           valueWidget = widget.cardData.energy;
                           bool statsUp = widget.cardData.comfort > widget.baseCardData.comfort;
@@ -389,12 +389,12 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
               SizedBox(width: containerWidth * 0.05),
               SizedBox(width: containerWidth * 0.7, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.end, children: [Text(message, style: TextStyle(color: darkBluePalette,
-                    fontSize: screenWidth * 0.04,
+                    fontSize: screenWidth * 0.035,
                     fontWeight: FontWeight.normal,
                     fontFamily: 'Roboto',),
                       textAlign: TextAlign.justify),
                     Text(infType, style: TextStyle(color: Colors.redAccent,
-                      fontSize: screenWidth * 0.04,
+                      fontSize: screenWidth * 0.035,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Roboto',),
                         textAlign: TextAlign.justify)])),
@@ -449,12 +449,12 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
               SizedBox(width: containerWidth * 0.05),
               SizedBox(width: containerWidth * 0.7, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end, children: [Text(message, style: TextStyle(color: darkBluePalette,
-                    fontSize: screenWidth * 0.04,
+                    fontSize: screenWidth * 0.035,
                     fontWeight: FontWeight.normal,
                     fontFamily: 'Roboto',),
                       textAlign: TextAlign.justify),
                     Text(infType, style: TextStyle(color: Colors.green,
-                      fontSize: screenWidth * 0.04,
+                      fontSize: screenWidth * 0.035,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Roboto',),
                         textAlign: TextAlign.justify)])),

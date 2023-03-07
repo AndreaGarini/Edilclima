@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import '../../DataClasses/CardData.dart';
 import '../../Screens/WaitingScreen.dart';
+import '../generalFeatures/LottieContent.dart';
 
 class UndetailedCardLayout extends StatelessWidget {
 
@@ -28,16 +29,24 @@ class UndetailedCardLayout extends StatelessWidget {
   Widget build(BuildContext context) {
    if (cardData!= null && cardData!.code != "void"){
       switch (cardData!.type){
-        case cardType.Imp: {
-          lottieWidget = Lottie.asset('assets/animations/solarpanel.json', animate: false);
+        case cardType.Build: {
+          lottieWidget = LottieContent('assets/animations/Muri.json', false);
         }
         break;
-        case cardType.Inv: {
-          lottieWidget = Lottie.asset('assets/animations/55131-grow-your-forest.json',animate: false);
+        case cardType.Gear: {
+          lottieWidget = LottieContent('assets/animations/Impianto.json', false);
         }
         break;
-        case cardType.Oth: {
-          lottieWidget = Lottie.asset('assets/animations/100337-research-lottie-animation.json', animate: false);
+        case cardType.Lights: {
+          lottieWidget = LottieContent('assets/animations/Luci.json', false);
+        }
+        break;
+        case cardType.Window: {
+          lottieWidget = LottieContent('assets/animations/Finestra.json', false);
+        }
+        break;
+        case cardType.Panels: {
+          lottieWidget = LottieContent('assets/animations/Pannelli.json', false);
         }
         break;
       }

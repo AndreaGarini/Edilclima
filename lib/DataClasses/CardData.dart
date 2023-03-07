@@ -30,7 +30,7 @@ class CardData {
 }
 
 enum cardType{
-  Inv, Imp, Oth
+  Build, Lights, Gear, Panels, Window
 }
 enum mulType{
   Int, Fac

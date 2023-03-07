@@ -23,8 +23,6 @@ class MasterTutorialFeaturesState extends State<MasterTutorialFeatures> {
   late int tutorialPhase; 
   late List<Widget> tutorialContent;
 
-  //todo: aggiungere animazione dein png in modo da mostrarla già nel tutorial
-
   Map<int, Map<String, double>> coordMaps = {
     2 : {
       "top" : screenHeight * 0.04,
@@ -88,6 +86,7 @@ class MasterTutorialFeaturesState extends State<MasterTutorialFeatures> {
                                 children: [
                                   Container(color: Colors.transparent, height: screenHeight * 0.2, width:  screenHeight * 0.2,
                                     child: CircularProgressIndicator(value: 0.4,
+                                        backgroundColor: lightBluePalette.withOpacity(0.2),
                                         color: Color.lerp(lightBluePalette.withAlpha(200), lightBluePalette, 0.4)
                                         ,strokeWidth: screenHeight / 2 * 0.075)),
                                 ]))))
@@ -147,12 +146,7 @@ class MasterTutorialFeaturesState extends State<MasterTutorialFeatures> {
   }
 
   Widget generateTutorialCard(String text, double fontSize, bool showTitle){
-    return Card(color: Colors.white,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(screenHeight * 0.02)),
-        shadowColor: backgroundGreen,
-        elevation: 7,
-        child: showTitle ? Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center,
+    return showTitle ? Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center, children: [
               Expanded(flex: 2, child: Center(child: titleWidget)),
               Expanded(flex: 6, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
@@ -182,8 +176,7 @@ class MasterTutorialFeaturesState extends State<MasterTutorialFeatures> {
                   ])),
               Expanded(flex: 2, child: SizedButton(screenWidth * 0.2, "Ok!", () {buttonCallback();})),
               const Spacer()
-            ])
-    );
+            ]);
   }
   
   Widget generateTutorialView(Map<String, double> coordMap){

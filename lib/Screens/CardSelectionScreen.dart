@@ -43,7 +43,7 @@ CardData? onFocusCard;
 late bool ongoingAnimation;
 bool firstOpening = true;
 List<CardData?> playerCards = List.generate(6, (index) => CardData("void", "", 0, 0, 0, 0,
-    cardType.Imp, mulType.Int,
+    cardType.Build, mulType.Int,
     [Pair(influence.None, null)],
     1));
 List<String> lastDrawnCards = [];
@@ -177,13 +177,13 @@ class CardSelectionState extends State<CardSelectionScreen>
           List<CardData?> cardsList = [];
           gameModel.playerCards.forEach((element) {
             cardsList.add(CardData(element.code, element.title, element.money,
-                element.energy, element.smog, element.comfort,
+                element.smog, element.energy, element.comfort,
                 element.type, element.mul, element.inf, element.level));
           });
           if(cardsList.length < 6){
             for(int i = cardsList.length; i<6; i++){
               cardsList.add(CardData("void", "", 0, 0, 0, 0,
-                  cardType.Imp, mulType.Int,
+                  cardType.Build, mulType.Int,
                   [Pair(influence.None, null)],
                   gameModel.playerLevelCounter));
             }
@@ -273,22 +273,25 @@ class CardSelectionState extends State<CardSelectionScreen>
                       ),
                     ]
                 ),
+                cardsDataMap[cardsAngleMap.entries.where((entry) => entry.value == 0).single.key]?.code != "void" ?
                   Positioned(top: screenHeight * 0.33, right: 0,
                   child:
                   InkWell(
-                    onTap: (){
-                      String cardPosition = cardsAngleMap.entries.where((element) => element.value == 0).single.key;
-                      onFocusCard = cardsDataMap[cardPosition];
-                      context.push("/cardSelectionScreen/cardInfoScreen");
-                    },
+                    onTap: cardsDataMap[cardsAngleMap.entries.where((entry) => entry.value == 0).single.key]?.code != "void" ?
+                        (){
+                        String cardPosition = cardsAngleMap.entries.where((element) => element.value == 0).single.key;
+                        onFocusCard = cardsDataMap[cardPosition];
+                        context.push("/cardSelectionScreen/cardInfoScreen");
+                        } : (){},
                     child: SizedBox(
                       height: screenWidth * 0.2,
                       width: screenWidth * 0.2,
-                      child: Center(child: Lottie.asset('assets/animations/InfoIcon.json',
+                      child: Center(child:
+                      Lottie.asset('assets/animations/InfoIcon.json',
                           width: screenWidth * 0.35,
                           height: screenWidth * 0.35,
-                          animate: /*!gameModel.tutorialOngoing*/ false)),
-                    )))]);
+                          animate: true)),
+                    ))) : const SizedBox(width: 0, height: 0)]);
     });
   }
 
@@ -313,13 +316,13 @@ class CardSelectionState extends State<CardSelectionScreen>
         List<CardData?> cardsList = [];
         gameModel.playerCards.forEach((element) {
           cardsList.add(CardData(element.code, element.title, element.money,
-              element.energy, element.smog, element.comfort,
+              element.smog, element.energy, element.comfort,
               element.type, element.mul, element.inf, element.level));
         });
         if(cardsList.length < 6){
           for(int i = cardsList.length; i<6; i++){
             cardsList.add(CardData("void", "", 0, 0, 0, 0,
-                cardType.Imp, mulType.Int,
+                cardType.Build, mulType.Int,
                 [Pair(influence.None, null)],
                 gameModel.playerLevelCounter));
           }

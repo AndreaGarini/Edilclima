@@ -17,7 +17,24 @@ class MidRankingDialog extends StatelessWidget{
 
 
   //todo: se è l'ultimo livello chiudi la partita
-  Widget midRankingCard (String team, int points) {
+  Widget midRankingCard (String team, int points, int pos) {
+
+    String? imgPath;
+    switch (pos){
+      case 1: {
+        imgPath = "assets/images/medal.png";
+      }
+      break;
+      case 2: {
+        imgPath = "assets/images/medal.png";
+      }
+      break;
+      case 2: {
+        imgPath = "assets/images/medal.png";
+      }
+      break;
+    }
+
     return Container(
         width: screenWidth * 0.4,
         height: screenHeight * 0.15,
@@ -51,7 +68,7 @@ class MidRankingDialog extends StatelessWidget{
                 ])),
             Expanded(child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center, children: [
-                  const Spacer(),
+                  imgPath != null ? Expanded(child: Center(child: Image.asset(imgPath))) : const Spacer(),
                   Expanded(child: Center(child: Text("points", style:
                   TextStyle(color: darkBluePalette,
                     fontWeight: FontWeight.normal,
@@ -73,12 +90,12 @@ class MidRankingDialog extends StatelessWidget{
     ];
 
     for (final entry in pointsMap.entries.sortedBy<num>((element) => element.value)){
-      content.add(midRankingCard(entry.key, entry.value));
+      int rankPos = pointsMap.entries.sortedBy<num>((element) => element.value).toList().map((element) => element.key).toList().indexOf(entry.key) + 1;
+      content.add(midRankingCard(entry.key, entry.value, rankPos));
     }
 
     content.add(SizedBox(width: screenWidth * 0.6, height: screenHeight * 0.2,
         child: Center(child: SizedButton(screenWidth * 0.3, "Avanti", () {
-          print("button callback");
           closeDialogCallback(null);
           Navigator.of(context).pop();
         }))));
