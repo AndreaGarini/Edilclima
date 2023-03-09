@@ -11,7 +11,8 @@ import '../../Screens/WaitingScreen.dart';
 class GameBoardInfoCircle extends StatefulWidget{
 
   double usableHeight;
-  GameBoardInfoCircle(this.usableHeight);
+  Function killDynamicPoints;
+  GameBoardInfoCircle(this.usableHeight, this.killDynamicPoints);
 
   @override
   State<StatefulWidget> createState() => GameBoardInfoCircleState();
@@ -50,7 +51,11 @@ class GameBoardInfoCircleState extends State<GameBoardInfoCircle> {
           return SizedButton(
               screenHeight * 0.2,
               text,
-                  () {gameModel.prepareLevel(gameModel.gameLogic.masterLevelCounter);});
+                  () {
+                if(gameModel.gameLogic.masterLevelCounter!= 1){
+                  widget.killDynamicPoints();
+                }
+                gameModel.prepareLevel(gameModel.gameLogic.masterLevelCounter);});
         }
         else{
           String text = "inizia livello ${gameModel.gameLogic.masterLevelCounter}";

@@ -1,3 +1,5 @@
+import 'package:edilclima_app/Components/MainScreenContent.dart';
+import 'package:edilclima_app/Components/gameBoardScreen/GameBoardDynamicTitle.dart';
 import 'package:edilclima_app/Components/gameBoardScreen/GameBoardInfoCircle.dart';
 import 'package:edilclima_app/Components/generalFeatures/MasterTutorialFeatures.dart';
 import 'package:edilclima_app/DataClasses/DialogData.dart';
@@ -6,10 +8,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../DataClasses/LevelEndedStats.dart';
 import '../../GameModel.dart';
 import '../generalFeatures/AnimatedGradient.dart';
-import '../generalFeatures/ColorPalette.dart';
-import '../generalFeatures/StylizedText.dart';
 import 'GameBoardCard.dart';
 
 class GameBoard extends StatefulWidget {
@@ -23,9 +24,11 @@ class GameBoardState extends State<GameBoard> {
   DialogData? lastDialogData;
   late Function closeMasterTutorialDialog;
   late List<Widget> columnContent;
+  late List<GameBoardCard> cardsWidgets = [];
   late double usableCardHeight;
   late bool boardCardsCreated;
   late double cardHeight;
+  GameBoardDynamicTitle? titleWidget;
 
   //todo: scopri come creare una dialog più stretta e riordina lo spazio di conseguenza (se no crea stack e positioned)
 
@@ -44,6 +47,9 @@ class GameBoardState extends State<GameBoard> {
   Widget build(BuildContext parentContext) {
     return Consumer<GameModel>(builder: (context, gameModel, child) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
+
+        gameModel.gameBoardLevelCallback ??= levelEndedCallback;
+
         var newDim = screenHeight > screenWidth ? screenWidth : screenHeight;
         if (newDim != shortDim) {
           setShortDim(newDim);
@@ -80,134 +86,101 @@ class GameBoardState extends State<GameBoard> {
       }
 
       if (!boardCardsCreated && usableCardHeight != 0) {
-        List<Widget> cardsWidgets = [];
+        List<Widget> cards = [];
+
+        for (int i = 0; i < gameModel.teamsNum; i++){
+          cardsWidgets.add(GameBoardCard(
+              gameModel.teamsNames[i],
+              gameModel
+                  .objectivePerTeam[gameModel.teamsNames[i]]!,
+              cardHeight));
+        }
 
         switch (gameModel.teamsNum) {
           case 1:
             {
-              cardsWidgets.add(Expanded(
+              cards.add(Expanded(
                   child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                     Expanded(
-                        child: GameBoardCard(
-                            gameModel.teamsNames[0],
-                            gameModel
-                                .objectivePerTeam[gameModel.teamsNames[0]]!,
-                            cardHeight)),
+                        child: cardsWidgets[0]),
                     const Spacer()
                   ])));
-              cardsWidgets.add(const Spacer());
+              cards.add(const Spacer());
             }
             break;
           case 2:
             {
-              cardsWidgets.add(Expanded(
+              cards.add(Expanded(
                   child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                     Expanded(
-                        child: GameBoardCard(
-                            gameModel.teamsNames[0],
-                            gameModel
-                                .objectivePerTeam[gameModel.teamsNames[0]]!,
-                            cardHeight)),
+                        child:cardsWidgets[0]),
                     Expanded(
-                        child: GameBoardCard(
-                            gameModel.teamsNames[1],
-                            gameModel
-                                .objectivePerTeam[gameModel.teamsNames[1]]!,
-                            cardHeight))
+                        child: cardsWidgets[1])
                   ])));
-              cardsWidgets.add(const Spacer());
+              cards.add(const Spacer());
             }
             break;
           case 3:
             {
-              cardsWidgets.add(Expanded(
+              cards.add(Expanded(
                   child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                     Expanded(
-                        child: GameBoardCard(
-                            gameModel.teamsNames[0],
-                            gameModel
-                                .objectivePerTeam[gameModel.teamsNames[0]]!,
-                            cardHeight)),
+                        child: cardsWidgets[0]),
                     Expanded(
-                        child: GameBoardCard(
-                            gameModel.teamsNames[1],
-                            gameModel
-                                .objectivePerTeam[gameModel.teamsNames[1]]!,
-                            cardHeight))
+                        child: cardsWidgets[1])
                   ])));
-              cardsWidgets.add(Expanded(
+              cards.add(Expanded(
                   child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                     Expanded(
-                        child: GameBoardCard(
-                            gameModel.teamsNames[2],
-                            gameModel
-                                .objectivePerTeam[gameModel.teamsNames[2]]!,
-                            cardHeight)),
+                        child: cardsWidgets[2]),
                     const Spacer()
                   ])));
             }
             break;
           case 4:
             {
-              cardsWidgets.add(Expanded(
+              cards.add(Expanded(
                   child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                     Expanded(
-                        child: GameBoardCard(
-                            gameModel.teamsNames[0],
-                            gameModel
-                                .objectivePerTeam[gameModel.teamsNames[0]]!,
-                            cardHeight)),
+                        child: cardsWidgets[0]),
                     Expanded(
-                        child: GameBoardCard(
-                            gameModel.teamsNames[1],
-                            gameModel
-                                .objectivePerTeam[gameModel.teamsNames[1]]!,
-                            cardHeight))
+                        child: cardsWidgets[1])
                   ])));
-              cardsWidgets.add(Expanded(
+              cards.add(Expanded(
                   child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                     Expanded(
-                        child: GameBoardCard(
-                            gameModel.teamsNames[2],
-                            gameModel
-                                .objectivePerTeam[gameModel.teamsNames[2]]!,
-                            cardHeight)),
+                        child: cardsWidgets[2]),
                     Expanded(
-                        child: GameBoardCard(
-                            gameModel.teamsNames[3],
-                            gameModel
-                                .objectivePerTeam[gameModel.teamsNames[3]]!,
-                            cardHeight))
+                        child: cardsWidgets[3])
                   ])));
             }
             break;
         }
-
-        setColumnContent(cardsWidgets);
+        setColumnContent(cards);
       }
 
       return Stack(alignment: Alignment.center, children: [
@@ -216,7 +189,8 @@ class GameBoardState extends State<GameBoard> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: columnContent),
-        GameBoardInfoCircle(screenHeight)
+        GameBoardInfoCircle(screenHeight, killLevelEndedSequence),
+        Positioned(top : screenHeight * 0.4, child: titleWidget ?? const SizedBox())
       ]);
     });
   }
@@ -310,4 +284,46 @@ class GameBoardState extends State<GameBoard> {
       gameModel.setDialogData(data);
     });
   }
+
+  Future<void> levelEndedCallback(int level, int lastLevel, Map<String, LevelEndedStats> map) {
+    return Future.delayed(const Duration(milliseconds: 50), () {
+     setState((){
+       if(level == lastLevel){
+          titleWidget = GameBoardDynamicTitle("Fine partita");
+        }
+       else {
+         titleWidget = GameBoardDynamicTitle("Intermezzo");
+        }
+     });
+     Future.delayed(const Duration(milliseconds: 3000), () {
+       for (var element in cardsWidgets) {
+         Future.delayed(Duration(milliseconds: 6000 * cardsWidgets.indexOf(element)), () {
+           if(element.startCrdCallback != null){
+             element.startCrdCallback!(map);
+           }
+         });
+       }
+       Future.delayed(Duration(milliseconds: (6000 * cardsWidgets.length)), () {
+         titleWidget!.reverseCallback!();
+         Future.delayed(const Duration(milliseconds: 3000), () {
+           setState(() {
+             titleWidget = null;
+           });
+         });
+       });
+     });
+    });
+  }
+
+  void killLevelEndedSequence(){
+    for (var element in cardsWidgets) {
+      if(element.endCrdCallback != null){
+        element.endCrdCallback!();
+      }
+    }
+  }
+
+
+
+
 }

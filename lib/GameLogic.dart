@@ -299,12 +299,6 @@ class GameLogic {
     TeamInfo evaluatePoints(int level, Map<String, CardData?>? map, int moves, String contextCode, String objective) {
       int points = 0;
 
-      int exactCardDataPoints = 100;
-      int nearlyExactCardDataPoints = 75;
-      int wrongCardDataPoints = 50;
-      int targetReachedPoints = 200;
-      int movesNegPoints = 5;
-
       Context context = contextList.where((element) => element.code==contextCode).single;
 
       int budget = (zoneMap[level]!.budget * context.startStatsInfluence["B"]!).round();
@@ -314,7 +308,6 @@ class GameLogic {
 
 
       if(map!=null){
-
         for (final value in map.values) {
           budget += value!.money;
         }
@@ -331,7 +324,33 @@ class GameLogic {
           comfort += value!.comfort;
         }
 
-        map.entries.where((element) =>
+       points += evaluateCardsPoints(map, level);
+      }
+
+      //print("points after cards: $points");
+
+      if(objective!=""){
+       points += evaluateTargetPoints(objective, level, smog, energy, comfort);
+      }
+
+      //print("points after objective: $points");
+
+      points -= evaluateMovesPoints(moves);
+
+      //print("points after moves: $points");
+
+      return TeamInfo(budget, smog, energy, comfort, points >= 0 ? points : 0, moves);
+    }
+
+    int evaluateCardsPoints( Map<String, CardData?> map, int level) {
+
+    int points = 0;
+
+    int exactCardDataPoints = 100;
+    int nearlyExactCardDataPoints = 75;
+    int wrongCardDataPoints = 50;
+
+        map!.entries.where((element) =>
             zoneMap[level]!.optimalList.contains(element.value!.code)).forEach((
             element) {
           if (zoneMap[level]!.optimalList.indexOf(element.value!.code) ==
@@ -344,59 +363,58 @@ class GameLogic {
         map.entries.where((element) =>
         !zoneMap[level]!.optimalList.contains(element.value!.code)).forEach((element) {
           points +=
-              wrongCardDataPoints; //todo: trovare un modo più intelligente per dire valutare i punti di un valore fisso per le carte sbagliate
+              wrongCardDataPoints;
         });
-      }
 
-      //print("points after cards: $points");
+        return points;
+    }
 
-      if(objective!=""){
-        switch(objective){
-          case "smog" : {
-            if (smog < zoneMap[level]!.TargetA){
-              points += 2 * targetReachedPoints;
-            }
-            else{
-              int maxRange = (zoneMap[level]!.TargetA - zoneMap[level]!.initSmog).abs();
-              int actualRange =  (zoneMap[level]!.TargetA - smog).abs();
-              points += (targetReachedPoints * (actualRange/maxRange)).toInt();
-            }
-          }
-          break;
-          case "energy" : {
-            if (energy > zoneMap[level]!.TargetE){
-              points += 2 * targetReachedPoints;
-            }
-            else{
-              int maxRange = (zoneMap[level]!.TargetE - zoneMap[level]!.initEnergy).abs();
-              int actualRange =  (zoneMap[level]!.TargetE - energy).abs();
-              points += (targetReachedPoints * (actualRange/maxRange)).toInt();
-            }
-          }
-          break;
-          case "comfort" : {
-            if (comfort > zoneMap[level]!.TargetC){
-              points += 2 * targetReachedPoints;
-            }
-            else{
-              int maxRange = (zoneMap[level]!.TargetC - zoneMap[level]!.initComfort).abs();
-              int actualRange =  (zoneMap[level]!.TargetC - comfort).abs();
-              points += (targetReachedPoints * (actualRange/maxRange)).toInt();
-            }
-          }
-          break;
+  int evaluateTargetPoints(String objective, int level, int smog, int energy, int comfort){
+
+    int points = 0;
+    int targetReachedPoints = 200;
+    switch(objective){
+      case "smog" : {
+        if (smog < zoneMap[level]!.TargetA){
+          points += 2 * targetReachedPoints;
+        }
+        else if(smog < zoneMap[level]!.TargetA){
+          int maxRange = (zoneMap[level]!.TargetA - zoneMap[level]!.initSmog).abs();
+          int actualRange =  (zoneMap[level]!.TargetA - smog).abs();
+          points += (targetReachedPoints * (actualRange/maxRange)).toInt();
         }
       }
-
-
-      //print("points after objective: $points");
-
-      points -= (moves * movesNegPoints);
-
-      //print("points after moves: $points");
-
-      return TeamInfo(budget, smog, energy, comfort, points >= 0 ? points : 0, moves);
+      break;
+      case "energy" : {
+        if (energy > zoneMap[level]!.TargetE){
+          points += 2 * targetReachedPoints;
+        }
+        else if(energy > zoneMap[level]!.TargetE){
+          int maxRange = (zoneMap[level]!.TargetE - zoneMap[level]!.initEnergy).abs();
+          int actualRange =  (zoneMap[level]!.TargetE - energy).abs();
+          points += (targetReachedPoints * (actualRange/maxRange)).toInt();
+        }
+      }
+      break;
+      case "comfort" : {
+        if (comfort > zoneMap[level]!.TargetC){
+          points += 2 * targetReachedPoints;
+        }
+        else if(comfort > zoneMap[level]!.TargetC){
+          int maxRange = (zoneMap[level]!.TargetC - zoneMap[level]!.initComfort).abs();
+          int actualRange =  (zoneMap[level]!.TargetC - comfort).abs();
+          points += (targetReachedPoints * (actualRange/maxRange)).toInt();
+        }
+      }
+      break;
     }
+    return points;
+  }
+
+  int evaluateMovesPoints (int moves){
+    int movesNegPoints = 5;
+    return (moves * movesNegPoints);
+  }
 
     String evaluateSingleCard(int level, String month, String cardCode) {
 

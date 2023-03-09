@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:edilclima_app/Components/generalFeatures/MidRankingDialog.dart';
+import 'package:edilclima_app/DataClasses/LevelEndedStats.dart';
 import 'package:edilclima_app/GameLogic.dart';
 import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -40,6 +41,7 @@ class GameModel extends ChangeNotifier{
 
   Map<String, Function?> gameBoardPngCallback = {};
   Map<String, Function?> gameBoardPngEmptyCallback = {};
+  Function? gameBoardLevelCallback;
   Map <String, Map<String, CardData>?> playedCardsPerTeam = {};
   Map<String, TeamInfo?> teamStats = {};
   Map<String, String> ableToPlayPerTeam = {};
@@ -69,13 +71,11 @@ class GameModel extends ChangeNotifier{
   bool error = false;
 
   Future<bool> checkMasterPassword(String string) async{
-    print("checking password");
     return await db.child("password").get()
         .then((value) {
       if(value.value.toString() == string){
         return masterRegisteredYet().then((value) async {
           if(!value) {
-            print("master not registered");
             await FirebaseAuth.instance.signInAnonymously()
                 .then((value) {
               masterUid = value.user!.uid;
@@ -83,7 +83,6 @@ class GameModel extends ChangeNotifier{
             });
           }
           else{
-            print("current user: ${FirebaseAuth.instance.currentUser!.uid}");
             masterUid = FirebaseAuth.instance.currentUser!.uid;
           }
           return true;
@@ -471,6 +470,11 @@ class GameModel extends ChangeNotifier{
     }
 
     onFinish() async {
+      Map<String, LevelEndedStats> levelEndedStatsPerTeam = {};
+      for (String team in teamsNames){
+       levelEndedStatsPerTeam.putIfAbsent(team, () => createLevelEndedStats(team));
+      }
+      gameBoardLevelCallback!(gameLogic.masterLevelCounter, gameLogic.zoneMap.length, levelEndedStatsPerTeam);
       String contextCode = gameLogic.contextList[Random().nextInt(gameLogic.contextList.length)].code;
       masterContextCode = contextCode;
       ongoingLevel = false;
@@ -491,6 +495,19 @@ class GameModel extends ChangeNotifier{
     await  db.child("matches").child(masterUid!).child(matchTimestamp!).child("level").child("status").set("play").
     then((_) => {startLevelCallback1(onTick, onFinish)});
 
+  }
+
+  LevelEndedStats createLevelEndedStats(String team){
+    String objective = objectivePerTeam[team]!;
+    int targetPoints = gameLogic.evaluateTargetPoints(objective, gameLogic.masterLevelCounter,
+    teamStats[team]!.smog!, teamStats[team]!.energy!, teamStats[team]!.comfort!);
+    int movesPoints = gameLogic.evaluateMovesPoints(teamStats[team]!.moves!);
+    int cardsPoints = teamStats[team]!.points! - targetPoints + movesPoints;
+    int oldPoints = 0;
+    db.child("matches").child(masterUid!).child(matchTimestamp!).child("teams")
+        .child(team).child("points").get().then((value) => oldPoints = value.value as int);
+
+    return LevelEndedStats(cardsPoints, targetPoints, movesPoints, oldPoints, gameLogic.masterLevelCounter);
   }
 
   void startLevelCallback1(Function() onTick, Function() onFinish){
@@ -525,7 +542,6 @@ class GameModel extends ChangeNotifier{
 
   Future<bool?> matchJoinedYet() async{
     //todo: da testare, controlla che funzioni anche se hai più partite non finite dello stesso master,
-    print("uid: ${FirebaseAuth.instance.currentUser?.uid}");
     if(FirebaseAuth.instance.currentUser == null){
       return false;
     }
@@ -787,13 +803,8 @@ class GameModel extends ChangeNotifier{
   }
 
   void listenToPointsChange(){
-       print("firebasePath : ${firebasePath![0]}");
-       print("firebasePath : ${firebasePath![1]}");
-       print("team: ${team}");
        db.child("matches").child(firebasePath![0]).child(firebasePath![1]).child("teams").child(team).child("points")
            .onValue.listen((event) {
-             print("event.snapshot.value : ${event.snapshot.value}");
-             print("teamPoints : $teamPoints");
              if(event.snapshot.value !=null && event.snapshot.value as int != teamPoints){
                teamPoints = event.snapshot.value as int;
                Map<String, int> pointsMap = Map.fromIterable(teamStats.entries.where((element) => element.value != null),

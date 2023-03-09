@@ -51,7 +51,7 @@ class MasterTutorialFeaturesState extends State<MasterTutorialFeatures> {
   Widget titleWidget = Text("Tutorial", style: TextStyle(color: darkBluePalette,
     fontSize: screenWidth * 0.035,
     fontWeight: FontWeight.bold,
-    fontFamily: 'Roboto',),
+    fontFamily: 'Roboto'),
       textAlign: TextAlign.justify);
   
   Widget exampleGameBoardChart =
