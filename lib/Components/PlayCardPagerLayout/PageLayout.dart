@@ -40,27 +40,12 @@ class PageLayoutState extends State<PageLayout> with SingleTickerProviderStateMi
     wrongClick = false;
   }
 
-  /*Pair resNeededCheck(GameModel gameModel){
-    bool resNeeded = gameModel.gameLogic.findCard(playableCard, gameModel.playerContextCode)?.research == researchSet.Needed;
-
-    String res = "";
-
-    //così prendo tutte le ricerch necessarie ma non ci stanno nella info row
-    //gameModel.gameLogic.findCard(playableCard)?.resCard?.forEach((element) { res = res + element;});
-
-    //così prendo solo la prima
-    res = res + (gameModel.gameLogic.findCard(playableCard, gameModel.playerContextCode)?.resCard?.first ?? "");
-    bool allResPlayed = res == "" ? true : false;
-    return Pair(!((resNeeded && allResPlayed) || !resNeeded), res);
-  }*/
-
   void onTap(GameModel gameModel){
     String month = gameModel.gameLogic.months[widget.index];
     var posOccupied = gameModel.playedCardsPerTeam[gameModel.team]!.keys.contains(month);
 
     if(!posOccupied){
       if(gameModel.playerTimer!=null){
-        //var resPair = resNeededCheck(gameModel);
 
         def() {
           var budget = gameModel.getBudgetSnapshot(
@@ -71,6 +56,7 @@ class PageLayoutState extends State<PageLayout> with SingleTickerProviderStateMi
           gameModel.gameLogic.findCard(playableCard, gameModel.playerContextCode!, gameModel.playerLevelCounter)!.money.abs() <= budget) {
             if(gameModel.playCardInPosCheck(widget.index, playableCard)){
               gameModel.changePushValue(Pair(pushResult.CardDown, null));
+              print("stopping player timer in page layout");
               gameModel.stopPlayerTimer();
               gameModel.playCardInPos(widget.index, playableCard)
                   .then((value) => discardMechCallback(gameModel));
@@ -86,8 +72,7 @@ class PageLayoutState extends State<PageLayout> with SingleTickerProviderStateMi
 
         KotlinWhen(
             [KotlinPair(playableCard=="null", (){gameModel.changePushValue(Pair(pushResult.CardDown, null));}),
-              KotlinPair(playableCard=="void", (){gameModel.changePushValue(Pair(pushResult.InvalidCard, null));}),
-              /*KotlinPair(resPair.first() as bool, (){gameModel.changePushValue(Pair(pushResult.ResearchNeeded, resPair.second()));})*/],
+              KotlinPair(playableCard=="void", (){gameModel.changePushValue(Pair(pushResult.InvalidCard, null));})],
             def).whenExeute();
       }
       else{

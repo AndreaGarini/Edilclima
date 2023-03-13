@@ -108,7 +108,10 @@ class CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
 
-    return SafeArea(child:
+    return SafeArea(
+        top: Platform.isIOS ? false : true,
+        bottom: Platform.isIOS ? false : true,
+        child:
         Material(
       color: Colors.white,
         child:

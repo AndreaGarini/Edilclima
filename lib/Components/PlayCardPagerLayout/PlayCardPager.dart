@@ -70,13 +70,13 @@ class PlayCardPagerState extends State<PlayCardPager>
             setState(() {
               animText = response;
               switch(response){
-                case "Not bad": {
+                case "Non male": {
                   animColor = Colors.red;
                 } break;
                 case "Ok": {
                   animColor = Colors.amber;
                 } break;
-                case "Good": {
+                case "Bene": {
                   animColor = Colors.green;
                 } break;
               }

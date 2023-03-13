@@ -78,7 +78,7 @@ class HorizontalStatsCard extends StatelessWidget {
                   child: icon),
               StylizedText(darkBluePalette, " : ", screenWidth * 0.025, FontWeight.normal),
               StylizedText(
-                  darkBluePalette, "${dataValue}", screenWidth * 0.0275, FontWeight.bold)
+                  darkBluePalette, "${dataValue}", screenWidth * 0.025, FontWeight.bold)
             ]));
   }
 }

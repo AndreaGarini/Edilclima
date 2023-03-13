@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../GameModel.dart';
 import 'WaitingScreen.dart';
+import 'dart:io' show Platform;
 
 class SplashScreen extends StatefulWidget{
 
@@ -50,7 +51,10 @@ class SpashScreenState extends State<SplashScreen> {
         }
       });
 
-      return SafeArea(child:
+      return SafeArea(
+          top: Platform.isIOS ? false : true,
+          bottom: Platform.isIOS ? false : true,
+          child:
           LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints){
             screenWidth = constraints.maxWidth;
             screenHeight = constraints.maxHeight;

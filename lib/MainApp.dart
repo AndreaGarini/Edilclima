@@ -31,7 +31,6 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-
   runApp(
     ChangeNotifierProvider(create: (context) => GameModel(),
     child : const MainApp(),),
@@ -115,12 +114,17 @@ class MainApp extends StatelessWidget{
   const MainApp({super.key});
 
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
 
       return MaterialApp.router(
         title: 'Edilclima',
         theme: ThemeData(
+            appBarTheme: AppBarTheme(
+              backgroundColor: darkBluePalette,
+              elevation: 0,
+            ),
             fontFamily: 'Roboto'
         ),
         routerConfig: router,

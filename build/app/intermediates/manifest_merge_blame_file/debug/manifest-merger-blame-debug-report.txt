@@ -13,8 +13,8 @@
 13         to allow setting breakpoints, to provide hot reload, etc.
 14    -->
 15    <uses-permission android:name="android.permission.INTERNET" />
-15-->/Users/garonofsky/Documents/Polito/Edilclima/android/app/src/debug/AndroidManifest.xml:7:5-66
-15-->/Users/garonofsky/Documents/Polito/Edilclima/android/app/src/debug/AndroidManifest.xml:7:22-64
+15-->/Users/garonofsky/Documents/Polito/edilclima/android/app/src/debug/AndroidManifest.xml:7:5-66
+15-->/Users/garonofsky/Documents/Polito/edilclima/android/app/src/debug/AndroidManifest.xml:7:22-64
 16    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 16-->[com.google.firebase:firebase-auth:21.1.0] /Users/garonofsky/.gradle/caches/transforms-3/db77909e02725043151ff28d3fe9f329/transformed/jetified-firebase-auth-21.1.0/AndroidManifest.xml:24:5-79
 16-->[com.google.firebase:firebase-auth:21.1.0] /Users/garonofsky/.gradle/caches/transforms-3/db77909e02725043151ff28d3fe9f329/transformed/jetified-firebase-auth-21.1.0/AndroidManifest.xml:24:22-76
@@ -100,31 +100,31 @@
 75            android:value="2" />
 76
 77        <service
-77-->[:firebase_auth] /Users/garonofsky/Documents/Polito/Edilclima/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-14:19
+77-->[:firebase_auth] /Users/garonofsky/Documents/Polito/edilclima/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-14:19
 78            android:name="com.google.firebase.components.ComponentDiscoveryService"
-78-->[:firebase_auth] /Users/garonofsky/Documents/Polito/Edilclima/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:10:18-89
+78-->[:firebase_auth] /Users/garonofsky/Documents/Polito/edilclima/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:10:18-89
 79            android:directBootAware="true"
 79-->[com.google.firebase:firebase-common:20.3.0] /Users/garonofsky/.gradle/caches/transforms-3/b24238b145583e9bb28ada432bde27f7/transformed/jetified-firebase-common-20.3.0/AndroidManifest.xml:34:13-43
 80            android:exported="false" >
 80-->[com.google.firebase:firebase-auth:21.1.0] /Users/garonofsky/.gradle/caches/transforms-3/db77909e02725043151ff28d3fe9f329/transformed/jetified-firebase-auth-21.1.0/AndroidManifest.xml:66:13-37
 81            <meta-data
-81-->[:firebase_auth] /Users/garonofsky/Documents/Polito/Edilclima/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
+81-->[:firebase_auth] /Users/garonofsky/Documents/Polito/edilclima/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
 82                android:name="com.google.firebase.components:io.flutter.plugins.firebase.auth.FlutterFirebaseAuthRegistrar"
-82-->[:firebase_auth] /Users/garonofsky/Documents/Polito/Edilclima/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-124
+82-->[:firebase_auth] /Users/garonofsky/Documents/Polito/edilclima/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-124
 83                android:value="com.google.firebase.components.ComponentRegistrar" />
-83-->[:firebase_auth] /Users/garonofsky/Documents/Polito/Edilclima/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
+83-->[:firebase_auth] /Users/garonofsky/Documents/Polito/edilclima/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
 84            <meta-data
-84-->[:firebase_database] /Users/garonofsky/Documents/Polito/Edilclima/build/firebase_database/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
+84-->[:firebase_database] /Users/garonofsky/Documents/Polito/edilclima/build/firebase_database/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
 85                android:name="com.google.firebase.components:io.flutter.plugins.firebase.database.FlutterFirebaseAppRegistrar"
-85-->[:firebase_database] /Users/garonofsky/Documents/Polito/Edilclima/build/firebase_database/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-127
+85-->[:firebase_database] /Users/garonofsky/Documents/Polito/edilclima/build/firebase_database/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-127
 86                android:value="com.google.firebase.components.ComponentRegistrar" />
-86-->[:firebase_database] /Users/garonofsky/Documents/Polito/Edilclima/build/firebase_database/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
+86-->[:firebase_database] /Users/garonofsky/Documents/Polito/edilclima/build/firebase_database/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
 87            <meta-data
-87-->[:firebase_core] /Users/garonofsky/Documents/Polito/Edilclima/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
+87-->[:firebase_core] /Users/garonofsky/Documents/Polito/edilclima/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
 88                android:name="com.google.firebase.components:io.flutter.plugins.firebase.core.FlutterFirebaseCoreRegistrar"
-88-->[:firebase_core] /Users/garonofsky/Documents/Polito/Edilclima/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-124
+88-->[:firebase_core] /Users/garonofsky/Documents/Polito/edilclima/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-124
 89                android:value="com.google.firebase.components.ComponentRegistrar" />
-89-->[:firebase_core] /Users/garonofsky/Documents/Polito/Edilclima/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
+89-->[:firebase_core] /Users/garonofsky/Documents/Polito/edilclima/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
 90            <meta-data
 90-->[com.google.firebase:firebase-auth:21.1.0] /Users/garonofsky/.gradle/caches/transforms-3/db77909e02725043151ff28d3fe9f329/transformed/jetified-firebase-auth-21.1.0/AndroidManifest.xml:67:13-69:85
 91                android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"

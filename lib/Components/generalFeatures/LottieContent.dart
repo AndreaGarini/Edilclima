@@ -28,8 +28,8 @@ class LottieContentState extends State<LottieContent>
 
   @override
   void dispose() {
-    super.dispose();
     controller.dispose();
+    super.dispose();
   }
 
   @override

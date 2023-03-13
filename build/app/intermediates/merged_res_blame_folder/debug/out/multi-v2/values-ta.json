@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/garonofsky/Documents/Polito/Edilclima/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-ta/values-ta.xml",
+            "outputFile": "/Users/garonofsky/Documents/Polito/edilclima/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-ta/values-ta.xml",
             "map": [
                 {
                     "source": "/Users/garonofsky/.gradle/caches/transforms-3/297942c3957902ff7659eb1bc47c3617/transformed/browser-1.4.0/res/values-ta/values-ta.xml",

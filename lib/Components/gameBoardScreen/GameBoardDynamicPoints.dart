@@ -118,11 +118,11 @@ class GameBoardDynamicPointsState extends State<GameBoardDynamicPoints>
               }
               break;
               case 1: {
-                imgPath = "assets/images/medal2.png";
+                imgPath = "assets/images/medal-2.png";
               }
               break;
               case 2: {
-                imgPath = "assets/images/medal3.png";
+                imgPath = "assets/images/medal-3.png";
               }
               break;
               default: {

@@ -28,8 +28,6 @@ class DetailedCardLayout extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    late Widget lottieWidget;
-
     if(cardData!=null){
       return Container(
           width: screenWidth * 0.8,

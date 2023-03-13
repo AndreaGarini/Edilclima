@@ -273,6 +273,7 @@ class CardSelectionState extends State<CardSelectionScreen>
                       ),
                     ]
                 ),
+                cardsAngleMap.entries.where((entry) => entry.value == 0).length == 1 &&
                 cardsDataMap[cardsAngleMap.entries.where((entry) => entry.value == 0).single.key]?.code != "void" ?
                   Positioned(top: screenHeight * 0.33, right: 0,
                   child:

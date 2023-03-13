@@ -124,7 +124,6 @@ with TickerProviderStateMixin{
           chartContent = fullChartBar();
       }
       else{
-           print("played cards num: $playedCardsNum, played cards per team: ${gameModel.playedCardsPerTeam[widget.team]?.length}");
           if(playedCardsNum != gameModel.playedCardsPerTeam[widget.team]?.length){
             chartContent = dynamicChartBar(gameModel, animCallback);
           }

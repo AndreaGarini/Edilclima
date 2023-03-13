@@ -113,14 +113,14 @@ class infoRowState extends State<infoRow> with
     {
       endingLayoutChange(gameModel.push.first() as pushResult);
 
-        if (gameModel.playerTimer==null && gameModel.playerTimerCountdown!=null){
-          infoRowDefaultLayout = false;
-          int duration = 70;
-          setPlayerTimer(duration, 1, gameModel);
-          Future<void>.delayed(Duration(milliseconds: widget.animTime * 4), () {
-            infoRowDefaultLayout = true;
-          });
-        }
+      gameModel.createTimerCallback ??= (){
+        infoRowDefaultLayout = false;
+        int duration = 63;
+        setPlayerTimer(duration, 1, gameModel);
+        Future<void>.delayed(Duration(milliseconds: widget.animTime * 4), () {
+          infoRowDefaultLayout = true;
+        });
+      };
 
       return
         Material(
@@ -194,11 +194,17 @@ class infoRowState extends State<infoRow> with
       var playerTimer = Timer.periodic(Duration(seconds: TickInterval), (timer) {
         gameModel.playerTimerOnTick();
         counter--;
+        print("counter on tick: $counter");
         if (counter == 0) {
+          print("timer executing end");
           gameModel.playerTimerOnFinish();
           timer.cancel();
         }
       });
+
+      gameModel.cancelTimerCallback = (){
+        playerTimer.cancel();
+      };
       gameModel.createPlayerTimer(playerTimer);
     });
   }

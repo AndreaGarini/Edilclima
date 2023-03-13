@@ -11,6 +11,7 @@ import '../../DataClasses/CardData.dart';
 import '../../DataClasses/CardInfluence.dart';
 import '../../DataClasses/Pair.dart';
 import '../../GameModel.dart';
+import 'RetrieveDetailedCard.dart';
 
 class RetrivePageLayout extends StatefulWidget {
 
@@ -27,6 +28,16 @@ class RetriveCardLayoutState extends State<RetrivePageLayout>{
 
   late bool ableToRetrive;
   late Map<String, Map<String, String>>? cardInfData;
+
+  late bool retrieveAnim;
+  Widget? retrieveAnimWidget;
+
+  @override
+  void initState() {
+    super.initState();
+    retrieveAnim = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<GameModel>(builder: (context, gameModel, child) {
@@ -38,19 +49,15 @@ class RetriveCardLayoutState extends State<RetrivePageLayout>{
       ableToRetrive = cardData!=null && gameModel.playerTimer!=null;
       cardInfData = cardData!=null ? generateCardInfData(gameModel, baseCardData!) : null;
 
-      if(cardData?.code == "inv01"){
-        print("card data in retrive page layout: ${cardData!.energy}");
-        print("card base data in retrive page layout: ${baseCardData!.energy}");
-      }
-
       return Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        DetailedCardLayout(cardData, baseCardData, cardInfData),
+        retrieveAnim ? retrieveAnimWidget! : DetailedCardLayout(cardData, baseCardData, cardInfData),
         SizedBox(height: screenHeight * 0.01, width: screenWidth * 0.8),
         SizedBox(height: screenHeight * 0.07,
             width: screenWidth * 0.8,
             child: Center(child: SizedButton(screenWidth * 0.6, "Prendi carta", ableToRetrive ? (){
+              setRetrieveAnim(true, cardData, baseCardData, cardInfData);
               gameModel.retriveCardInPos(widget.pos);
               buttonCallback(gameModel);} : null)))
       ]);
@@ -119,6 +126,19 @@ class RetriveCardLayoutState extends State<RetrivePageLayout>{
       }
 
     return avatarMap;
+  }
+
+  void setRetrieveAnim(bool value, CardData? cardData, CardData? baseCardData, Map<String, Map<String, String>>? cardInfData){
+    setState(() {
+      retrieveAnim = value;
+      if(value){
+        retrieveAnimWidget = RetrieveDetailedCard(cardData, baseCardData, cardInfData);
+      }
+      else{
+        retrieveAnimWidget = null;
+      }
+    });
+    Future.delayed(const Duration(milliseconds: 1600), () => setRetrieveAnim(false, null, null, null));
   }
 
 

@@ -44,10 +44,10 @@ class GameLogic {
 
   List<CardData> CardsList = [
     //inv
-    CardData("inv01", "Muro base",  0, 0, -10, -10, cardType.Build, mulType.Fac, [Pair(influence.None, null)], 1),
+    CardData("inv01", "Muro base",  0, 0, 0, 0, cardType.Build, mulType.Fac, [Pair(influence.None, null)], 1),
     CardData("inv02", "Cappotto EPS", -7, -10, 10, 10, cardType.Build, mulType.Fac, [Pair(influence.None, null)], 1),
     CardData("inv03", "Cappotto Fibra di Legno", -10, -15, 15, 10, cardType.Build, mulType.Fac, [Pair(influence.None, null)],  1),
-    CardData("inv04", "Tetto base", 0, 0, -10, -10, cardType.Build, mulType.Fac, [Pair(influence.None, null)], 1 ),
+    CardData("inv04", "Tetto base", 0, 0, 0, 0, cardType.Build, mulType.Fac, [Pair(influence.None, null)], 1 ),
     CardData("inv05", "Isolamento tetto in poliuretano",  -12, -10, 10, 15, cardType.Build, mulType.Fac, [Pair(influence.None, null)], 1 ),
     CardData("inv06", "Isolamento tetto in fibra di legno",  -17, -15, 15, 20, cardType.Build, mulType.Fac, [Pair(influence.None, null)] ,1 ),
     CardData("inv07", "Serramenti a vetro singolo", -2, 0, 5, 5, cardType.Window, mulType.Int, [Pair(influence.None, null)] ,1 ),
@@ -88,7 +88,7 @@ class GameLogic {
   }
 
   void setLevelTimer(Function onTick, Function onFinish){
-    var counter = 30;
+    var counter = 420;
     var levelTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       onTick();
       counter--;
@@ -420,14 +420,14 @@ class GameLogic {
 
         if(zoneMap[level]!.optimalList.contains(cardCode)) {
           if (zoneMap[level]!.optimalList.indexOf(cardCode) == months.indexOf(month)) {
-            return "Good";
+            return "Bene";
           }
           else{
-            return "OK";
+            return "Ok";
           }
         }
         else{
-          return "Not bad";
+          return "Non male";
         }
     }
 

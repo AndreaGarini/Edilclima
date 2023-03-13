@@ -68,7 +68,8 @@ class GameBoardCardState extends State<GameBoardCard>{
   void levelEndedCardSequence(Map<String, LevelEndedStats> map) {
     setState(() {
       if(endingStats == null){
-      rank = map.entries.sortedBy<num>((entry) => entry.value.getTotalPoints()).map((entry) => entry.key).toList().indexOf(widget.team);
+      rank = map.entries.sortedBy<num>((entry) => entry.value.getTotalPoints()).reversed
+          .map((entry) => entry.key).toList().indexOf(widget.team);
       endingStats = map[widget.team];
       }
     });

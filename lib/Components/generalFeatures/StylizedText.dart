@@ -16,6 +16,7 @@ class StylizedText extends StatelessWidget{
     return FittedBox(
       fit: BoxFit.scaleDown,
       child: Text(text, style: TextStyle(color: textColor,
+        overflow: TextOverflow.fade,
         fontSize: fontSize,
         fontWeight: fontWeight,
         fontFamily: 'Roboto',),

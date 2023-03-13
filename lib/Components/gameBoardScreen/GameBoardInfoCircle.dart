@@ -3,6 +3,7 @@ import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:edilclima_app/Components/generalFeatures/SizedButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../GameModel.dart';
@@ -47,15 +48,17 @@ class GameBoardInfoCircleState extends State<GameBoardInfoCircle> {
       }
       dynamicButton(){
         if(gameModel.masterLevelStatus=="preparing"){
-          String text = "prepara livello ${gameModel.gameLogic.masterLevelCounter}";
+          bool gameEnded = gameModel.gameLogic.masterLevelCounter == gameModel.gameLogic.zoneMap.length + 1;
+          String text = gameEnded ? "Fine partita" : "Prepara livello ${gameModel.gameLogic.masterLevelCounter}";
           return SizedButton(
-              screenHeight * 0.2,
-              text,
-                  () {
+              screenHeight * 0.2, text,
+              gameEnded ? (){context.go("/initialScreen/matchMakingScreen/gameBoardScreen");}
+              : () {
                 if(gameModel.gameLogic.masterLevelCounter!= 1){
                   widget.killDynamicPoints();
                 }
-                gameModel.prepareLevel(gameModel.gameLogic.masterLevelCounter);});
+                gameModel.prepareLevel(gameModel.gameLogic.masterLevelCounter);
+                   });
         }
         else{
           String text = "inizia livello ${gameModel.gameLogic.masterLevelCounter}";
@@ -78,7 +81,6 @@ class GameBoardInfoCircleState extends State<GameBoardInfoCircle> {
                 text,
                     () {
                   gameModel.checkPlayerTutorialFinished().then((value) {
-                    print("value: $value");
                     if(value){
                       gameModel.startLevel();
                     }

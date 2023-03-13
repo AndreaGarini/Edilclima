@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:ffi';
 import 'dart:math';
 import 'package:collection/collection.dart';
-import 'package:edilclima_app/Components/generalFeatures/MidRankingDialog.dart';
 import 'package:edilclima_app/DataClasses/LevelEndedStats.dart';
 import 'package:edilclima_app/GameLogic.dart';
 import 'package:edilclima_app/Screens/CardSelectionScreen.dart';
@@ -64,7 +63,8 @@ class GameModel extends ChangeNotifier{
   bool? tutorialDone;
   List<String>? firebasePath;
   String? playerUid;
-  int teamPoints = 0;
+  Function? cancelTimerCallback;
+  Function? createTimerCallback;
 
   //variabili sia master che player per schermate di splash e error
   bool splash = false;
@@ -238,17 +238,27 @@ class GameModel extends ChangeNotifier{
     }
   }
 
-  void setPlayerTutorial(){
-    db.child("matches").child(masterUid!).child(matchTimestamp!).child("players").get().then((value) =>{
-    for(final player in value.children){
-        db.child("matches").child(masterUid!).child(matchTimestamp!).child(player.key!)
-            .get().then((value) =>{
-          if(!value.child("tutorialDone").exists){
-            db.child("matches").child(masterUid!).child(matchTimestamp!).child("players")
-                .child(player.key!).child("tutorialDone").set(false)
-          }})}
-        });
+  void setPlayerTutorial() {
+    if (gameLogic.masterLevelCounter == 1) {
+      db.child("matches").child(masterUid!).child(matchTimestamp!).child(
+          "players").get().then((value) =>
+      {
+        for(final player in value.children){
+          db.child("matches").child(masterUid!).child(matchTimestamp!).child(
+              player.key!)
+              .get().then((value) =>
+          {
+            if(!value
+                .child("tutorialDone")
+                .exists){
+              db.child("matches").child(masterUid!).child(matchTimestamp!)
+                  .child("players")
+                  .child(player.key!).child("tutorialDone")
+                  .set(false)
+            }})}
+      });
     }
+  }
 
 
   void giveCardsToPlayers(int level) async{
@@ -307,9 +317,10 @@ class GameModel extends ChangeNotifier{
     notifyListeners();
   }
 
-  void stopPlayerTimer(){
+  void stopPlayerTimer() async {
+    print("stop player timer called");
     playerTimerCountdown = null;
-    playerTimer!.cancel();
+    cancelTimerCallback!();
     playerTimer = null;
     notifyListeners();
   }
@@ -422,6 +433,7 @@ class GameModel extends ChangeNotifier{
   }
 
   void setPlayerAbleToPlay(String newPlayer, String team) async{
+    print("setting able to play from master");
     await db.child("matches").child(masterUid!).child(matchTimestamp!).child("teams").child(team)
         .child("ableToPlay").set(newPlayer);
   }
@@ -513,7 +525,7 @@ class GameModel extends ChangeNotifier{
   void startLevelCallback1(Function() onTick, Function() onFinish){
     addTeamTimeOutListener();
     ongoingLevel = true;
-    levelTimerCountdown = 30;
+    levelTimerCountdown = 420;
     gameLogic.setLevelTimer(onTick, onFinish);
   }
 
@@ -697,7 +709,6 @@ class GameModel extends ChangeNotifier{
         .child(playerUid!).child("team").get().
     then((value) {
       team = value.value as String;
-      listenToPointsChange();
       notifyCallback1(value);
     });
   }
@@ -709,7 +720,8 @@ class GameModel extends ChangeNotifier{
       if (event.snapshot.value.toString()==playerUid! && playerLevelCounter != 0
           && playerLevelStatus == "play" && playerTimer==null){
         playerTimerCountdown = 62;
-        //è l'infoRow a creare il timer e passarlo al gameModel
+        print("creating timer with gm callback");
+        createTimerCallback!();
         notifyListeners();
     }});
   }
@@ -743,6 +755,7 @@ class GameModel extends ChangeNotifier{
   }
 
   void setTimeOutTrue() async {
+    print("player set time out true called");
     await db.child("matches").child(firebasePath![0]).child(firebasePath![1]).child("teams").child(team)
         .child("ableToPlay").set("");
   }
@@ -800,22 +813,6 @@ class GameModel extends ChangeNotifier{
             });
       })
     });
-  }
-
-  void listenToPointsChange(){
-       db.child("matches").child(firebasePath![0]).child(firebasePath![1]).child("teams").child(team).child("points")
-           .onValue.listen((event) {
-             if(event.snapshot.value !=null && event.snapshot.value as int != teamPoints){
-               teamPoints = event.snapshot.value as int;
-               Map<String, int> pointsMap = Map.fromIterable(teamStats.entries.where((element) => element.value != null),
-                 key: (element) => element.key,
-                 value: (element) => element.value.points as int);
-
-               //todo: controlla che la set dialog data passata così chiuda la dialog
-               DialogData data = DialogData("Intermezzo", MidRankingDialog(playerLevelCounter, pointsMap, setDialogData), false);
-               setDialogData(data);
-             }
-       });
   }
 
   int getBudgetSnapshot(List<String>? playedCards){

@@ -9,6 +9,7 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import '../Components/generalFeatures/AnimatedGradient.dart';
 import '../GameModel.dart';
+import 'dart:io' show Platform;
 
 class WaitingScreen extends StatefulWidget {
   @override
@@ -166,7 +167,10 @@ class WaitingScreenState extends State<WaitingScreen> {
       });
 
       if(matchJoinedYet!=null && !matchJoinedYet!){
-        return SafeArea(child:
+        return SafeArea(
+             top: Platform.isIOS ? false : true,
+             bottom: Platform.isIOS ? false : true,
+            child:
         LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraint) {
               if (constraint.maxWidth != screenWidth &&
@@ -239,7 +243,10 @@ class WaitingScreenState extends State<WaitingScreen> {
             }));
       }
       else{
-          return SafeArea(child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints){
+          return SafeArea(
+              top: Platform.isIOS ? false : true,
+              bottom: Platform.isIOS ? false : true,
+              child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints){
             if(constraints.maxWidth != screenWidth && constraints.maxHeight!=screenHeight){
               newDimensions(constraints.maxHeight, constraints.maxWidth);
             }

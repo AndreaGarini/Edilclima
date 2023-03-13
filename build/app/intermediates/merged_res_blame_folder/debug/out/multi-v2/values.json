@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/garonofsky/Documents/Polito/Edilclima/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
+            "outputFile": "/Users/garonofsky/Documents/Polito/edilclima/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
             "map": [
                 {
                     "source": "/Users/garonofsky/.gradle/caches/transforms-3/7b852cc884d70dcfca22da8e8e435148/transformed/lifecycle-runtime-2.4.0/res/values/values.xml",
@@ -171,7 +171,7 @@
                     }
                 },
                 {
-                    "source": "/Users/garonofsky/Documents/Polito/Edilclima/android/app/src/main/res/values/styles.xml",
+                    "source": "/Users/garonofsky/Documents/Polito/edilclima/android/app/src/main/res/values/styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
@@ -224,7 +224,7 @@
                     }
                 },
                 {
-                    "source": "/Users/garonofsky/Documents/Polito/Edilclima/build/app/generated/res/google-services/debug/values/values.xml",
+                    "source": "/Users/garonofsky/Documents/Polito/edilclima/build/app/generated/res/google-services/debug/values/values.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",

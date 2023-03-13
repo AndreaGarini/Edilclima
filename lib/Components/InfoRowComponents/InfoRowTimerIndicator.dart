@@ -41,10 +41,9 @@ class InfoRowTimerIndicatorState extends State<InfoRowTimerIndicator>
     return Consumer<GameModel>(builder: (context, gameModel, child){
 
         if(gameModel.playerTimerCountdown==null || (gameModel.playerTimerCountdown != null && gameModel.playerTimerCountdown! > 60)){
-          return const Text("");
+          return const SizedBox();
         }
         else{
-
           if(!timerBeginSetted){
             timerBeginSetted = true;
             timerBegin = gameModel.playerTimerCountdown!/62;
