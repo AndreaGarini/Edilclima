@@ -54,10 +54,6 @@ class VerticalStatsCard extends StatelessWidget{
       }
     }
 
-    if(dataType == "smog"){
-      print("value: $dataValue, base: $baseDataValue");
-    }
-
 
    return Card(
        color: Colors.white,

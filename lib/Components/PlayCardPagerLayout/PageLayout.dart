@@ -48,9 +48,7 @@ class PageLayoutState extends State<PageLayout> with SingleTickerProviderStateMi
       if(gameModel.playerTimer!=null){
 
         def() {
-          var budget = gameModel.getBudgetSnapshot(
-              gameModel.playedCardsPerTeam[gameModel.team]!.values
-              .map((e) => e.code).toList());
+          int budget = gameModel.teamStats[gameModel.team]!.budget!; 
 
           if (playableCard!="null" &&
           gameModel.gameLogic.findCard(playableCard, gameModel.playerContextCode!, gameModel.playerLevelCounter)!.money.abs() <= budget) {

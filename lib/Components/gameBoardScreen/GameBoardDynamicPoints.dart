@@ -17,7 +17,6 @@ class GameBoardDynamicPoints extends StatefulWidget{
 
     @override
     State<StatefulWidget> createState() => GameBoardDynamicPointsState();
-
 }
 
 class GameBoardDynamicPointsState extends State<GameBoardDynamicPoints>
@@ -40,7 +39,7 @@ class GameBoardDynamicPointsState extends State<GameBoardDynamicPoints>
     });
     initPoints = widget.endingStats.oldPoints;
     pointsDelta = widget.endingStats.cardsPoints;
-    totalPoints = widget.endingStats.targetPoints + widget.endingStats.cardsPoints - widget.endingStats.movesPoints;
+    totalPoints = widget.endingStats.oldPoints + widget.endingStats.targetPoints + widget.endingStats.cardsPoints - widget.endingStats.movesPoints;
     ptsController.forward(from: 0.0);
   }
 

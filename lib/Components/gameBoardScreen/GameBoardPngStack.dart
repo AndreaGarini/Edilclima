@@ -38,14 +38,14 @@ class GameBoardPngStackState extends State<GameBoardPngStack> {
       for(List<String> pngStackPathList in pngLogic.getNewPngStack(cardCode, isPlayed, level)){
         List<Widget> pngStackList = pngStackPathList.map((e) => Image.asset(e, height: widget.imageHeight, width: widget.imageWidth)).toList();
         setPngList(millisDelay, pngStackList);
-        millisDelay += 3000;
+        millisDelay += 1000;
       }
     }
   }
   
-  emptyPngStack(String team){
+  emptyPngStack(String team, int masterLevelCounter){
     if(team == widget.team){
-      setPngStackEmpty();
+      setPngStackEmpty(masterLevelCounter);
     }
   }
 
@@ -64,16 +64,13 @@ class GameBoardPngStackState extends State<GameBoardPngStack> {
           gameModel.gameBoardPngEmptyCallback[widget.team] = emptyPngStack;
         }
 
-        WidgetsBinding.instance?.addPostFrameCallback((_){
+       /*WidgetsBinding.instance?.addPostFrameCallback((_){
           if(stackChildren.isEmpty){
             //inizializzo stack png in base al livello
+            // solo se il gae master entra ed esce dal livello
             List<String> playedCardsCodes = gameModel.playedCardsPerTeam[widget.team]!.values.map((e) => e.code).toList();
             List<String> startingCards = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.startingList;
-            if(startingCards.toSet().containsAll(playedCardsCodes.toSet()) && playedCardsCodes.length == startingCards.length){
-              setPngList(50,  pngLogic.setPngStackFromLevel(gameModel.gameLogic.masterLevelCounter)
-                  .map((e) => Image.asset(e, height: widget.imageHeight, width: widget.imageWidth)).toList());
-            }
-            else{
+              print("png stack in and out mech");
               //situazione in cui il master esce e rientra nel game board
               pngLogic.setPngStackFromLevel(gameModel.gameLogic.masterLevelCounter);
               List<String> zoneInitCards = gameModel.gameLogic.zoneMap[gameModel.gameLogic.masterLevelCounter]!.startingList;
@@ -83,9 +80,8 @@ class GameBoardPngStackState extends State<GameBoardPngStack> {
                 pngLogic.getNewPngStack(playedCardCode, true, gameModel.gameLogic.masterLevelCounter);
               }
               setPngList(50, pngLogic.getCurrentPngStack().map((e) => Image.asset(e, height: widget.imageHeight, width: widget.imageWidth)).toList());
-            }
           }
-        });
+        });*/
 
 
       return Stack(
@@ -103,11 +99,10 @@ class GameBoardPngStackState extends State<GameBoardPngStack> {
     });
   }
   
-  Future<void> setPngStackEmpty() async {
+  Future<void> setPngStackEmpty(int masterLevelCounter) async {
     return Future.delayed(const Duration(milliseconds: 50), (){
-      setState(() {
-        stackChildren = [];
-      });
+        setPngList(50,  pngLogic.setPngStackFromLevel(masterLevelCounter)
+            .map((e) => Image.asset(e, height: widget.imageHeight, width: widget.imageWidth)).toList());
     });
   }
   

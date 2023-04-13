@@ -1,4 +1,3 @@
-import 'package:edilclima_app/Components/MainScreenContent.dart';
 import 'package:edilclima_app/Components/gameBoardScreen/GameBoardDynamicTitle.dart';
 import 'package:edilclima_app/Components/gameBoardScreen/GameBoardInfoCircle.dart';
 import 'package:edilclima_app/Components/generalFeatures/MasterTutorialFeatures.dart';
@@ -303,7 +302,7 @@ class GameBoardState extends State<GameBoard> {
            }
          });
        }
-       Future.delayed(Duration(milliseconds: (6000 * cardsWidgets.length)), () {
+       Future.delayed(Duration(milliseconds: (1000 * cardsWidgets.length)), () {
          titleWidget!.reverseCallback!();
          Future.delayed(const Duration(milliseconds: 3000), () {
            setState(() {

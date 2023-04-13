@@ -120,6 +120,10 @@ with TickerProviderStateMixin{
 
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        gameModel.gameBoardChartBarCallback[widget.team] ??= initializeBar;
+      });
+
       if(fullBar){
           chartContent = fullChartBar();
       }
@@ -131,7 +135,6 @@ with TickerProviderStateMixin{
             chartContent = staticChartBar();
           }
       }
-
       return chartContent;
     });
   }
@@ -304,13 +307,19 @@ with TickerProviderStateMixin{
 
   }
 
-
   Future<void> setFullBarFalse(){
     return Future.delayed(const Duration(seconds: 3), () {
       setState((){
         fullBarController.stop();
         fullBar = false;
       });
+    });
+  }
+
+  initializeBar(){
+    setState((){
+      fullBar = false;
+      playedCardsNum = 0;
     });
   }
 

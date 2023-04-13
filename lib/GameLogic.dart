@@ -265,16 +265,27 @@ class GameLogic {
             int playedCardsWithRequirements = map.values.where((element) =>
                 element.code.contains(infData.resNeeded)).length;
             if(playedCardsWithRequirements >= infData.multiObjThreshold!){
-              finalSmog = (finalSmog * infData.inCoeff["A"]!).round();
-              finalEnergy = (finalEnergy * infData.inCoeff["E"]!).round();
-              finalComfort = (finalComfort * infData.inCoeff["C"]!).round();
+
+              finalSmog = (finalSmog * infData.inCoeff["A"]!).round() > (finalSmog / infData.inCoeff["A"]!).round() ?
+                          (finalSmog * infData.inCoeff["A"]!).round() : (finalSmog / infData.inCoeff["A"]!).round();
+
+              finalEnergy = (finalEnergy * infData.inCoeff["E"]!).round() > (finalEnergy / infData.inCoeff["E"]!).round() ?
+                            (finalEnergy * infData.inCoeff["E"]!).round() : (finalEnergy / infData.inCoeff["E"]!).round();
+
+              finalComfort = (finalComfort * infData.inCoeff["C"]!).round() > (finalComfort / infData.inCoeff["C"]!).round() ?
+                             (finalComfort * infData.inCoeff["C"]!).round() : (finalComfort / infData.inCoeff["C"]!).round();
             }
           }
           else{
             if(map.values.map((e) => e.code).contains(infData.resNeeded)){
-              finalSmog = (finalSmog * infData.inCoeff["A"]!).round();
-              finalEnergy = (finalEnergy * infData.inCoeff["E"]!).round();
-              finalComfort = (finalComfort * infData.inCoeff["C"]!).round();
+              finalSmog = (finalSmog * infData.inCoeff["A"]!).round() > (finalSmog / infData.inCoeff["A"]!).round() ?
+                          (finalSmog * infData.inCoeff["A"]!).round() : (finalSmog / infData.inCoeff["A"]!).round();
+
+              finalEnergy = (finalEnergy * infData.inCoeff["E"]!).round() > (finalEnergy / infData.inCoeff["E"]!).round() ?
+                            (finalEnergy * infData.inCoeff["E"]!).round() : (finalEnergy / infData.inCoeff["E"]!).round();
+
+              finalComfort = (finalComfort * infData.inCoeff["C"]!).round() > (finalComfort / infData.inCoeff["C"]!).round() ?
+                             (finalComfort * infData.inCoeff["C"]!).round() : (finalComfort / infData.inCoeff["C"]!).round();
             }
           }
         }

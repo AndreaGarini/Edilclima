@@ -49,11 +49,13 @@ class MainScreenContentState extends State<MainScreenContent>{
     openTutorial = false;
     firstOpening = true;
 
-    Future.delayed(const Duration(milliseconds: 1), (){
-      SystemChrome.setSystemUIOverlayStyle(
-          SystemUiOverlayStyle.light.copyWith(statusBarColor: Colors.white)
-      );
-    });
+    if(Platform.isIOS){
+      Future.delayed(const Duration(milliseconds: 1), (){
+        SystemChrome.setSystemUIOverlayStyle(
+            SystemUiOverlayStyle.light.copyWith(statusBarColor: Colors.white)
+        );
+      });
+    }
   }
 
 
@@ -91,8 +93,6 @@ class MainScreenContentState extends State<MainScreenContent>{
       if(gameModel.showDialog!=null && gameModel.showDialog!=lastDialogData){
         setDialogAvailable(parentContext, gameModel.showDialog!, gameModel);
       }
-
-      if(openTutorial){
           return
             Material(
               color: darkBluePalette,
@@ -112,35 +112,11 @@ class MainScreenContentState extends State<MainScreenContent>{
                           ],),
                         bottomNavigationBar:  SizedBox(width: screenWidth, height: screenHeight * 0.12, child: BottomNavBar(context))
                     ),
-                      OverlayerTutorialFeatures(tutorialPhase, buttonCallback, gameModel)
+                      openTutorial ? OverlayerTutorialFeatures(tutorialPhase, buttonCallback, gameModel)  : const SizedBox(),
                     ]);
               })
               ),
             );
-        }
-        else{
-          return
-            Material(
-              color: darkBluePalette,
-              child: SafeArea(
-                  bottom: Platform.isIOS ? false : true,
-                  child:
-                LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints){
-              mainHeight = constraints.maxHeight;
-              mainWidth = constraints.maxWidth;
-              return Scaffold(
-                body: Column(mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(flex: 1, child: infoRow()),
-                    Expanded(flex: 10, child: widget.child)
-                  ],),
-                bottomNavigationBar:  SizedBox(width: screenWidth, height: screenHeight * 0.12, child: BottomNavBar(context))
-          );
-                })),
-            );
-        }
     });
   }
 

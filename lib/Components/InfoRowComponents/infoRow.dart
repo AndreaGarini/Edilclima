@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:edilclima_app/Components/InfoRowComponents/InfoRowDynamicContent.dart';
+import 'package:edilclima_app/Components/InfoRowComponents/InfoRowTimerIndicator.dart';
 import 'package:edilclima_app/Components/generalFeatures/ColorPalette.dart';
 import 'package:edilclima_app/GameModel.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,7 +20,6 @@ class infoRow extends StatefulWidget{
 
   @override
   State<infoRow> createState() => infoRowState();
-
 }
 
 class infoRowState extends State<infoRow> with
@@ -29,10 +29,17 @@ class infoRowState extends State<infoRow> with
   late Animation<Offset> offsetAnimationIn;
   late AnimationController slideOutControllerBase;
   late Animation<Offset> offsetAnimationOut;
+  InfoRowLayout toShowLayout = InfoRowLayout.Base;
+  bool animOut = false;
+  bool infoRowDefaultLayout = true;
+  bool readyToAnim = true;
+  InfoRowDynamicContent? infoRowDynamicContent;
 
   @override
   void initState() {
     super.initState();
+
+    infoRowDynamicContent = InfoRowDynamicContent(toShowLayout);
 
     slideInControllerBase = AnimationController(
       duration: Duration(milliseconds: widget.animTime),
@@ -68,13 +75,8 @@ class infoRowState extends State<infoRow> with
     slideOutControllerBase.dispose();
   }
 
-  InfoRowLayout toShowLayout = InfoRowLayout.Base;
-  bool animOut = false;
-  bool infoRowDefaultLayout = true;
-  bool readyToAnim = true;
-
-  InfoRowLayout evaluateLayout(pushResult lastPush){
-          if(infoRowDefaultLayout){
+  InfoRowLayout evaluateLayout(pushResult lastPush, bool infoRowLayout){
+          if(infoRowLayout){
             switch(lastPush){
               case pushResult.InvalidCard: {
                 return InfoRowLayout.Invalid;
@@ -96,9 +98,8 @@ class infoRowState extends State<infoRow> with
           }
   }
 
-  void endingLayoutChange (pushResult lastPush){
-      InfoRowLayout newLayout = evaluateLayout(lastPush);
-
+  void endingLayoutChange (pushResult lastPush, bool infoRowLayout){
+      InfoRowLayout newLayout = evaluateLayout(lastPush, infoRowLayout);
       if(toShowLayout!=newLayout && toShowLayout==InfoRowLayout.Base && readyToAnim){
         readyToAnim = false;
         baseLayoutOut(newLayout);
@@ -111,13 +112,18 @@ class infoRowState extends State<infoRow> with
 
     return Consumer<GameModel>(builder: (context, gameModel, child)
     {
-      endingLayoutChange(gameModel.push.first() as pushResult);
+      //todo: controlla che il low budget esca nella info row
+      gameModel.infoRowCallback ??= (){
+        endingLayoutChange(gameModel.push.first() as pushResult, infoRowDefaultLayout);
+      };
 
       gameModel.createTimerCallback ??= (){
         infoRowDefaultLayout = false;
+        endingLayoutChange(gameModel.push.first() as pushResult, infoRowDefaultLayout);
         int duration = 63;
         setPlayerTimer(duration, 1, gameModel);
         Future<void>.delayed(Duration(milliseconds: widget.animTime * 4), () {
+          infoRowDynamicContent!.startTimer!();
           infoRowDefaultLayout = true;
         });
       };
@@ -132,7 +138,7 @@ class infoRowState extends State<infoRow> with
                         const Spacer(),
                         Expanded(flex: 12, child: SlideTransition(
                             position: animOut ? offsetAnimationOut : offsetAnimationIn,
-                            child: InfoRowDynamicContent(toShowLayout))),
+                            child: infoRowDynamicContent)),
                         const Spacer()
                       ])),
                 ]));
@@ -158,6 +164,7 @@ class infoRowState extends State<infoRow> with
       setState(() {
         animOut = false;
         toShowLayout = newLayout;
+        infoRowDynamicContent = InfoRowDynamicContent(toShowLayout);
       });});
   }
 
@@ -177,6 +184,7 @@ class infoRowState extends State<infoRow> with
       slideInControllerBase.forward(from: 0);
      setState(() {
        toShowLayout = InfoRowLayout.Base;
+       infoRowDynamicContent = InfoRowDynamicContent(toShowLayout);
        animOut = false;
      });
     });
@@ -194,15 +202,14 @@ class infoRowState extends State<infoRow> with
       var playerTimer = Timer.periodic(Duration(seconds: TickInterval), (timer) {
         gameModel.playerTimerOnTick();
         counter--;
-        print("counter on tick: $counter");
         if (counter == 0) {
-          print("timer executing end");
           gameModel.playerTimerOnFinish();
           timer.cancel();
         }
       });
 
       gameModel.cancelTimerCallback = (){
+        infoRowDynamicContent!.cancelTimer!();
         playerTimer.cancel();
       };
       gameModel.createPlayerTimer(playerTimer);

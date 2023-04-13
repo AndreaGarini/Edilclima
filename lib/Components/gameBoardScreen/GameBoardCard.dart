@@ -44,12 +44,10 @@ class GameBoardCardState extends State<GameBoardCard>{
 
   @override
   Widget build(BuildContext context) {
-
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       widget.startCrdCallback ??= levelEndedCardSequence;
       widget.endCrdCallback ??= killEndingSequence;
     });
-
 
     return  Card(shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0)),
@@ -78,6 +76,7 @@ class GameBoardCardState extends State<GameBoardCard>{
   void killEndingSequence(){
       setState(() {
         endingStats = null;
+        animPhase = 0;
       });
   }
 

@@ -89,6 +89,9 @@ class GameBoardPositinedPointsState extends State<GameBoardPositinedPoints>
           animColor = Colors.red;
         });
         ctrl.forward(from: 0.0);
+        Future.delayed(const Duration(milliseconds: 2000), () {
+          widget.phaseCallback();
+        });
       }
       break;
       default: {

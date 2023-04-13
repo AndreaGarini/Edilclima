@@ -47,53 +47,63 @@ class GameBoardInfoCircleState extends State<GameBoardInfoCircle> {
         }
       }
       dynamicButton(){
-        if(gameModel.masterLevelStatus=="preparing"){
-          bool gameEnded = gameModel.gameLogic.masterLevelCounter == gameModel.gameLogic.zoneMap.length + 1;
-          String text = gameEnded ? "Fine partita" : "Prepara livello ${gameModel.gameLogic.masterLevelCounter}";
-          return SizedButton(
-              screenHeight * 0.2, text,
-              gameEnded ? (){context.go("/initialScreen/matchMakingScreen/gameBoardScreen");}
-              : () {
-                if(gameModel.gameLogic.masterLevelCounter!= 1){
-                  widget.killDynamicPoints();
-                }
-                gameModel.prepareLevel(gameModel.gameLogic.masterLevelCounter);
-                   });
-        }
-        else{
-          String text = "inizia livello ${gameModel.gameLogic.masterLevelCounter}";
-          return Tooltip(
-            message: "Tutti i giocatori devono finire il tutorial",
-            textStyle: TextStyle(color: darkBluePalette, fontSize: screenWidth * 0.03, fontWeight: FontWeight.normal),
-            margin: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10.0),
-            boxShadow: [BoxShadow(
-            color: lightBluePalette,
-            spreadRadius: 2,
-            blurRadius: 2,
-            offset: const Offset(0, 0), // changes position of shadow
-            )]),
-            showDuration: const Duration(seconds: 2),
-            triggerMode: TooltipTriggerMode.manual,
-            key: tooltipkey,
-            child: SizedButton(
-                screenHeight * 0.2,
-                text,
-                    () {
-                  gameModel.checkPlayerTutorialFinished().then((value) {
-                    if(value){
-                      gameModel.startLevel();
-                    }
-                    else{
-                      tooltipkey.currentState?.ensureTooltipVisible();
-                      Future.delayed(const Duration(seconds: 2), (){
-                        tooltipkey.currentState?.deactivate();
+        switch(gameModel.masterLevelStatus){
+          case "preparing":
+                {
+                  String text ="Prepara livello ${gameModel.gameLogic.masterLevelCounter}";
+                  return SizedButton(
+                      screenHeight * 0.2, text,
+                       () {
+                        if(gameModel.gameLogic.masterLevelCounter!= 1){
+                          widget.killDynamicPoints();
+                        }
+                        gameModel.prepareLevel(gameModel.gameLogic.masterLevelCounter);
                       });
-                    }
-                  });
-                })
-          );
+                }
+          case "play":
+             {
+               String text = "inizia livello ${gameModel.gameLogic.masterLevelCounter}";
+               return Tooltip(
+                   message: "Tutti i giocatori devono finire il tutorial",
+                   textStyle: TextStyle(color: darkBluePalette, fontSize: screenWidth * 0.03, fontWeight: FontWeight.normal),
+                   margin: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                   decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10.0),
+                       boxShadow: [BoxShadow(
+                         color: lightBluePalette,
+                         spreadRadius: 2,
+                         blurRadius: 2,
+                         offset: const Offset(0, 0), // changes position of shadow
+                       )]),
+                   showDuration: const Duration(seconds: 2),
+                   triggerMode: TooltipTriggerMode.manual,
+                   key: tooltipkey,
+                   child: SizedButton(
+                       screenHeight * 0.2,
+                       text,
+                           () {
+                         gameModel.checkPlayerTutorialFinished().then((value) {
+                           if(value){
+                             gameModel.startLevel();
+                           }
+                           else{
+                             tooltipkey.currentState?.ensureTooltipVisible();
+                             Future.delayed(const Duration(seconds: 2), (){
+                               tooltipkey.currentState?.deactivate();
+                             });
+                           }
+                         });
+                       })
+               );
+             }
+          case "ended":
+             {
+               String text = "Fine partita";
+               return SizedButton(
+                   screenHeight * 0.2, text,
+                   (){context.go("/initialScreen");});
+             }
         }
+
       }
 
       return Container(height: widget.usableHeight * 0.2, width: widget.usableHeight + 0.2,

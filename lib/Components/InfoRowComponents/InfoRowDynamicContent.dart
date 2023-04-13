@@ -14,6 +14,8 @@ import 'infoRow.dart';
 class InfoRowDynamicContent extends StatefulWidget{
 
   InfoRowLayout layout;
+  Function? startTimer;
+  Function? cancelTimer;
   InfoRowDynamicContent(this.layout);
 
   @override
@@ -23,10 +25,29 @@ class InfoRowDynamicContent extends StatefulWidget{
 
 class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
 
+  late bool showTimer;
+  @override
+  void initState() {
+    super.initState();
+    showTimer = false;
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance?.addPostFrameCallback((_){
+    widget.startTimer ??= setTimerStart;
+    widget.cancelTimer ??= setTimerEnd;
+    });
+
 
    return Consumer<GameModel>(builder: (context, gameModel, child){
+
+     WidgetsBinding.instance?.addPostFrameCallback((_){
+       if(gameModel.playerLevelStatus != "play" && showTimer){
+          widget.cancelTimer!();
+       }
+     });
 
      switch (widget.layout) {
        case InfoRowLayout.Invalid :
@@ -86,7 +107,7 @@ class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
                      crossAxisAlignment: CrossAxisAlignment.center,
                      children: [
                        const Spacer(),
-                       Expanded(flex: 2, child: InfoRowTimerIndicator()),
+                       Expanded(flex: 2, child: InfoRowTimerIndicator(showTimer)),
                        const Spacer()
                      ],
                    ))),
@@ -108,4 +129,18 @@ class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
    });
 
    }
+
+
+   void setTimerStart(){
+    setState((){
+      showTimer = true;
+    });
+   }
+
+  void setTimerEnd(){
+    setState((){
+      showTimer = false;
+    });
+  }
+
   }

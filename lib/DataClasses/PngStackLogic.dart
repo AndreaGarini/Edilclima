@@ -227,7 +227,7 @@ class PngStackLogic {
       'assets/gameBoardPng/Condominio/CTettoRivestimentoFibraLegno.png',
       'assets/gameBoardPng/Condominio/CPannelloFotovoltaico.png',
       'assets/gameBoardPng/Condominio/CPannelloSolare.png',
-      'assets/gameBoardPng/Condominio/CFinestraVetri.png',
+      'assets/gameBoardPng/Condominio/CVetriFinestra.png',
       'assets/gameBoardPng/Condominio/CFinestraBase.png',
       'assets/gameBoardPng/Condominio/CFinestraLegno.png',
       'assets/gameBoardPng/Condominio/CFinestraPVC2.png',
@@ -325,7 +325,6 @@ class PngStackLogic {
             List<String> newPngStack = fullPngStackPerLevel[level]!.where((element) => pngStack.contains(element)).toList();
             bool genericPath = !fullPngStackPerLevel[level]!.any((png) => png == action.first());
             bool hasSubstitute = onlyAddPngStack.any((png) => png.contains(action.first()));
-
             if(genericPath && hasSubstitute){
               List<String> substitutePng = onlyAddPngStack.where((png) => png.contains(action.first())).toList();
               substitutePng.sort((a, b) => fullPngStackPerLevel[level]!.indexOf(a).compareTo(fullPngStackPerLevel[level]!.indexOf(b)));

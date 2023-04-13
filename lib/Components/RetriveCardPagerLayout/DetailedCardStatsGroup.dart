@@ -192,7 +192,7 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
                           textWidget = "Smog : ";
                           cardTransfAlign = FractionalOffset.bottomLeft;
                           valueWidget = widget.cardData.smog;
-                          bool statsUp = widget.cardData.smog < widget.baseCardData.smog;
+                          bool statsUp = widget.cardData.smog > widget.baseCardData.smog;
                           statInfoRows = generateStatInfoRows("smog", statsUp);
                         });
                         controller.forward(from: 0);
@@ -209,7 +209,7 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
                           textWidget = "Energy : ";
                           cardTransfAlign = FractionalOffset.bottomRight;
                           valueWidget = widget.cardData.energy;
-                          bool statsUp = widget.cardData.comfort > widget.baseCardData.comfort;
+                          bool statsUp = widget.cardData.energy > widget.baseCardData.energy;
                           statInfoRows = generateStatInfoRows("energy", statsUp);
                         });
                         controller.forward(from: 0);
@@ -339,6 +339,11 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
 
     Map<String, String> ctxInfMsg = {"C01" : "Città", "C02": "Nord", "C03": "Sud"};
 
+    if(widget.cardData.code=="imp07"){
+      print("nerf pairs : ${widget.cardInfData["Nerf"].toString()}");
+      print("up pairs : ${widget.cardInfData["Up"].toString()}");
+    }
+
     for(final rowEntry in widget.cardInfData!["Nerf"]!.entries){
       String message = "";
       String infType = "";
@@ -409,7 +414,6 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
       String message = "";
       String infType = "";
       if(statCode!="money"){
-        print("statCode: $statCode");
         switch(rowEntry.key){
           case "Ctx" : {
             print("ctx ");
@@ -424,14 +428,13 @@ class DetailedCardStatsGroupState extends State<DetailedCardStatsGroup>
           break;
           case "Card" : {
             infType = "Carta combo";
-            message = "Per ";
+            message = "Perchè è ";
           }
           break;
         }
       }
 
       if(message!="" && infType!=""){
-        print("avatarUpList.add");
         avatarUpList.add(Expanded(flex: 8, child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center, children: [
               Container(

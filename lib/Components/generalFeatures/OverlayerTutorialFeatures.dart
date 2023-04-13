@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../Screens/WaitingScreen.dart';
+import '../MainScreenContent.dart';
 
 class OverlayerTutorialFeatures extends StatelessWidget{
 
@@ -38,9 +39,9 @@ class OverlayerTutorialFeatures extends StatelessWidget{
       case 0: {
         //info row
         return Stack(children: [
-          Positioned(top: 0, left: screenWidth * 0.075, width: screenWidth * 0.85, height: screenHeight * 0.08,
+          Positioned(top: 0, left: mainWidth * 0.075, width: mainWidth * 0.85, height: mainHeight * 0.078,
               child: containerLine),
-          Positioned(top: screenHeight * 0.1, left: 0, width: screenWidth, height: screenHeight * 0.4,
+          Positioned(top: mainHeight * 0.1, left: 0, width: mainWidth, height: mainHeight * 0.35,
               child: Padding(padding: EdgeInsets.all(screenWidth * 0.02),
               child:
                 Container(
@@ -74,9 +75,9 @@ class OverlayerTutorialFeatures extends StatelessWidget{
       case 1: {
         //swipable cards
         return Stack(children: [
-          Positioned(top: screenHeight * 0.08, left: 0, width: screenWidth, height: screenHeight * 0.35,
+          Positioned(top: mainHeight * 0.08, left: 0, width: mainWidth, height: mainHeight * 0.35,
               child: containerLine),
-          Positioned(top: screenHeight * 0.45, left: 0, width: screenWidth, height: screenHeight * 0.35,
+          Positioned(top: mainHeight * 0.45, left: 0, width: mainWidth, height: mainHeight * 0.35,
               child: Padding(padding: EdgeInsets.all(screenWidth * 0.02),
                 child:
                     Container(
@@ -110,9 +111,9 @@ class OverlayerTutorialFeatures extends StatelessWidget{
       case 2: {
         //rosa carte 1
         return Stack(children: [
-          Positioned(top: screenHeight * 0.4, left: 0, width: screenWidth, height: screenHeight * 0.48,
+          Positioned(top: mainHeight * 0.42, left: 0, width: mainWidth, height: mainHeight * 0.455,
               child: containerLine),
-          Positioned(top: screenHeight * 0.08, left: 0, width: screenWidth, height: screenHeight * 0.33,
+          Positioned(top: mainHeight * 0.08, left: 0, width: mainWidth, height: mainHeight * 0.3,
               child: Padding(padding: EdgeInsets.all(screenWidth * 0.02),
                 child: Container(
                   color: lightBluePalette,
@@ -145,9 +146,9 @@ class OverlayerTutorialFeatures extends StatelessWidget{
       case 3: {
         //rosa carte 2
         return Stack(children: [
-          Positioned(top: screenHeight * 0.4, left: 0, width: screenWidth, height: screenHeight * 0.48,
+          Positioned(top: mainHeight * 0.42, left: 0, width: mainWidth, height: mainHeight * 0.455,
               child: containerLine),
-          Positioned(top: screenHeight * 0.08, left: 0, width: screenWidth, height: screenHeight * 0.33,
+          Positioned(top: screenHeight * 0.08, left: 0, width: mainWidth, height: mainHeight * 0.3,
               child: Padding(padding: EdgeInsets.all(screenWidth * 0.02),
                 child: Container(
                       color: lightBluePalette,
@@ -182,7 +183,7 @@ class OverlayerTutorialFeatures extends StatelessWidget{
       case 4: {
         //bottom nav bar
         return Stack(children: [
-          Positioned(top: screenHeight * 0.08, left: 0, width: screenWidth, height: screenHeight * 0.33,
+          Positioned(top: mainHeight * 0.08, left: 0, width: mainWidth, height: mainHeight * 0.35,
               child: Padding(padding: EdgeInsets.all(screenWidth * 0.02),
                 child: Container(
                   color: lightBluePalette,
