@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:edilclima_app/Components/InfoRowComponents/InfoRowTimerIndicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +28,8 @@ class InfoRowDynamicContent extends StatefulWidget{
 class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
 
   late bool showTimer;
+  StreamController<int>? streamCtrl;
+
   @override
   void initState() {
     super.initState();
@@ -107,7 +111,7 @@ class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
                      crossAxisAlignment: CrossAxisAlignment.center,
                      children: [
                        const Spacer(),
-                       Expanded(flex: 2, child: InfoRowTimerIndicator(showTimer)),
+                       Expanded(flex: 2, child: InfoRowTimerIndicator(showTimer, gameModel.playerTimerCountdown)),
                        const Spacer()
                      ],
                    ))),
@@ -132,6 +136,15 @@ class InfoRowDynamicContentState extends State<InfoRowDynamicContent> {
 
 
    void setTimerStart(){
+     Future<void>.delayed(const Duration(milliseconds: 1), () {
+       var counter = 60;
+       Timer.periodic(const Duration(seconds: 1), (timer) {
+         counter--;
+         if (counter == 0) {
+           timer.cancel();
+         }
+       });
+     });
     setState((){
       showTimer = true;
     });

@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../DataClasses/CardData.dart';
 import '../../Screens/WaitingScreen.dart';
+import '../MainScreenContent.dart';
 import '../generalFeatures/ColorPalette.dart';
 
 class DetailedCardContent extends StatelessWidget{
@@ -22,7 +23,7 @@ class DetailedCardContent extends StatelessWidget{
       SingleChildScrollView(
           child: ConstrainedBox(
               constraints: BoxConstraints(
-                  maxHeight: screenHeight),
+                  maxHeight: mainHeight),
               child:
               IntrinsicHeight(
                 child:

@@ -11,6 +11,7 @@ import '../../DataClasses/CardData.dart';
 import '../../DataClasses/CardInfluence.dart';
 import '../../DataClasses/Pair.dart';
 import '../../GameModel.dart';
+import '../MainScreenContent.dart';
 import 'RetrieveDetailedCard.dart';
 
 class RetrivePageLayout extends StatefulWidget {
@@ -53,9 +54,9 @@ class RetriveCardLayoutState extends State<RetrivePageLayout>{
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         retrieveAnim ? retrieveAnimWidget! : DetailedCardLayout(cardData, baseCardData, cardInfData),
-        SizedBox(height: screenHeight * 0.01, width: screenWidth * 0.8),
-        SizedBox(height: screenHeight * 0.07,
-            width: screenWidth * 0.8,
+        SizedBox(height: mainHeight * 0.01, width: mainWidth * 0.8),
+        SizedBox(height: mainHeight * 0.07,
+            width: mainWidth * 0.8,
             child: Center(child: SizedButton(screenWidth * 0.6, "Prendi carta", ableToRetrive ? (){
               setRetrieveAnim(true, cardData, baseCardData, cardInfData);
               gameModel.retriveCardInPos(widget.pos);

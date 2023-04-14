@@ -9,6 +9,7 @@ import 'package:lottie/lottie.dart';
 
 import '../../DataClasses/CardData.dart';
 import '../../Screens/WaitingScreen.dart';
+import '../MainScreenContent.dart';
 import '../generalFeatures/ColorPalette.dart';
 
 class DetailedCardLayout extends StatelessWidget{
@@ -30,9 +31,9 @@ class DetailedCardLayout extends StatelessWidget{
 
     if(cardData!=null){
       return Container(
-          width: screenWidth * 0.8,
-          height: height ?? screenHeight * 0.6,
-          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
+          width: mainWidth * 0.8,
+          height: height ?? mainHeight * 0.6,
+          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(mainHeight * 0.02)),
               color: Colors.white,
               boxShadow: [ BoxShadow(
                 color: lightOrangePalette.withOpacity(0.6),
@@ -48,8 +49,8 @@ class DetailedCardLayout extends StatelessWidget{
             child:
                 ClipRRect(borderRadius: const BorderRadius.all(Radius.circular(20)),
                 child:  Padding(padding: EdgeInsets.only(top: screenWidth * 0.02),
-                child: SizedBox(height: screenHeight * 0.57,
-                    width: screenWidth * 0.8,
+                child: SizedBox(height: mainHeight * 0.57,
+                    width: mainWidth * 0.8,
                     child: DetailedCardContent(cardData!, bodyText, baseCardData!, cardInfData!)))
                 )
         )
@@ -57,9 +58,9 @@ class DetailedCardLayout extends StatelessWidget{
     }
     else{
       return Container(
-          width: screenWidth * 0.8,
-          height: screenHeight * 0.6,
-          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(screenHeight * 0.02)),
+          width: mainWidth * 0.8,
+          height: mainHeight * 0.6,
+          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(mainHeight * 0.02)),
               color: Colors.white,
               boxShadow: [ BoxShadow(
                 color: darkGreyPalette.withOpacity(0.5),
@@ -74,7 +75,7 @@ class DetailedCardLayout extends StatelessWidget{
               elevation: 10,
               child: Center(child: GradientText("No card",
                   [darkBluePalette, lightBluePalette, lightOrangePalette],
-                  screenWidth * 0.2))));
+                  mainWidth * 0.2))));
     }
   }
 }
